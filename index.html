@@ -325,7 +325,7 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
 let currentPhotoIndex = 0;
 
-// Отрисовка галереи
+// Отрисовка галереи (без lazy loading)
 function renderGallery(category = 'all') {
     const filtered = category === 'all' ? photosData : photosData.filter(p => p.category === category);
     
@@ -338,7 +338,7 @@ function renderGallery(category = 'all') {
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `Фото ${photo.id}`;
-        img.loading = 'lazy';
+        // Убрал loading="lazy" — теперь фото грузятся сразу все
         
         img.addEventListener('click', () => {
             const globalIdx = photosData.findIndex(p => p.id === photo.id);
