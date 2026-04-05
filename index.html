@@ -13,11 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amigo Photos — фотопортфолио</title>
     
-    <meta name="description" content="Фотопортфолио Amigo Photos. Стрит-фотография и пейзажи.">
-    <meta name="keywords" content="фотография, портфолио, стрит-фотография, пейзажи, Amigo Photos">
+    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе.">
+    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали, Amigo Photos">
     <meta name="author" content="Amigo Photos">
     <meta property="og:title" content="Amigo Photos — фотопортфолио">
-    <meta property="og:description" content="Стрит-фотография и пейзажи. Моменты, сохранённые в кадре.">
+    <meta property="og:description" content="Архитектура, природа и детали в объективе.">
     <meta property="og:image" content="https://амигоботов.portfolio/images/1.jpg">
     <meta property="og:type" content="website">
     
@@ -94,6 +94,10 @@
         .categories {
             padding: 30px 60px 0;
             text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
         
         .category-btn {
@@ -265,17 +269,12 @@
     <div class="slide" style="background-image: url('images/5.jpg');"></div>
     <div class="hero-content">
         <h1>Amigo Photos</h1>
-        <p>Стрит-фотография и пейзажи</p>
+        <p>Архитектура · Природа · Детали</p>
         <p>Фотография — способ сохранить моменты</p>
     </div>
 </section>
 
-<div class="categories">
-    <button class="category-btn active" data-category="all">Все</button>
-    <button class="category-btn" data-category="street">Стрит</button>
-    <button class="category-btn" data-category="landscape">Пейзажи</button>
-    <button class="category-btn" data-category="portrait">Портреты</button>
-</div>
+<div class="categories" id="categories"></div>
 
 <section class="gallery" id="gallery"></section>
 
@@ -293,41 +292,87 @@
 </footer>
 
 <script>
-// Данные фото
+// ========================================
+// КАТЕГОРИИ (можно легко менять и добавлять)
+// ========================================
+const CATEGORIES = {
+    all: { name: '📷 Все', icon: '📷' },
+    architecture: { name: '🏛️ Архитектура', icon: '🏛️' },
+    nature: { name: '🌿 Природа', icon: '🌿' },
+    details: { name: '🔍 Детали', icon: '🔍' }
+};
+
+// ========================================
+// ФОТО С КАТЕГОРИЯМИ (добавляй новые сюда)
+// ========================================
 const photosData = [
-    { id: 1, src: 'images/1.jpg', category: 'street' },
-    { id: 2, src: 'images/2.jpg', category: 'landscape' },
-    { id: 3, src: 'images/3.jpg', category: 'portrait' },
-    { id: 4, src: 'images/4.jpg', category: 'street' },
-    { id: 5, src: 'images/5.jpg', category: 'landscape' },
-    { id: 6, src: 'images/6.jpg', category: 'street' },
-    { id: 7, src: 'images/7.jpg', category: 'portrait' },
-    { id: 8, src: 'images/8.jpg', category: 'landscape' },
-    { id: 9, src: 'images/9.jpg', category: 'street' },
-    { id: 10, src: 'images/10.jpg', category: 'portrait' },
-    { id: 11, src: 'images/11.jpg', category: 'street' },
-    { id: 12, src: 'images/12.jpg', category: 'landscape' },
-    { id: 13, src: 'images/13.jpg', category: 'street' },
-    { id: 14, src: 'images/14.jpg', category: 'portrait' },
-    { id: 15, src: 'images/15.jpg', category: 'landscape' },
-    { id: 16, src: 'images/16.jpg', category: 'street' },
-    { id: 17, src: 'images/17.jpg', category: 'portrait' },
-    { id: 18, src: 'images/18.jpg', category: 'landscape' },
-    { id: 19, src: 'images/19.jpg', category: 'street' },
-    { id: 20, src: 'images/20.jpg', category: 'landscape' },
-    { id: 21, src: 'images/21.jpg', category: 'street' },
-    { id: 22, src: 'images/22.jpg', category: 'portrait' },
-    { id: 23, src: 'images/23.jpg', category: 'street' }
+    // АРХИТЕКТУРА (10 фото)
+    { id: 1, src: 'images/1.jpg', category: 'architecture' },
+    { id: 3, src: 'images/3.jpg', category: 'architecture' },
+    { id: 4, src: 'images/4.jpg', category: 'architecture' },
+    { id: 6, src: 'images/6.jpg', category: 'architecture' },
+    { id: 9, src: 'images/9.jpg', category: 'architecture' },
+    { id: 10, src: 'images/10.jpg', category: 'architecture' },
+    { id: 13, src: 'images/13.jpg', category: 'architecture' },
+    { id: 14, src: 'images/14.jpg', category: 'architecture' },
+    { id: 15, src: 'images/15.jpg', category: 'architecture' },
+    { id: 18, src: 'images/18.jpg', category: 'architecture' },
+    
+    // ПРИРОДА (9 фото)
+    { id: 2, src: 'images/2.jpg', category: 'nature' },
+    { id: 7, src: 'images/7.jpg', category: 'nature' },
+    { id: 8, src: 'images/8.jpg', category: 'nature' },
+    { id: 11, src: 'images/11.jpg', category: 'nature' },
+    { id: 16, src: 'images/16.jpg', category: 'nature' },
+    { id: 17, src: 'images/17.jpg', category: 'nature' },
+    { id: 19, src: 'images/19.jpg', category: 'nature' },
+    { id: 20, src: 'images/20.jpg', category: 'nature' },
+    { id: 21, src: 'images/21.jpg', category: 'nature' },
+    
+    // ДЕТАЛИ (4 фото)
+    { id: 5, src: 'images/5.jpg', category: 'details' },
+    { id: 12, src: 'images/12.jpg', category: 'details' },
+    { id: 22, src: 'images/22.jpg', category: 'details' },
+    { id: 23, src: 'images/23.jpg', category: 'details' }
 ];
 
+// ========================================
+// КОД (ничего не трогать)
+// ========================================
 const galleryContainer = document.getElementById('gallery');
+const categoriesContainer = document.getElementById('categories');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
 let currentPhotoIndex = 0;
 
-// Отрисовка галереи (без lazy loading)
+// Создание кнопок категорий
+function renderCategories() {
+    const fragment = document.createDocumentFragment();
+    
+    Object.keys(CATEGORIES).forEach(catKey => {
+        const btn = document.createElement('button');
+        btn.className = 'category-btn';
+        if (catKey === 'all') btn.classList.add('active');
+        btn.setAttribute('data-category', catKey);
+        btn.textContent = CATEGORIES[catKey].name;
+        
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGallery(catKey);
+        });
+        
+        fragment.appendChild(btn);
+    });
+    
+    categoriesContainer.appendChild(fragment);
+}
+
+// Отрисовка галереи
 function renderGallery(category = 'all') {
-    const filtered = category === 'all' ? photosData : photosData.filter(p => p.category === category);
+    const filtered = category === 'all' 
+        ? photosData 
+        : photosData.filter(p => p.category === category);
     
     const fragment = document.createDocumentFragment();
     
@@ -338,7 +383,6 @@ function renderGallery(category = 'all') {
         const img = document.createElement('img');
         img.src = photo.src;
         img.alt = `Фото ${photo.id}`;
-        // Убрал loading="lazy" — теперь фото грузятся сразу все
         
         img.addEventListener('click', () => {
             const globalIdx = photosData.findIndex(p => p.id === photo.id);
@@ -353,7 +397,7 @@ function renderGallery(category = 'all') {
     galleryContainer.appendChild(fragment);
 }
 
-// Открытие лайтбокса
+// Лайтбокс
 function openLightbox(index) {
     currentPhotoIndex = index;
     lightboxImg.src = photosData[currentPhotoIndex].src;
@@ -389,16 +433,6 @@ function startSlider() {
 
 startSlider();
 
-// Категории
-const categoryBtns = document.querySelectorAll('.category-btn');
-categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        categoryBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderGallery(btn.getAttribute('data-category'));
-    });
-});
-
 // Кнопка наверх
 const toTop = document.getElementById('toTop');
 let scrollTimeout;
@@ -416,9 +450,10 @@ toTop.addEventListener('click', () => {
 });
 
 // Инициализация
+renderCategories();
 renderGallery();
 
-// Лайтбокс события
+// События лайтбокса
 document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
 document.querySelector('.lightbox-prev').addEventListener('click', prevPhoto);
 document.querySelector('.lightbox-next').addEventListener('click', nextPhoto);
