@@ -14,7 +14,7 @@
     <title>Amigo Photos — фотопортфолио</title>
     
     <!-- SEO и Open Graph -->
-    <meta name="description" content="Фотопортфолио Amigo Photos. Стрит-фотография и пейзажи. Коллекция лучших моментов в объективе.">
+    <meta name="description" content="Фотопортфолио Amigo Photos. Стрит-фотография и пейзажи.">
     <meta name="keywords" content="фотография, портфолио, стрит-фотография, пейзажи, Amigo Photos">
     <meta name="author" content="Amigo Photos">
     <meta property="og:title" content="Amigo Photos — фотопортфолио">
@@ -37,39 +37,9 @@
             font-family: Arial, sans-serif;
             background: #0e0e0e;
             color: #fff;
-            transition: background 0.3s, color 0.3s;
         }
         
-        /* Светлая тема */
-        body.light-theme {
-            background: #f5f5f5;
-            color: #1a1a1a;
-        }
-        
-        body.light-theme .gallery img {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        body.light-theme #toTop {
-            background: #1a1a1a;
-            color: #fff;
-        }
-        
-        body.light-theme .category-btn {
-            background: #e0e0e0;
-            color: #1a1a1a;
-        }
-        
-        body.light-theme .category-btn.active {
-            background: #1a1a1a;
-            color: #fff;
-        }
-        
-        body.light-theme .stats {
-            background: #e0e0e0;
-        }
-        
-        /* Hero секция с слайдером */
+        /* Hero секция со слайдером */
         .hero {
             height: 85vh;
             position: relative;
@@ -103,13 +73,13 @@
         .hero-content {
             position: relative;
             z-index: 2;
-            text-align: center;
-            padding: 20px;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            padding: 20px;
         }
         
         .hero h1 {
@@ -198,7 +168,7 @@
         }
         
         .gallery-item:hover img {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         
         .gallery-item .caption {
@@ -210,34 +180,12 @@
             color: white;
             padding: 40px 15px 15px;
             transition: bottom 0.3s;
-            font-size: 14px;
+            font-size: 12px;
+            font-family: monospace;
         }
         
         .gallery-item:hover .caption {
             bottom: 0;
-        }
-        
-        .gallery-item .download-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: transform 0.2s;
-            opacity: 0;
-        }
-        
-        .gallery-item:hover .download-btn {
-            opacity: 1;
-        }
-        
-        .gallery-item .download-btn:hover {
-            transform: scale(1.1);
         }
         
         /* Лайтбокс */
@@ -301,7 +249,7 @@
             bottom: 20px;
             left: 20px;
             background: rgba(0,0,0,0.7);
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-radius: 8px;
             font-size: 12px;
             font-family: monospace;
@@ -325,66 +273,6 @@
         }
         
         #toTop:hover {
-            transform: translateY(-3px);
-        }
-        
-        /* Кнопка темы */
-        .theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 99;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-        
-        .theme-toggle:hover {
-            transform: translateY(-3px);
-        }
-        
-        /* Кнопка случайного фото */
-        .random-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 100px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 99;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-        
-        .random-btn:hover {
-            transform: translateY(-3px);
-        }
-        
-        /* Кнопка поделиться */
-        .share-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 180px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 99;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-        
-        .share-btn:hover {
             transform: translateY(-3px);
         }
         
@@ -435,9 +323,6 @@
             .stats span {
                 margin: 0 8px;
             }
-            .random-btn, .share-btn {
-                display: none;
-            }
             .lightbox-nav {
                 font-size: 25px;
                 padding: 10px;
@@ -454,7 +339,7 @@
 </head>
 <body>
 
-<!-- Hero с слайдером -->
+<!-- Hero со слайдером -->
 <section class="hero">
     <div class="slide active" style="background-image: url('images/1.jpg');"></div>
     <div class="slide" style="background-image: url('images/2.jpg');"></div>
@@ -488,11 +373,8 @@
     <div class="exif-info" id="exifInfo"></div>
 </div>
 
-<!-- Кнопки -->
+<!-- Кнопка наверх -->
 <button id="toTop">↑ Наверх</button>
-<button class="theme-toggle" id="themeToggle">🌓</button>
-<button class="random-btn" id="randomBtn">🎲 Случайное фото</button>
-<button class="share-btn" id="shareBtn">📤 Поделиться</button>
 
 <!-- Статистика -->
 <div class="stats" id="stats">
@@ -549,24 +431,18 @@ function renderGallery(category = 'all') {
     const filtered = category === 'all' ? photosData : photosData.filter(p => p.category === category);
     
     galleryContainer.innerHTML = '';
-    filtered.forEach((photo, idx) => {
+    filtered.forEach((photo) => {
         const item = document.createElement('div');
         item.className = 'gallery-item';
         item.setAttribute('data-id', photo.id);
         item.innerHTML = `
             <img src="${photo.src}" loading="lazy" alt="Фото ${photo.id}">
             <div class="caption">${photo.exif}</div>
-            <button class="download-btn" data-src="${photo.src}" data-id="${photo.id}">⬇️</button>
         `;
         
         item.querySelector('img').addEventListener('click', () => {
             const globalIdx = photosData.findIndex(p => p.id === photo.id);
             openLightbox(globalIdx);
-        });
-        
-        item.querySelector('.download-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            downloadImage(photo.src, `amigo_photo_${photo.id}.jpg`);
         });
         
         galleryContainer.appendChild(item);
@@ -607,42 +483,11 @@ function nextPhoto() {
     exifInfo.textContent = photo.exif;
 }
 
-// Скачивание фото
-function downloadImage(url, filename) {
-    fetch(url)
-        .then(response => response.blob())
-        .then(blob => {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        });
-}
-
-// Случайное фото
-function randomPhoto() {
-    const randomIndex = Math.floor(Math.random() * photosData.length);
-    openLightbox(randomIndex);
-}
-
-// Поделиться
-function shareSite() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Amigo Photos',
-            text: 'Смотрите моё фотопортфолио!',
-            url: window.location.href
-        });
-    } else {
-        alert('Скопируйте ссылку: ' + window.location.href);
-    }
-}
-
-// Тёмная/светлая тема
-function toggleTheme() {
-    document.body.classList.toggle('light-theme');
-    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+// Лайки (по двойному клику)
+function addLike() {
+    likes++;
+    localStorage.setItem('likes', likes);
+    document.getElementById('likeCount').textContent = likes;
 }
 
 // Слайдер для hero
@@ -677,31 +522,40 @@ toTop.addEventListener('click', () => {
     window.scrollTo({top: 0, behavior: 'smooth'});
 });
 
-// Лайки (по клику на фото в галерее с задержкой)
-function addLike() {
-    likes++;
-    localStorage.setItem('likes', likes);
-    document.getElementById('likeCount').textContent = likes;
-}
-
-// Даблклик для лайка
+// Даблклик для лайка на галерее
 galleryContainer.addEventListener('dblclick', (e) => {
     if (e.target.tagName === 'IMG') {
         addLike();
-        alert('❤️ Спасибо за лайк!');
+        // Анимация сердечка
+        const heart = document.createElement('div');
+        heart.textContent = '❤️';
+        heart.style.position = 'fixed';
+        heart.style.left = e.clientX + 'px';
+        heart.style.top = e.clientY + 'px';
+        heart.style.fontSize = '30px';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '9999';
+        heart.style.animation = 'fadeOut 1s ease-out';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
     }
 });
+
+// Анимация для сердечка
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        0% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(1.5); }
+    }
+`;
+document.head.appendChild(style);
 
 // Инициализация
 renderGallery();
 document.getElementById('totalCount').textContent = photosData.length;
 document.getElementById('viewCount').textContent = views;
 document.getElementById('likeCount').textContent = likes;
-
-// Восстановление темы
-if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-theme');
-}
 
 // События для лайтбокса
 document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
@@ -717,10 +571,6 @@ document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') nextPhoto();
     }
 });
-
-document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-document.getElementById('randomBtn').addEventListener('click', randomPhoto);
-document.getElementById('shareBtn').addEventListener('click', shareSite);
 </script>
 
 </body>
