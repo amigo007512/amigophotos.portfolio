@@ -13,13 +13,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amigo Photos — архитектура · природа · детали</title>
     
-    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе.">
+    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе. Работает офлайн!">
     <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали">
     <meta name="author" content="Amigo Photos">
     <meta property="og:title" content="Amigo Photos — фотопортфолио">
     <meta property="og:description" content="Архитектура, природа и детали в объективе.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📷%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E<text y='.9em' font-size='90'>📷</text>%3C/svg%3E">
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -47,6 +47,8 @@
         .lightbox-next{right:20px}
         .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
         #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
+        /* Офлайн-индикатор */
+        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none}
         @media (max-width:768px){
             .hero{height:60vh}
             .hero h1{font-size:2em}
@@ -56,6 +58,7 @@
             .categories{padding:20px 12px 0}
             .category-btn{padding:6px 16px;font-size:12px}
             .lightbox-nav{font-size:25px;padding:10px}
+            .offline-badge{bottom:80px}
         }
         footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
     </style>
@@ -86,6 +89,7 @@
 </div>
 
 <button id="toTop">↑ Наверх</button>
+<div class="offline-badge" id="offlineBadge">📡 Офлайн-режим</div>
 <footer>© 2026 Amigo Photos — All Rights Reserved</footer>
 
 <script>
@@ -173,8 +177,69 @@ document.querySelector('.lightbox-next').onclick = next;
 lightbox.onclick = e => { if(e.target === lightbox) closeLightbox(); };
 document.onkeydown = e => { if(lightbox.style.display === 'flex') { if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowLeft') prev(); if(e.key === 'ArrowRight') next(); } };
 
+// ═══════════════════════════════════════════════════════════════
+//  📡 SERVICE WORKER (ОФЛАЙН-РЕЖИМ)
+// ═══════════════════════════════════════════════════════════════
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('Service Worker зарегистрирован:', reg);
+    }).catch(err => {
+        console.log('Ошибка регистрации Service Worker:', err);
+    });
+}
+
+// Показываем индикатор при офлайн-режиме
+window.addEventListener('load', () => {
+    const badge = document.getElementById('offlineBadge');
+    if (!navigator.onLine) {
+        badge.style.display = 'block';
+        setTimeout(() => badge.style.display = 'none', 3000);
+    }
+    window.addEventListener('online', () => badge.style.display = 'none');
+    window.addEventListener('offline', () => {
+        badge.style.display = 'block';
+        setTimeout(() => badge.style.display = 'none', 3000);
+    });
+});
+
 // Старт
 render(PHOTOS);
+</script>
+
+<script>
+// Дополнительный скрипт для создания sw.js (если файла нет)
+// Этот скрипт создаст service worker автоматически
+if ('serviceWorker' in navigator) {
+    // Проверяем, существует ли sw.js, если нет — создаём через Blob
+    fetch('/sw.js').catch(() => {
+        const swCode = `const CACHE_NAME = 'amigo-photos-v1';
+const urlsToCache = [
+    '/',
+    '/index.html'
+];
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+    );
+});
+
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => response || fetch(event.request))
+    );
+});`;
+        
+        const blob = new Blob([swCode], {type: 'application/javascript'});
+        const url = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(url).then(reg => {
+            console.log('Service Worker создан автоматически');
+        });
+    });
+}
 </script>
 </body>
 </html>
