@@ -11,262 +11,63 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigo Photos — фотопортфолио</title>
+    <title>Amigo Photos — архитектура · природа · детали</title>
     
     <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе.">
-    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали, Amigo Photos">
+    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали">
     <meta name="author" content="Amigo Photos">
     <meta property="og:title" content="Amigo Photos — фотопортфолио">
     <meta property="og:description" content="Архитектура, природа и детали в объективе.">
-    <meta property="og:image" content="https://амигоботов.portfolio/images/1.jpg">
     <meta property="og:type" content="website">
-    
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📷%3C/text%3E%3C/svg%3E">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0e0e0e;color:#fff;font-family:Arial,sans-serif}
+        .hero{height:85vh;position:relative;overflow:hidden}
+        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity .8s}
+        .slide.active{opacity:1}
+        .hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:1}
+        .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
+        .hero h1{font-size:4em}
+        .hero p{margin-top:15px;font-size:1.2em}
+        .categories{padding:30px 60px 0;text-align:center;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+        .category-btn{background:#2a2a2a;border:none;color:#fff;padding:10px 24px;border-radius:30px;cursor:pointer;transition:transform .2s}
+        .category-btn:hover{background:#444;transform:translateY(-2px)}
+        .category-btn.active{background:#fff;color:#000}
+        .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer}
+        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s}
+        .gallery-item:hover img{transform:scale(1.03)}
+        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
+        #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
+        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001}
+        .lightbox-nav:hover{background:rgba(255,255,255,.4)}
+        .lightbox-prev{left:20px}
+        .lightbox-next{right:20px}
+        .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
+        #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
+        @media (max-width:768px){
+            .hero{height:60vh}
+            .hero h1{font-size:2em}
+            .hero p{font-size:1em}
+            .gallery{grid-template-columns:repeat(2,1fr);padding:20px 12px;gap:8px}
+            .gallery img{height:170px}
+            .categories{padding:20px 12px 0}
+            .category-btn{padding:6px 16px;font-size:12px}
+            .lightbox-nav{font-size:25px;padding:10px}
         }
-        
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0e0e0e;
-            color: #fff;
-        }
-        
-        /* Hero слайдер */
-        .hero {
-            height: 85vh;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-        }
-        
-        .slide.active {
-            opacity: 1;
-        }
-        
-        .hero::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            z-index: 1;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .hero h1 {
-            font-size: 4em;
-            margin: 0;
-        }
-        
-        .hero p {
-            margin-top: 15px;
-            font-size: 1.2em;
-        }
-        
-        /* Категории */
-        .categories {
-            padding: 30px 60px 0;
-            text-align: center;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .category-btn {
-            background: #2a2a2a;
-            border: none;
-            color: #fff;
-            padding: 10px 24px;
-            margin: 5px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
-        
-        .category-btn:hover {
-            background: #444;
-            transform: translateY(-2px);
-        }
-        
-        .category-btn.active {
-            background: #fff;
-            color: #000;
-        }
-        
-        /* Галерея */
-        .gallery {
-            display: grid;
-            gap: 20px;
-            padding: 40px 60px;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-        
-        .gallery-item {
-            overflow: hidden;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        
-        .gallery img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.03);
-        }
-        
-        /* Лайтбокс */
-        #lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-        }
-        
-        #lightbox img {
-            max-width: 85%;
-            max-height: 85%;
-            border-radius: 10px;
-        }
-        
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            font-size: 40px;
-            padding: 20px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            z-index: 1001;
-        }
-        
-        .lightbox-nav:hover {
-            background: rgba(255,255,255,0.4);
-        }
-        
-        .lightbox-prev {
-            left: 20px;
-        }
-        
-        .lightbox-next {
-            right: 20px;
-        }
-        
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-        
-        /* Кнопка наверх */
-        #toTop {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            display: none;
-            z-index: 99;
-        }
-        
-        /* Адаптив */
-        @media (max-width: 768px) {
-            .hero {
-                height: 60vh;
-            }
-            .hero h1 {
-                font-size: 2em;
-            }
-            .hero p {
-                font-size: 1em;
-            }
-            .gallery {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 20px 12px;
-                gap: 8px;
-            }
-            .gallery img {
-                height: 170px;
-            }
-            .categories {
-                padding: 20px 12px 0;
-            }
-            .category-btn {
-                padding: 6px 16px;
-                font-size: 12px;
-            }
-            .lightbox-nav {
-                font-size: 25px;
-                padding: 10px;
-            }
-        }
-        
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 14px;
-            opacity: 0.6;
-        }
+        footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
     </style>
 </head>
 <body>
 
 <section class="hero">
-    <div class="slide active" style="background-image: url('images/1.jpg');"></div>
-    <div class="slide" style="background-image: url('images/2.jpg');"></div>
-    <div class="slide" style="background-image: url('images/3.jpg');"></div>
-    <div class="slide" style="background-image: url('images/4.jpg');"></div>
-    <div class="slide" style="background-image: url('images/5.jpg');"></div>
+    <div class="slide active" style="background-image:url('images/1.jpg')"></div>
+    <div class="slide" style="background-image:url('images/2.jpg')"></div>
+    <div class="slide" style="background-image:url('images/3.jpg')"></div>
+    <div class="slide" style="background-image:url('images/4.jpg')"></div>
+    <div class="slide" style="background-image:url('images/5.jpg')"></div>
     <div class="hero-content">
         <h1>Amigo Photos</h1>
         <p>Архитектура · Природа · Детали</p>
@@ -275,7 +76,6 @@
 </section>
 
 <div class="categories" id="categories"></div>
-
 <section class="gallery" id="gallery"></section>
 
 <div id="lightbox">
@@ -286,188 +86,95 @@
 </div>
 
 <button id="toTop">↑ Наверх</button>
-
-<footer>
-    © 2026 Amigo Photos — All Rights Reserved
-</footer>
+<footer>© 2026 Amigo Photos — All Rights Reserved</footer>
 
 <script>
-// ========================================
-// КАТЕГОРИИ (можно легко менять и добавлять)
-// ========================================
+// ═══════════════════════════════════════════════════════════════
+//  📸 НАСТРОЙКИ (меняй здесь под себя)
+// ═══════════════════════════════════════════════════════════════
+
 const CATEGORIES = {
-    all: { name: '📷 Все', icon: '📷' },
-    architecture: { name: '🏛️ Архитектура', icon: '🏛️' },
-    nature: { name: '🌿 Природа', icon: '🌿' },
-    details: { name: '🔍 Детали', icon: '🔍' }
+    all:       { name: '📷 Все' },
+    architecture: { name: '🏛️ Архитектура' },
+    nature:    { name: '🌿 Природа' },
+    details:   { name: '🔍 Детали' }
 };
 
-// ========================================
-// ФОТО С КАТЕГОРИЯМИ (добавляй новые сюда)
-// ========================================
-const photosData = [
-    // АРХИТЕКТУРА (10 фото)
-    { id: 1, src: 'images/1.jpg', category: 'architecture' },
-    { id: 3, src: 'images/3.jpg', category: 'architecture' },
-    { id: 4, src: 'images/4.jpg', category: 'architecture' },
-    { id: 6, src: 'images/6.jpg', category: 'architecture' },
-    { id: 9, src: 'images/9.jpg', category: 'architecture' },
-    { id: 10, src: 'images/10.jpg', category: 'architecture' },
-    { id: 13, src: 'images/13.jpg', category: 'architecture' },
-    { id: 14, src: 'images/14.jpg', category: 'architecture' },
-    { id: 15, src: 'images/15.jpg', category: 'architecture' },
-    { id: 18, src: 'images/18.jpg', category: 'architecture' },
-    
-    // ПРИРОДА (9 фото)
-    { id: 2, src: 'images/2.jpg', category: 'nature' },
-    { id: 7, src: 'images/7.jpg', category: 'nature' },
-    { id: 8, src: 'images/8.jpg', category: 'nature' },
-    { id: 11, src: 'images/11.jpg', category: 'nature' },
-    { id: 16, src: 'images/16.jpg', category: 'nature' },
-    { id: 17, src: 'images/17.jpg', category: 'nature' },
-    { id: 19, src: 'images/19.jpg', category: 'nature' },
-    { id: 20, src: 'images/20.jpg', category: 'nature' },
-    { id: 21, src: 'images/21.jpg', category: 'nature' },
-    
-    // ДЕТАЛИ (4 фото)
-    { id: 5, src: 'images/5.jpg', category: 'details' },
-    { id: 12, src: 'images/12.jpg', category: 'details' },
-    { id: 22, src: 'images/22.jpg', category: 'details' },
-    { id: 23, src: 'images/23.jpg', category: 'details' }
+// ФОТОГРАФИИ (просто добавляй новые строчки)
+const PHOTOS = [
+    // Архитектура (10 фото)
+    { id:1, cat:'architecture' }, { id:3, cat:'architecture' }, { id:4, cat:'architecture' },
+    { id:6, cat:'architecture' }, { id:9, cat:'architecture' }, { id:10,cat:'architecture' },
+    { id:13,cat:'architecture' }, { id:14,cat:'architecture' }, { id:15,cat:'architecture' }, { id:18,cat:'architecture' },
+    // Природа (9 фото)
+    { id:2, cat:'nature' }, { id:7, cat:'nature' }, { id:8, cat:'nature' }, { id:11,cat:'nature' },
+    { id:16,cat:'nature' }, { id:17,cat:'nature' }, { id:19,cat:'nature' }, { id:20,cat:'nature' }, { id:21,cat:'nature' },
+    // Детали (4 фото)
+    { id:5, cat:'details' }, { id:12,cat:'details' }, { id:22,cat:'details' }, { id:23,cat:'details' }
 ];
 
-// ========================================
-// КОД (ничего не трогать)
-// ========================================
-const galleryContainer = document.getElementById('gallery');
-const categoriesContainer = document.getElementById('categories');
+// ═══════════════════════════════════════════════════════════════
+//  ⚡ ДВИЖОК (ничего не трогать)
+// ═══════════════════════════════════════════════════════════════
+
+const gallery = document.getElementById('gallery');
+const categoriesDiv = document.getElementById('categories');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
-let currentPhotoIndex = 0;
+let currentIndex = 0;
 
-// Создание кнопок категорий
-function renderCategories() {
-    const fragment = document.createDocumentFragment();
-    
-    Object.keys(CATEGORIES).forEach(catKey => {
-        const btn = document.createElement('button');
-        btn.className = 'category-btn';
-        if (catKey === 'all') btn.classList.add('active');
-        btn.setAttribute('data-category', catKey);
-        btn.textContent = CATEGORIES[catKey].name;
-        
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderGallery(catKey);
-        });
-        
-        fragment.appendChild(btn);
-    });
-    
-    categoriesContainer.appendChild(fragment);
-}
+// Генерация кнопок
+Object.keys(CATEGORIES).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'category-btn' + (key === 'all' ? ' active' : '');
+    btn.textContent = CATEGORIES[key].name;
+    btn.onclick = () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render(key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key));
+    };
+    categoriesDiv.appendChild(btn);
+});
 
 // Отрисовка галереи
-function renderGallery(category = 'all') {
-    const filtered = category === 'all' 
-        ? photosData 
-        : photosData.filter(p => p.category === category);
-    
-    const fragment = document.createDocumentFragment();
-    
-    filtered.forEach((photo) => {
-        const item = document.createElement('div');
-        item.className = 'gallery-item';
-        
+function render(photos) {
+    gallery.innerHTML = '';
+    photos.forEach(photo => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
         const img = document.createElement('img');
-        img.src = photo.src;
+        img.src = `images/${photo.id}.jpg`;
         img.alt = `Фото ${photo.id}`;
-        
-        img.addEventListener('click', () => {
-            const globalIdx = photosData.findIndex(p => p.id === photo.id);
-            openLightbox(globalIdx);
-        });
-        
-        item.appendChild(img);
-        fragment.appendChild(item);
+        img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
+        div.appendChild(img);
+        gallery.appendChild(div);
     });
-    
-    galleryContainer.innerHTML = '';
-    galleryContainer.appendChild(fragment);
 }
 
 // Лайтбокс
-function openLightbox(index) {
-    currentPhotoIndex = index;
-    lightboxImg.src = photosData[currentPhotoIndex].src;
-    lightbox.style.display = 'flex';
-}
-
-function closeLightbox() {
-    lightbox.style.display = 'none';
-}
-
-function prevPhoto() {
-    currentPhotoIndex = (currentPhotoIndex - 1 + photosData.length) % photosData.length;
-    lightboxImg.src = photosData[currentPhotoIndex].src;
-}
-
-function nextPhoto() {
-    currentPhotoIndex = (currentPhotoIndex + 1) % photosData.length;
-    lightboxImg.src = photosData[currentPhotoIndex].src;
-}
+function openLightbox(idx) { currentIndex = idx; lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; lightbox.style.display = 'flex'; }
+function closeLightbox() { lightbox.style.display = 'none'; }
+function prev() { currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
+function next() { currentIndex = (currentIndex + 1) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
 
 // Слайдер
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
-let slideInterval;
-
-function startSlider() {
-    slideInterval = setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-    }, 5000);
-}
-
-startSlider();
+let s=0, slides=document.querySelectorAll('.slide');
+setInterval(() => { slides[s].classList.remove('active'); s=(s+1)%slides.length; slides[s].classList.add('active'); }, 5000);
 
 // Кнопка наверх
 const toTop = document.getElementById('toTop');
-let scrollTimeout;
+window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
+toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
 
-window.addEventListener('scroll', () => {
-    if (scrollTimeout) return;
-    scrollTimeout = setTimeout(() => {
-        toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
-        scrollTimeout = null;
-    }, 50);
-});
+// События
+document.querySelector('.lightbox-close').onclick = closeLightbox;
+document.querySelector('.lightbox-prev').onclick = prev;
+document.querySelector('.lightbox-next').onclick = next;
+lightbox.onclick = e => { if(e.target === lightbox) closeLightbox(); };
+document.onkeydown = e => { if(lightbox.style.display === 'flex') { if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowLeft') prev(); if(e.key === 'ArrowRight') next(); } };
 
-toTop.addEventListener('click', () => {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-});
-
-// Инициализация
-renderCategories();
-renderGallery();
-
-// События лайтбокса
-document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-document.querySelector('.lightbox-prev').addEventListener('click', prevPhoto);
-document.querySelector('.lightbox-next').addEventListener('click', nextPhoto);
-lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-});
-document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'flex') {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') prevPhoto();
-        if (e.key === 'ArrowRight') nextPhoto();
-    }
-});
+// Старт
+render(PHOTOS);
 </script>
-
 </body>
 </html>
