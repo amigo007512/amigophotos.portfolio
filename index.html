@@ -127,9 +127,9 @@
         }
         
         .gallery-item {
-            overflow: hidden;
+            background: #1a1a1a;
             border-radius: 8px;
-            cursor: pointer;
+            overflow: hidden;
         }
         
         .gallery img {
@@ -137,11 +137,55 @@
             height: 300px;
             object-fit: cover;
             display: block;
+            cursor: pointer;
             transition: transform 0.3s;
         }
         
         .gallery-item:hover img {
-            transform: scale(1.03);
+            transform: scale(1.02);
+        }
+        
+        /* Блок с лайком под фото */
+        .like-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #1a1a1a;
+        }
+        
+        .like-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .like-btn span {
+            font-size: 18px;
+            color: #fff;
+        }
+        
+        .like-btn.liked {
+            color: #ff4444;
+        }
+        
+        .like-btn:not(.liked):hover {
+            transform: scale(1.1);
+        }
+        
+        .like-count {
+            font-size: 16px;
+            color: #fff;
+            background: #2a2a2a;
+            padding: 4px 12px;
+            border-radius: 20px;
         }
         
         /* Лайтбокс */
@@ -243,7 +287,7 @@
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
                 padding: 20px 12px;
-                gap: 8px;
+                gap: 12px;
             }
             .gallery img {
                 height: 170px;
@@ -265,6 +309,12 @@
             .lightbox-nav {
                 font-size: 25px;
                 padding: 10px;
+            }
+            .like-btn {
+                font-size: 20px;
+            }
+            .like-count {
+                font-size: 14px;
             }
         }
         
@@ -312,7 +362,7 @@
 <div class="stats">
     <span>📸 Всего фото: <span id="totalCount">0</span></span>
     <span>👁️ Просмотров: <span id="viewCount">0</span></span>
-    <span>❤️ Лайков: <span id="likeCount">0</span></span>
+    <span>❤️ Всего лайков: <span id="totalLikesCount">0</span></span>
 </div>
 
 <footer>
@@ -320,7 +370,7 @@
 </footer>
 
 <script>
-// Данные фото (только id, src и категория)
+// Данные фото
 const photosData = [
     { id: 1, src: 'images/1.jpg', category: 'street' },
     { id: 2, src: 'images/2.jpg', category: 'landscape' },
@@ -347,9 +397,24 @@ const photosData = [
     { id: 23, src: 'images/23.jpg', category: 'street' }
 ];
 
-// Статистика
+// Загрузка сохранённых лайков из localStorage
+let photoLikes = {};
+for (let i = 1; i <= 23; i++) {
+    const saved = localStorage.getItem(`like_${i}`);
+    photoLikes[i] = saved ? parseInt(saved) : 0;
+}
+
+// Общая статистика
 let views = localStorage.getItem('views') ? parseInt(localStorage.getItem('views')) : 0;
-let likes = localStorage.getItem('likes') ? parseInt(localStorage.getItem('likes')) : 0;
+
+// Подсчёт общего количества лайков
+function getTotalLikes() {
+    let total = 0;
+    for (let id in photoLikes) {
+        total += photoLikes[id];
+    }
+    return total;
+}
 
 const galleryContainer = document.getElementById('gallery');
 const lightbox = document.getElementById('lightbox');
@@ -360,7 +425,6 @@ let currentPhotoIndex = 0;
 function renderGallery(category = 'all') {
     const filtered = category === 'all' ? photosData : photosData.filter(p => p.category === category);
     
-    // Используем DocumentFragment для лучшей производительности
     const fragment = document.createDocumentFragment();
     
     filtered.forEach((photo) => {
@@ -377,7 +441,50 @@ function renderGallery(category = 'all') {
             openLightbox(globalIdx);
         });
         
+        const likeBlock = document.createElement('div');
+        likeBlock.className = 'like-block';
+        
+        const likeBtn = document.createElement('button');
+        likeBtn.className = 'like-btn';
+        const isLiked = photoLikes[photo.id] > 0;
+        likeBtn.innerHTML = isLiked ? '❤️ <span>Лайкнут</span>' : '🤍 <span>Лайкнуть</span>';
+        if (isLiked) likeBtn.classList.add('liked');
+        
+        const likeCountSpan = document.createElement('span');
+        likeCountSpan.className = 'like-count';
+        likeCountSpan.textContent = `❤️ ${photoLikes[photo.id]}`;
+        
+        likeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Можно лайкнуть только один раз
+            if (photoLikes[photo.id] === 0) {
+                photoLikes[photo.id] = 1;
+                localStorage.setItem(`like_${photo.id}`, 1);
+                likeBtn.innerHTML = '❤️ <span>Лайкнут</span>';
+                likeBtn.classList.add('liked');
+                likeCountSpan.textContent = `❤️ 1`;
+                document.getElementById('totalLikesCount').textContent = getTotalLikes();
+                
+                // Анимация сердечка
+                const heart = document.createElement('div');
+                heart.textContent = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                heart.style.fontSize = '30px';
+                heart.style.pointerEvents = 'none';
+                heart.style.zIndex = '9999';
+                heart.style.animation = 'fadeOut 1s ease-out';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            }
+        });
+        
+        likeBlock.appendChild(likeBtn);
+        likeBlock.appendChild(likeCountSpan);
+        
         item.appendChild(img);
+        item.appendChild(likeBlock);
         fragment.appendChild(item);
     });
     
@@ -410,14 +517,7 @@ function nextPhoto() {
     lightboxImg.src = photosData[currentPhotoIndex].src;
 }
 
-// Лайки
-function addLike() {
-    likes++;
-    localStorage.setItem('likes', likes);
-    document.getElementById('likeCount').textContent = likes;
-}
-
-// Слайдер (упрощённый и оптимизированный)
+// Слайдер
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 let slideInterval;
@@ -442,7 +542,7 @@ categoryBtns.forEach(btn => {
     });
 });
 
-// Кнопка наверх (с throttle для производительности)
+// Кнопка наверх
 const toTop = document.getElementById('toTop');
 let scrollTimeout;
 
@@ -456,24 +556,6 @@ window.addEventListener('scroll', () => {
 
 toTop.addEventListener('click', () => {
     window.scrollTo({top: 0, behavior: 'smooth'});
-});
-
-// Лайки по двойному клику
-galleryContainer.addEventListener('dblclick', (e) => {
-    if (e.target.tagName === 'IMG') {
-        addLike();
-        const heart = document.createElement('div');
-        heart.textContent = '❤️';
-        heart.style.position = 'fixed';
-        heart.style.left = e.clientX + 'px';
-        heart.style.top = e.clientY + 'px';
-        heart.style.fontSize = '30px';
-        heart.style.pointerEvents = 'none';
-        heart.style.zIndex = '9999';
-        heart.style.animation = 'fadeOut 1s ease-out';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1000);
-    }
 });
 
 // Анимация сердечка
@@ -490,7 +572,7 @@ document.head.appendChild(style);
 renderGallery();
 document.getElementById('totalCount').textContent = photosData.length;
 document.getElementById('viewCount').textContent = views;
-document.getElementById('likeCount').textContent = likes;
+document.getElementById('totalLikesCount').textContent = getTotalLikes();
 
 // Лайтбокс события
 document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
