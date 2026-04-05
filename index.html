@@ -12,69 +12,235 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amigo Photos — фотопортфолио</title>
-
+    
+    <!-- SEO и Open Graph -->
+    <meta name="description" content="Фотопортфолио Amigo Photos. Стрит-фотография и пейзажи. Коллекция лучших моментов в объективе.">
+    <meta name="keywords" content="фотография, портфолио, стрит-фотография, пейзажи, Amigo Photos">
+    <meta name="author" content="Amigo Photos">
+    <meta property="og:title" content="Amigo Photos — фотопортфолио">
+    <meta property="og:description" content="Стрит-фотография и пейзажи. Моменты, сохранённые в кадре.">
+    <meta property="og:image" content="https://амигоботов.portfolio/images/1.jpg">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+    
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #0e0e0e;
             color: #fff;
+            transition: background 0.3s, color 0.3s;
         }
-
+        
+        /* Светлая тема */
+        body.light-theme {
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+        
+        body.light-theme .gallery img {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        body.light-theme #toTop {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        body.light-theme .category-btn {
+            background: #e0e0e0;
+            color: #1a1a1a;
+        }
+        
+        body.light-theme .category-btn.active {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        body.light-theme .stats {
+            background: #e0e0e0;
+        }
+        
+        /* Hero секция с слайдером */
         .hero {
             height: 85vh;
-            background: url('images/1.jpg') center/cover no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
             position: relative;
+            overflow: hidden;
         }
-
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
         .hero::after {
             content: "";
             position: absolute;
             inset: 0;
             background: rgba(0,0,0,0.55);
+            z-index: 1;
         }
-
+        
         .hero-content {
             position: relative;
             z-index: 2;
+            text-align: center;
             padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-
+        
         .hero h1 {
             font-size: 4em;
             margin: 0;
+            animation: fadeInUp 1s ease;
         }
-
+        
         .hero p {
             margin-top: 15px;
             font-size: 1.2em;
+            animation: fadeInUp 1s ease 0.2s both;
         }
-
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Категории */
+        .categories {
+            padding: 30px 60px 0;
+            text-align: center;
+        }
+        
+        .category-btn {
+            background: #2a2a2a;
+            border: none;
+            color: #fff;
+            padding: 10px 24px;
+            margin: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            background: #444;
+            transform: translateY(-2px);
+        }
+        
+        .category-btn.active {
+            background: #fff;
+            color: #000;
+        }
+        
+        /* Галерея */
         .gallery {
             display: grid;
             gap: 20px;
-            padding: 60px;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            padding: 40px 60px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         }
-
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .gallery img {
             width: 100%;
             height: 300px;
             object-fit: cover;
-            border-radius: 8px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item .caption {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 40px 15px 15px;
+            transition: bottom 0.3s;
+            font-size: 14px;
+        }
+        
+        .gallery-item:hover .caption {
+            bottom: 0;
+        }
+        
+        .gallery-item .download-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
+            font-size: 18px;
+            transition: transform 0.2s;
+            opacity: 0;
         }
-
-        .gallery img:hover {
-            transform: scale(1.02);
-            opacity: 0.9;
+        
+        .gallery-item:hover .download-btn {
+            opacity: 1;
         }
-
+        
+        .gallery-item .download-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Лайтбокс */
         #lightbox {
             position: fixed;
             inset: 0;
@@ -85,13 +251,64 @@
             z-index: 1000;
             cursor: pointer;
         }
-
+        
         #lightbox img {
-            max-width: 95%;
-            max-height: 90%;
+            max-width: 85%;
+            max-height: 85%;
             border-radius: 10px;
         }
-
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            font-size: 40px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 1001;
+        }
+        
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        .lightbox-prev {
+            left: 20px;
+        }
+        
+        .lightbox-next {
+            right: 20px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .exif-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 1001;
+        }
+        
+        /* Кнопка наверх */
         #toTop {
             position: fixed;
             bottom: 20px;
@@ -99,13 +316,93 @@
             background: #fff;
             color: #000;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 50px;
             cursor: pointer;
             display: none;
-            transition: opacity 0.2s;
+            transition: all 0.3s;
+            z-index: 99;
         }
-
+        
+        #toTop:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Кнопка темы */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 99;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Кнопка случайного фото */
+        .random-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 100px;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 99;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .random-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Кнопка поделиться */
+        .share-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 180px;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 99;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Статистика */
+        .stats {
+            text-align: center;
+            padding: 20px;
+            background: #1a1a1a;
+            margin: 20px 60px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+        
+        .stats span {
+            margin: 0 15px;
+        }
+        
+        /* Адаптив */
         @media (max-width: 768px) {
             .hero {
                 height: 60vh;
@@ -118,14 +415,35 @@
             }
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
-                padding: 12px;
+                padding: 20px 12px;
                 gap: 8px;
             }
             .gallery img {
                 height: 170px;
             }
+            .categories {
+                padding: 20px 12px 0;
+            }
+            .category-btn {
+                padding: 6px 16px;
+                font-size: 12px;
+            }
+            .stats {
+                margin: 20px 12px;
+                font-size: 10px;
+            }
+            .stats span {
+                margin: 0 8px;
+            }
+            .random-btn, .share-btn {
+                display: none;
+            }
+            .lightbox-nav {
+                font-size: 25px;
+                padding: 10px;
+            }
         }
-
+        
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -136,7 +454,13 @@
 </head>
 <body>
 
+<!-- Hero с слайдером -->
 <section class="hero">
+    <div class="slide active" style="background-image: url('images/1.jpg');"></div>
+    <div class="slide" style="background-image: url('images/2.jpg');"></div>
+    <div class="slide" style="background-image: url('images/3.jpg');"></div>
+    <div class="slide" style="background-image: url('images/4.jpg');"></div>
+    <div class="slide" style="background-image: url('images/5.jpg');"></div>
     <div class="hero-content">
         <h1>Amigo Photos</h1>
         <p>Стрит-фотография и пейзажи</p>
@@ -144,64 +468,204 @@
     </div>
 </section>
 
-<section class="gallery">
-    <img src="images/1.jpg" loading="lazy" alt="Фото 1">
-    <img src="images/2.jpg" loading="lazy" alt="Фото 2">
-    <img src="images/3.jpg" loading="lazy" alt="Фото 3">
-    <img src="images/4.jpg" loading="lazy" alt="Фото 4">
-    <img src="images/5.jpg" loading="lazy" alt="Фото 5">
-    <img src="images/6.jpg" loading="lazy" alt="Фото 6">
-    <img src="images/7.jpg" loading="lazy" alt="Фото 7">
-    <img src="images/8.jpg" loading="lazy" alt="Фото 8">
-    <img src="images/9.jpg" loading="lazy" alt="Фото 9">
-    <img src="images/10.jpg" loading="lazy" alt="Фото 10">
-    <img src="images/11.jpg" loading="lazy" alt="Фото 11">
-    <img src="images/12.jpg" loading="lazy" alt="Фото 12">
-    <img src="images/13.jpg" loading="lazy" alt="Фото 13">
-    <img src="images/14.jpg" loading="lazy" alt="Фото 14">
-    <img src="images/15.jpg" loading="lazy" alt="Фото 15">
-    <img src="images/16.jpg" loading="lazy" alt="Фото 16">
-    <img src="images/17.jpg" loading="lazy" alt="Фото 17">
-    <img src="images/18.jpg" loading="lazy" alt="Фото 18">
-    <img src="images/19.jpg" loading="lazy" alt="Фото 19">
-    <img src="images/20.jpg" loading="lazy" alt="Фото 20">
-    <img src="images/21.jpg" loading="lazy" alt="Фото 21">
-    <img src="images/22.jpg" loading="lazy" alt="Фото 22">
-    <img src="images/23.jpg" loading="lazy" alt="Фото 23">
-</section>
-
-<div id="lightbox">
-    <img src="">
+<!-- Категории -->
+<div class="categories">
+    <button class="category-btn active" data-category="all">Все</button>
+    <button class="category-btn" data-category="street">Стрит</button>
+    <button class="category-btn" data-category="landscape">Пейзажи</button>
+    <button class="category-btn" data-category="portrait">Портреты</button>
 </div>
 
-<button id="toTop">↑</button>
+<!-- Галерея -->
+<section class="gallery" id="gallery"></section>
+
+<!-- Лайтбокс -->
+<div id="lightbox">
+    <button class="lightbox-close">✕</button>
+    <button class="lightbox-nav lightbox-prev">❮</button>
+    <button class="lightbox-nav lightbox-next">❯</button>
+    <img src="">
+    <div class="exif-info" id="exifInfo"></div>
+</div>
+
+<!-- Кнопки -->
+<button id="toTop">↑ Наверх</button>
+<button class="theme-toggle" id="themeToggle">🌓</button>
+<button class="random-btn" id="randomBtn">🎲 Случайное фото</button>
+<button class="share-btn" id="shareBtn">📤 Поделиться</button>
+
+<!-- Статистика -->
+<div class="stats" id="stats">
+    <span>📸 Всего фото: <span id="totalCount">0</span></span>
+    <span>👁️ Просмотров: <span id="viewCount">0</span></span>
+    <span>❤️ Лайков: <span id="likeCount">0</span></span>
+</div>
 
 <footer>
     © 2026 Amigo Photos — All Rights Reserved
 </footer>
 
 <script>
-// Галерея и лайтбокс
-const galleryImages = document.querySelectorAll('.gallery img');
+// Данные фотографий с категориями и EXIF
+const photosData = [
+    { id: 1, src: 'images/1.jpg', category: 'street', exif: '📷 Canon EOS R • f/2.8 • 1/500 • ISO 100' },
+    { id: 2, src: 'images/2.jpg', category: 'landscape', exif: '📷 Sony A7III • f/8 • 1/250 • ISO 200' },
+    { id: 3, src: 'images/3.jpg', category: 'portrait', exif: '📷 Nikon Z6 • f/1.8 • 1/400 • ISO 400' },
+    { id: 4, src: 'images/4.jpg', category: 'street', exif: '📷 Fujifilm X-T4 • f/4 • 1/300 • ISO 160' },
+    { id: 5, src: 'images/5.jpg', category: 'landscape', exif: '📷 Canon 5D • f/11 • 1/200 • ISO 100' },
+    { id: 6, src: 'images/6.jpg', category: 'street', exif: '📷 Sony A7III • f/2.5 • 1/600 • ISO 200' },
+    { id: 7, src: 'images/7.jpg', category: 'portrait', exif: '📷 Nikon Z6 • f/1.4 • 1/800 • ISO 100' },
+    { id: 8, src: 'images/8.jpg', category: 'landscape', exif: '📷 Canon EOS R • f/9 • 1/150 • ISO 250' },
+    { id: 9, src: 'images/9.jpg', category: 'street', exif: '📷 Fujifilm X-T4 • f/3.5 • 1/450 • ISO 320' },
+    { id: 10, src: 'images/10.jpg', category: 'portrait', exif: '📷 Sony A7III • f/1.8 • 1/500 • ISO 200' },
+    { id: 11, src: 'images/11.jpg', category: 'street', exif: '📷 Canon EOS R • f/2.8 • 1/300 • ISO 400' },
+    { id: 12, src: 'images/12.jpg', category: 'landscape', exif: '📷 Nikon Z6 • f/7.1 • 1/400 • ISO 100' },
+    { id: 13, src: 'images/13.jpg', category: 'street', exif: '📷 Sony A7III • f/2 • 1/250 • ISO 800' },
+    { id: 14, src: 'images/14.jpg', category: 'portrait', exif: '📷 Fujifilm X-T4 • f/1.6 • 1/600 • ISO 160' },
+    { id: 15, src: 'images/15.jpg', category: 'landscape', exif: '📷 Canon 5D • f/10 • 1/100 • ISO 200' },
+    { id: 16, src: 'images/16.jpg', category: 'street', exif: '📷 Nikon Z6 • f/3.2 • 1/350 • ISO 500' },
+    { id: 17, src: 'images/17.jpg', category: 'portrait', exif: '📷 Sony A7III • f/1.4 • 1/700 • ISO 100' },
+    { id: 18, src: 'images/18.jpg', category: 'landscape', exif: '📷 Canon EOS R • f/8 • 1/200 • ISO 400' },
+    { id: 19, src: 'images/19.jpg', category: 'street', exif: '📷 Fujifilm X-T4 • f/2.8 • 1/400 • ISO 320' },
+    { id: 20, src: 'images/20.jpg', category: 'landscape', exif: '📷 Sony A7III • f/9 • 1/300 • ISO 200' },
+    { id: 21, src: 'images/21.jpg', category: 'street', exif: '📷 Nikon Z6 • f/2.2 • 1/500 • ISO 400' },
+    { id: 22, src: 'images/22.jpg', category: 'portrait', exif: '📷 Canon EOS R • f/1.8 • 1/400 • ISO 160' },
+    { id: 23, src: 'images/23.jpg', category: 'street', exif: '📷 Sony A7III • f/2.5 • 1/600 • ISO 200' }
+];
+
+// Статистика
+let views = localStorage.getItem('views') ? parseInt(localStorage.getItem('views')) : 0;
+let likes = localStorage.getItem('likes') ? parseInt(localStorage.getItem('likes')) : 0;
+
+// Элементы
+const galleryContainer = document.getElementById('gallery');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
+const exifInfo = document.getElementById('exifInfo');
+let currentPhotoIndex = 0;
 
-galleryImages.forEach(img => {
-    img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightbox.style.display = 'flex';
+// Функция отрисовки галереи
+function renderGallery(category = 'all') {
+    const filtered = category === 'all' ? photosData : photosData.filter(p => p.category === category);
+    
+    galleryContainer.innerHTML = '';
+    filtered.forEach((photo, idx) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.setAttribute('data-id', photo.id);
+        item.innerHTML = `
+            <img src="${photo.src}" loading="lazy" alt="Фото ${photo.id}">
+            <div class="caption">${photo.exif}</div>
+            <button class="download-btn" data-src="${photo.src}" data-id="${photo.id}">⬇️</button>
+        `;
+        
+        item.querySelector('img').addEventListener('click', () => {
+            const globalIdx = photosData.findIndex(p => p.id === photo.id);
+            openLightbox(globalIdx);
+        });
+        
+        item.querySelector('.download-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            downloadImage(photo.src, `amigo_photo_${photo.id}.jpg`);
+        });
+        
+        galleryContainer.appendChild(item);
     });
-});
+}
 
-lightbox.addEventListener('click', () => {
+// Открытие лайтбокса
+function openLightbox(index) {
+    currentPhotoIndex = index;
+    const photo = photosData[currentPhotoIndex];
+    lightboxImg.src = photo.src;
+    exifInfo.textContent = photo.exif;
+    lightbox.style.display = 'flex';
+    
+    // Увеличиваем счётчик просмотров
+    views++;
+    localStorage.setItem('views', views);
+    document.getElementById('viewCount').textContent = views;
+}
+
+// Закрытие лайтбокса
+function closeLightbox() {
     lightbox.style.display = 'none';
-});
+}
 
-// Закрытие по Escape
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.style.display === 'flex') {
-        lightbox.style.display = 'none';
+// Навигация в лайтбоксе
+function prevPhoto() {
+    currentPhotoIndex = (currentPhotoIndex - 1 + photosData.length) % photosData.length;
+    const photo = photosData[currentPhotoIndex];
+    lightboxImg.src = photo.src;
+    exifInfo.textContent = photo.exif;
+}
+
+function nextPhoto() {
+    currentPhotoIndex = (currentPhotoIndex + 1) % photosData.length;
+    const photo = photosData[currentPhotoIndex];
+    lightboxImg.src = photo.src;
+    exifInfo.textContent = photo.exif;
+}
+
+// Скачивание фото
+function downloadImage(url, filename) {
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+}
+
+// Случайное фото
+function randomPhoto() {
+    const randomIndex = Math.floor(Math.random() * photosData.length);
+    openLightbox(randomIndex);
+}
+
+// Поделиться
+function shareSite() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Amigo Photos',
+            text: 'Смотрите моё фотопортфолио!',
+            url: window.location.href
+        });
+    } else {
+        alert('Скопируйте ссылку: ' + window.location.href);
     }
+}
+
+// Тёмная/светлая тема
+function toggleTheme() {
+    document.body.classList.toggle('light-theme');
+    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+}
+
+// Слайдер для hero
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+
+setInterval(nextSlide, 5000);
+
+// Категории
+const categoryBtns = document.querySelectorAll('.category-btn');
+categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        categoryBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const category = btn.getAttribute('data-category');
+        renderGallery(category);
+    });
 });
 
 // Кнопка наверх
@@ -212,6 +676,51 @@ window.addEventListener('scroll', () => {
 toTop.addEventListener('click', () => {
     window.scrollTo({top: 0, behavior: 'smooth'});
 });
+
+// Лайки (по клику на фото в галерее с задержкой)
+function addLike() {
+    likes++;
+    localStorage.setItem('likes', likes);
+    document.getElementById('likeCount').textContent = likes;
+}
+
+// Даблклик для лайка
+galleryContainer.addEventListener('dblclick', (e) => {
+    if (e.target.tagName === 'IMG') {
+        addLike();
+        alert('❤️ Спасибо за лайк!');
+    }
+});
+
+// Инициализация
+renderGallery();
+document.getElementById('totalCount').textContent = photosData.length;
+document.getElementById('viewCount').textContent = views;
+document.getElementById('likeCount').textContent = likes;
+
+// Восстановление темы
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+}
+
+// События для лайтбокса
+document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+document.querySelector('.lightbox-prev').addEventListener('click', prevPhoto);
+document.querySelector('.lightbox-next').addEventListener('click', nextPhoto);
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+});
+document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') prevPhoto();
+        if (e.key === 'ArrowRight') nextPhoto();
+    }
+});
+
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('randomBtn').addEventListener('click', randomPhoto);
+document.getElementById('shareBtn').addEventListener('click', shareSite);
 </script>
 
 </body>
