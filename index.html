@@ -10,77 +10,411 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigo Photos — архитектура · природа · детали</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Amigo Photos — portfolio</title>
     
-    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе. Работает офлайн!">
-    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали">
+    <meta name="description" content="Amigo Photos. Architecture, nature, details. Premium photography portfolio.">
+    <meta name="keywords" content="photography, portfolio, architecture, nature, details">
     <meta name="author" content="Amigo Photos">
-    <meta property="og:title" content="Amigo Photos — фотопортфолио">
-    <meta property="og:description" content="Архитектура, природа и детали в объективе.">
+    <meta property="og:title" content="Amigo Photos">
+    <meta property="og:description" content="Premium photography portfolio">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="images/1.jpg">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E<text y='.9em' font-size='90'>📷</text>%3C/svg%3E">
     
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0e0e0e;color:#fff;font-family:Arial,sans-serif}
-        .hero{height:85vh;position:relative;overflow:hidden}
-        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity .8s}
-        .slide.active{opacity:1}
-        .hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:1}
-        .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
-        .hero h1{font-size:4em}
-        .hero p{margin-top:15px;font-size:1.2em}
-        .categories{padding:30px 60px 0;text-align:center;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-        .category-btn{background:#2a2a2a;border:none;color:#fff;padding:10px 24px;border-radius:30px;cursor:pointer;transition:transform .2s}
-        .category-btn:hover{background:#444;transform:translateY(-2px)}
-        .category-btn.active{background:#fff;color:#000}
-        .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer;background:#1a1a1a}
-        .gallery-item.skeleton{background:linear-gradient(90deg,#1a1a1a 25%,#2a2a2a 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s;background:#1a1a1a}
-        .gallery-item:hover img{transform:scale(1.03)}
-        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
-        #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
-        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001}
-        .lightbox-nav:hover{background:rgba(255,255,255,.4)}
-        .lightbox-prev{left:20px}
-        .lightbox-next{right:20px}
-        .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
-        #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
-        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none}
-        @media (max-width:768px){
-            .hero{height:60vh}
-            .hero h1{font-size:2em}
-            .hero p{font-size:1em}
-            .gallery{grid-template-columns:repeat(2,1fr);padding:20px 12px;gap:8px}
-            .gallery img{height:170px}
-            .categories{padding:20px 12px 0}
-            .category-btn{padding:6px 16px;font-size:12px}
-            .lightbox-nav{font-size:25px;padding:10px}
-            .offline-badge{bottom:80px}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
-        @media (prefers-reduced-motion:reduce){
-            .gallery-item:hover img{transform:none}
-            .category-btn:hover{transform:none}
-            .slide{transition:none}
+
+        body {
+            background: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Apple-style smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hero section — fullscreen */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .hero-slides {
+            position: absolute;
+            inset: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.25, 0.1, 0.15, 1);
+            will-change: opacity;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 24px;
+            backdrop-filter: blur(0px);
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            color: #fff;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: 400;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        }
+
+        .hero-tagline {
+            font-size: 15px;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Categories — Apple style pills */
+        .categories {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px 24px;
+            background: transparent;
+            flex-wrap: wrap;
+            pointer-events: none;
+        }
+
+        .category-btn {
+            pointer-events: auto;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(0,0,0,0.08);
+            color: #1d1d1f;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.15, 1);
+            font-family: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .category-btn:hover {
+            background: #ffffff;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .category-btn.active {
+            background: #1d1d1f;
+            color: #ffffff;
+            border-color: #1d1d1f;
+        }
+
+        /* Gallery — Apple masonry grid */
+        .gallery {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 32px 100px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            cursor: pointer;
+            background: #f5f5f7;
+            aspect-ratio: 4 / 5;
+            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.15, 1);
+        }
+
+        .gallery-item:nth-child(2),
+        .gallery-item:nth-child(5),
+        .gallery-item:nth-child(8) {
+            aspect-ratio: 3 / 4;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
+            will-change: transform;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Lightbox — Apple style */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.98);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 52px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .lightbox-prev { left: 24px; }
+        .lightbox-next { right: 24px; }
+
+        .lightbox-close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            width: 48px;
+            height: 48px;
+            border-radius: 48px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        /* Counter */
+        .lightbox-counter {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px;
+            border-radius: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        /* To Top button */
+        #toTop {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            color: #1d1d1f;
+            border: 0.5px solid rgba(0,0,0,0.08);
+            padding: 12px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: none;
+            z-index: 99;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        #toTop:hover {
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 48px 24px 32px;
+            font-size: 13px;
+            color: #86868b;
+            border-top: 0.5px solid rgba(0,0,0,0.08);
+            background: #fbfbfd;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .gallery {
+                gap: 16px;
+                padding: 40px 20px 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 32px 16px 60px;
+            }
+            
+            .gallery-item,
+            .gallery-item:nth-child(2),
+            .gallery-item:nth-child(5),
+            .gallery-item:nth-child(8) {
+                aspect-ratio: 4 / 5;
+            }
+            
+            .categories {
+                top: 12px;
+                gap: 8px;
+                padding: 12px 16px;
+            }
+            
+            .category-btn {
+                padding: 6px 18px;
+                font-size: 13px;
+            }
+            
+            .lightbox-nav {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+            }
+            
+            .lightbox-prev { left: 12px; }
+            .lightbox-next { right: 12px; }
+            .lightbox-close { top: 16px; right: 16px; width: 44px; height: 44px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content {
+                padding: 0 20px;
+            }
+        }
+
+        /* Loading skeleton */
+        .gallery-item.skeleton {
+            background: linear-gradient(90deg, #e8e8ed 0%, #f0f0f5 50%, #e8e8ed 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
 <body>
 
 <section class="hero">
-    <div class="slide active" style="background-image:url('images/1.jpg')"></div>
-    <div class="slide" style="background-image:url('images/2.jpg')"></div>
-    <div class="slide" style="background-image:url('images/3.jpg')"></div>
-    <div class="slide" style="background-image:url('images/4.jpg')"></div>
-    <div class="slide" style="background-image:url('images/5.jpg')"></div>
+    <div class="hero-slides">
+        <div class="hero-slide active" style="background-image:url('images/1.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/2.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/3.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/4.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/5.jpg')"></div>
+    </div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1>Amigo Photos</h1>
-        <p>Архитектура · Природа · Детали</p>
-        <p>Фотография — способ сохранить моменты</p>
+        <h1 class="hero-title">Amigo Photos</h1>
+        <p class="hero-subtitle">Architecture · Nature · Details</p>
+        <p class="hero-tagline">Visual Stories</p>
     </div>
 </section>
 
@@ -89,54 +423,53 @@
 
 <div id="lightbox">
     <button class="lightbox-close">✕</button>
-    <button class="lightbox-nav lightbox-prev">❮</button>
-    <button class="lightbox-nav lightbox-next">❯</button>
+    <button class="lightbox-nav lightbox-prev">←</button>
+    <button class="lightbox-nav lightbox-next">→</button>
     <img src="">
+    <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 
-<button id="toTop">↑ Наверх</button>
-<div class="offline-badge" id="offlineBadge">📡 Офлайн-режим</div>
-<footer>© 2026 Amigo Photos — All Rights Reserved</footer>
+<button id="toTop">↑ Top</button>
+
+<footer>
+    <p>© 2026 Amigo Photos — All Rights Reserved</p>
+</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-//  📸 НАСТРОЙКИ (меняй здесь под себя)
+//  🎯 CONFIGURATION
 // ═══════════════════════════════════════════════════════════════
 
 const CATEGORIES = {
-    all:       { name: '📷 Все' },
-    architecture: { name: '🏛️ Архитектура' },
-    nature:    { name: '🌿 Природа' },
-    details:   { name: '🔍 Детали' }
+    all: { name: 'All Work' },
+    architecture: { name: 'Architecture' },
+    nature: { name: 'Nature' },
+    details: { name: 'Details' }
 };
 
-// ФОТОГРАФИИ (добавлены 24-32)
 const PHOTOS = [
-    // Архитектура (10 фото) id: 1,3,4,6,9,10,13,14,15,18
-    { id:1, cat:'architecture' }, { id:3, cat:'architecture' }, { id:4, cat:'architecture' },
-    { id:6, cat:'architecture' }, { id:9, cat:'architecture' }, { id:10,cat:'architecture' },
-    { id:13,cat:'architecture' }, { id:14,cat:'architecture' }, { id:15,cat:'architecture' }, { id:18,cat:'architecture' },
-    // Природа (17 фото) id: 2,7,8,11,16,17,19,20,21,25,26,27,28,29,30,31,32
-    { id:2, cat:'nature' }, { id:7, cat:'nature' }, { id:8, cat:'nature' }, { id:11,cat:'nature' },
-    { id:16,cat:'nature' }, { id:17,cat:'nature' }, { id:19,cat:'nature' }, { id:20,cat:'nature' }, { id:21,cat:'nature' },
-    { id:25,cat:'nature' }, { id:26,cat:'nature' }, { id:27,cat:'nature' }, { id:28,cat:'nature' },
-    { id:29,cat:'nature' }, { id:30,cat:'nature' }, { id:31,cat:'nature' }, { id:32,cat:'nature' },
-    // Детали (5 фото) id: 5,12,22,23,24
-    { id:5, cat:'details' }, { id:12,cat:'details' }, { id:22,cat:'details' }, { id:23,cat:'details' }, { id:24,cat:'details' }
+    { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
+    { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
+    { id: 13, cat: 'architecture' }, { id: 14, cat: 'architecture' }, { id: 15, cat: 'architecture' }, { id: 18, cat: 'architecture' },
+    { id: 2, cat: 'nature' }, { id: 7, cat: 'nature' }, { id: 8, cat: 'nature' }, { id: 11, cat: 'nature' },
+    { id: 16, cat: 'nature' }, { id: 17, cat: 'nature' }, { id: 19, cat: 'nature' }, { id: 20, cat: 'nature' }, { id: 21, cat: 'nature' },
+    { id: 25, cat: 'nature' }, { id: 26, cat: 'nature' }, { id: 27, cat: 'nature' }, { id: 28, cat: 'nature' },
+    { id: 29, cat: 'nature' }, { id: 30, cat: 'nature' }, { id: 31, cat: 'nature' }, { id: 32, cat: 'nature' },
+    { id: 5, cat: 'details' }, { id: 12, cat: 'details' }, { id: 22, cat: 'details' }, { id: 23, cat: 'details' }, { id: 24, cat: 'details' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
-//  ⚡ ОПТИМИЗИРОВАННЫЙ ДВИЖОК
+//  ⚡ APP CORE
 // ═══════════════════════════════════════════════════════════════
 
 const gallery = document.getElementById('gallery');
 const categoriesDiv = document.getElementById('categories');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
+const lightboxCounter = document.getElementById('lightboxCounter');
 let currentIndex = 0;
-let currentRenderPhotos = PHOTOS;
 
-// Генерация кнопок
+// Build category buttons
 Object.keys(CATEGORIES).forEach(key => {
     const btn = document.createElement('button');
     btn.className = 'category-btn' + (key === 'all' ? ' active' : '');
@@ -144,162 +477,124 @@ Object.keys(CATEGORIES).forEach(key => {
     btn.onclick = () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentRenderPhotos = key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key);
-        renderWithSkeleton(currentRenderPhotos);
+        const filtered = key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key);
+        renderGallery(filtered);
     };
     categoriesDiv.appendChild(btn);
 });
 
-// Показываем скелетон, потом загружаем реальные фото
-function renderWithSkeleton(photos) {
+function renderGallery(photos) {
     gallery.innerHTML = '';
-    photos.forEach((photo, idx) => {
-        const skeletonDiv = document.createElement('div');
-        skeletonDiv.className = 'gallery-item skeleton';
-        skeletonDiv.style.height = '300px';
-        skeletonDiv.style.borderRadius = '8px';
-        skeletonDiv.dataset.index = idx;
-        gallery.appendChild(skeletonDiv);
+    // Show skeletons first
+    photos.forEach(() => {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'gallery-item skeleton';
+        gallery.appendChild(skeleton);
     });
     
-    // Асинхронно заменяем на реальные фото
-    if (window.requestIdleCallback) {
-        requestIdleCallback(() => renderRealImages(photos));
-    } else {
-        setTimeout(() => renderRealImages(photos), 50);
-    }
+    // Load real images
+    setTimeout(() => {
+        photos.forEach((photo, idx) => {
+            const skeleton = gallery.children[idx];
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+            const img = document.createElement('img');
+            img.loading = idx < 6 ? 'eager' : 'lazy';
+            img.decoding = 'async';
+            img.src = `images/${photo.id}.jpg`;
+            img.alt = `Amigo Photos ${photo.id}`;
+            img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
+            div.appendChild(img);
+            gallery.replaceChild(div, skeleton);
+        });
+    }, 50);
 }
 
-function renderRealImages(photos) {
-    photos.forEach((photo, idx) => {
-        const skeleton = gallery.children[idx];
-        if (!skeleton) return;
-        
-        const div = document.createElement('div');
-        div.className = 'gallery-item';
-        
-        const img = document.createElement('img');
-        // Ленивая загрузка + асинхронный декодинг
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.src = `images/${photo.id}.jpg`;
-        img.alt = `Фото ${photo.id}`;
-        
-        // Первые 8 фото грузим сразу (видимая область)
-        if (idx < 8) {
-            img.loading = 'eager';
-        }
-        
-        img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
-        
-        div.appendChild(img);
-        gallery.replaceChild(div, skeleton);
-    });
+function openLightbox(idx) {
+    currentIndex = idx;
+    updateLightboxImage();
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
-// Лайтбокс
-function openLightbox(idx) { 
-    currentIndex = idx; 
-    lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; 
-    lightbox.style.display = 'flex'; 
-}
-function closeLightbox() { lightbox.style.display = 'none'; }
-function prev() { 
-    currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; 
-    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; 
-}
-function next() { 
-    currentIndex = (currentIndex + 1) % PHOTOS.length; 
-    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; 
+function updateLightboxImage() {
+    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+    lightboxCounter.textContent = `${currentIndex + 1} / ${PHOTOS.length}`;
 }
 
-// Слайдер (с предзагрузкой)
-let s=0, slides=document.querySelectorAll('.slide');
+function closeLightbox() {
+    lightbox.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function nextImage() {
+    currentIndex = (currentIndex + 1) % PHOTOS.length;
+    updateLightboxImage();
+}
+
+function prevImage() {
+    currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
+    updateLightboxImage();
+}
+
+// Hero slider
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slide');
 const totalSlides = slides.length;
-for(let i=0; i<totalSlides; i++) {
-    const bg = slides[i].style.backgroundImage;
-    if(bg && bg !== 'none') {
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % totalSlides;
+    slides[currentSlide].classList.add('active');
+}
+
+setInterval(nextSlide, 5000);
+
+// Preload hero images
+slides.forEach(slide => {
+    const bg = slide.style.backgroundImage;
+    if (bg && bg !== 'none') {
         const url = bg.slice(5, -2);
-        const preload = new Image();
-        preload.src = url;
+        const img = new Image();
+        img.src = url;
     }
-}
-setInterval(() => { 
-    slides[s].classList.remove('active'); 
-    s=(s+1)%totalSlides; 
-    slides[s].classList.add('active');
-}, 5000);
-
-// Кнопка наверх
-const toTop = document.getElementById('toTop');
-window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
-toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
-
-// События лайтбокса
-document.querySelector('.lightbox-close').onclick = closeLightbox;
-document.querySelector('.lightbox-prev').onclick = prev;
-document.querySelector('.lightbox-next').onclick = next;
-lightbox.onclick = e => { if(e.target === lightbox) closeLightbox(); };
-document.onkeydown = e => { if(lightbox.style.display === 'flex') { if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowLeft') prev(); if(e.key === 'ArrowRight') next(); } };
-
-// ═══════════════════════════════════════════════════════════════
-//  📡 SERVICE WORKER (ОФЛАЙН-РЕЖИМ)
-// ═══════════════════════════════════════════════════════════════
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-        console.log('Service Worker зарегистрирован:', reg);
-    }).catch(err => {
-        console.log('Ошибка регистрации Service Worker:', err);
-    });
-}
-
-window.addEventListener('load', () => {
-    const badge = document.getElementById('offlineBadge');
-    if (!navigator.onLine) {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
-    }
-    window.addEventListener('online', () => badge.style.display = 'none');
-    window.addEventListener('offline', () => {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
-    });
 });
 
-// Старт
-renderWithSkeleton(PHOTOS);
+// To Top button
+const toTopBtn = document.getElementById('toTop');
+window.addEventListener('scroll', () => {
+    toTopBtn.style.display = window.scrollY > 500 ? 'flex' : 'none';
+});
+toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+// Lightbox controls
+document.querySelector('.lightbox-close').onclick = closeLightbox;
+document.querySelector('.lightbox-prev').onclick = prevImage;
+document.querySelector('.lightbox-next').onclick = nextImage;
+lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+    }
+});
+
+// Initial render
+renderGallery(PHOTOS);
 </script>
 
+<!-- Service Worker for offline -->
 <script>
-// Дополнительный скрипт для создания sw.js (если файла нет)
 if ('serviceWorker' in navigator) {
-    fetch('/sw.js').catch(() => {
-        const swCode = `const CACHE_NAME = 'amigo-photos-v2';
-const urlsToCache = [
-    '/',
-    '/index.html'
-];
-
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
-    );
-});
-
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-    );
-});`;
-        
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+        // Auto-create sw.js if missing
+        const swCode = `const CACHE_NAME = 'amigo-v1';
+const urlsToCache = ['/', '/index.html'];
+self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))));
+self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));`;
         const blob = new Blob([swCode], {type: 'application/javascript'});
-        const url = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(url).then(reg => {
-            console.log('Service Worker создан автоматически');
-        });
+        navigator.serviceWorker.register(URL.createObjectURL(blob));
     });
 }
 </script>
