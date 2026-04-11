@@ -2,376 +2,236 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AMIGO // FRACTAL EYE</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo Photos | Liquid Glass</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none;
         }
 
         body {
-            background: #050505;
-            color: #f0f0f0;
-            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-            overflow-x: hidden;
-            font-weight: 400;
+            background: radial-gradient(circle at 20% 30%, #0a0a1a, #000000);
+            color: #fff;
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
         }
 
-        /* кастомный курсор */
-        .cursor {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: 0.1s ease-out;
-            transform: translate(-50%, -50%);
-            backdrop-filter: invert(1);
-            mix-blend-mode: difference;
-        }
-
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: 0.05s linear;
-            transform: translate(-50%, -50%);
-        }
-
-        /* пиксельный дождь */
-        .pixel-rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.15;
-        }
-
-        /* герой-взрыв */
+        /* Liquid Glass Hero */
         .hero {
             height: 100vh;
-            position: relative;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             text-align: center;
-            z-index: 2;
-            background: radial-gradient(circle at 50% 30%, #0a0a0a, #000000);
+            position: relative;
         }
 
-        .hero h1 {
-            font-size: clamp(3rem, 12vw, 9rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff, #aaa, #fff);
+        .glass-title {
+            font-size: clamp(48px, 10vw, 120px);
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a855f7 50%, #06b6d4 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 30px rgba(255,255,255,0.2);
-            animation: glitch 3s infinite;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
         }
 
-        @keyframes glitch {
-            0%, 100% { transform: skew(0deg, 0deg); opacity: 1; }
-            95% { transform: skew(0deg, 0deg); opacity: 1; }
-            96% { transform: skew(5deg, 2deg); opacity: 0.8; text-shadow: -3px 0 red; }
-            97% { transform: skew(-5deg, -2deg); opacity: 0.9; text-shadow: 3px 0 blue; }
-            98% { transform: skew(0deg, 0deg); opacity: 1; }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        .hero p {
-            font-size: 1rem;
-            letter-spacing: 0.4em;
+        .glass-subtitle {
+            font-size: 18px;
+            letter-spacing: 0.3em;
             text-transform: uppercase;
-            color: #888;
-            margin-top: 1.5rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 24px;
         }
 
-        /* кнопки-трансформеры */
-        .filter-bar {
+        /* Liquid Glass Navigation */
+        .liquid-nav {
             position: sticky;
-            top: 2rem;
+            top: 24px;
             z-index: 100;
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            padding: 1rem;
-            flex-wrap: wrap;
-            background: rgba(0,0,0,0.6);
+            gap: 16px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.08);
             backdrop-filter: blur(20px);
-            border-radius: 60px;
+            border-radius: 80px;
             width: fit-content;
-            margin: 2rem auto 0;
+            margin: 0 auto 40px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
-        .filter-btn {
+        .liquid-btn {
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #ddd;
-            padding: 0.6rem 1.8rem;
-            border-radius: 40px;
-            font-family: monospace;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 10px 32px;
+            border-radius: 60px;
+            font-size: 15px;
             font-weight: 500;
-            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            backdrop-filter: blur(4px);
-        }
-
-        .filter-btn:hover {
-            border-color: white;
-            color: white;
-            transform: scale(1.05);
-            background: rgba(255,255,255,0.05);
-        }
-
-        .filter-btn.active {
-            background: white;
-            color: black;
-            border-color: white;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
-        }
-
-        /* галерея — взрывная сетка */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2px;
-            padding: 4rem 2rem 8rem;
+            transition: all 0.3s ease;
             position: relative;
-            z-index: 2;
-            background: #050505;
+            overflow: hidden;
+        }
+
+        .liquid-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .liquid-btn:hover::before {
+            left: 100%;
+        }
+
+        .liquid-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .liquid-btn.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Gallery */
+        .gallery {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 32px 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
         }
 
         .gallery-item {
             position: relative;
-            aspect-ratio: 1 / 1;
+            border-radius: 32px;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-            transform-style: preserve-3d;
             cursor: pointer;
-        }
-
-        /* 3D-наклон */
-        .gallery-item:hover {
-            z-index: 10;
-            transform: scale(1.05) rotateX(2deg) rotateY(2deg);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            aspect-ratio: 4 / 5;
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s ease;
-            filter: grayscale(0.2) contrast(1.1);
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(168,85,247,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(168,85,247,0.3);
         }
 
         .gallery-item:hover img {
-            transform: scale(1.1);
-            filter: grayscale(0) contrast(1.2);
+            transform: scale(1.05);
         }
 
-        /* случайные размеры в сетке — хаос */
-        .gallery-item:nth-child(3n+1) {
-            grid-column: span 2;
-            grid-row: span 2;
-        }
-        .gallery-item:nth-child(5n+2) {
-            grid-column: span 1;
-            grid-row: span 1;
-        }
-        .gallery-item:nth-child(7n+4) {
-            grid-column: span 2;
-            grid-row: span 1;
-        }
-
-        /* лайтбокс — кинотеатр */
-        .cinema {
+        /* Lightbox */
+        .lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(30px);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(40px);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
-            flex-direction: column;
+            z-index: 1000;
             cursor: pointer;
         }
 
-        .cinema-img {
+        .lightbox img {
             max-width: 85%;
-            max-height: 80%;
-            border-radius: 4px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            transition: 0.2s;
-        }
-
-        .cinema-caption {
-            margin-top: 2rem;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            color: #aaa;
-        }
-
-        .cinema-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.05);
+            max-height: 85%;
+            border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.2);
-            width: 60px;
-            height: 60px;
-            border-radius: 60px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 28px;
+            right: 32px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            width: 52px;
+            height: 52px;
+            border-radius: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            transition: 0.2s;
-        }
-
-        .cinema-nav:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .cinema-prev { left: 2rem; }
-        .cinema-next { right: 2rem; }
-        .cinema-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            width: 50px;
-            height: 50px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        /* счётчик */
-        .cinema-counter {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
-        /* кнопка наверх — глитч */
-        .glitch-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 0.8rem 1.4rem;
-            border-radius: 40px;
-            font-family: monospace;
+            font-size: 24px;
             cursor: pointer;
-            z-index: 100;
-            transition: 0.2s;
-            backdrop-filter: blur(12px);
+            transition: all 0.2s;
         }
 
-        .glitch-top:hover {
-            background: white;
-            color: black;
-            border-color: white;
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
         }
 
-        /* адаптив */
-        @media (max-width: 1000px) {
+        @media (max-width: 768px) {
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 2px;
+                gap: 16px;
+                padding: 20px 16px 60px;
             }
-            .gallery-item:nth-child(3n+1),
-            .gallery-item:nth-child(7n+4) {
-                grid-column: span 1;
-                grid-row: span 1;
+            .liquid-nav {
+                top: 16px;
+                padding: 8px 16px;
+                gap: 8px;
             }
-            .filter-bar {
-                top: 1rem;
-                margin: 1rem auto 0;
+            .liquid-btn {
+                padding: 6px 18px;
+                font-size: 12px;
             }
-            .cursor, .cursor-dot { display: none; }
-            body { cursor: auto; }
-        }
-
-        /* шумовая текстура */
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.03;
-            background: repeating-radial-gradient(circle at 20% 30%, #000, #fff 1px);
         }
     </style>
 </head>
 <body>
 
-<div class="cursor"></div>
-<div class="cursor-dot"></div>
-<div class="pixel-rain" id="pixelRain"></div>
-<div class="noise"></div>
-
 <section class="hero">
-    <div>
-        <h1>AMIGO<br>PHOTOS</h1>
-        <p>// FRACTAL VISION //</p>
-    </div>
+    <h1 class="glass-title">Amigo Photos</h1>
+    <p class="glass-subtitle">Liquid Vision · Eternal Frames</p>
 </section>
 
-<div class="filter-bar" id="filterBar">
-    <button class="filter-btn active" data-filter="all">ALL</button>
-    <button class="filter-btn" data-filter="architecture">ARCHITECTURE</button>
-    <button class="filter-btn" data-filter="nature">NATURE</button>
-    <button class="filter-btn" data-filter="details">DETAILS</button>
+<div class="liquid-nav">
+    <button class="liquid-btn active" data-filter="all">∞ All</button>
+    <button class="liquid-btn" data-filter="architecture">⌂ Architecture</button>
+    <button class="liquid-btn" data-filter="nature">🌿 Nature</button>
+    <button class="liquid-btn" data-filter="details">🔍 Details</button>
 </div>
 
 <div class="gallery" id="gallery"></div>
 
-<div class="cinema" id="cinema">
-    <div class="cinema-close" id="cinemaClose">✕</div>
-    <div class="cinema-nav cinema-prev" id="cinemaPrev">←</div>
-    <div class="cinema-nav cinema-next" id="cinemaNext">→</div>
-    <img class="cinema-img" id="cinemaImg" src="">
-    <div class="cinema-caption" id="cinemaCaption">AMIGO // FRAME</div>
-    <div class="cinema-counter" id="cinemaCounter"></div>
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-close">✕</div>
+    <img id="lightboxImg" src="">
 </div>
 
-<div class="glitch-top" id="toTop">↑ // TOP</div>
-
 <script>
-    // ==================================================
-    // ДАННЫЕ — ПОЛНЫЙ ХАОС И КРАСОТА
-    // ==================================================
     const PHOTOS = [
         { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
         { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
@@ -384,192 +244,46 @@
     ];
 
     let currentFilter = 'all';
-    let currentIndex = 0;
-    let currentDisplayList = [...PHOTOS];
-
     const galleryDiv = document.getElementById('gallery');
-    const cinema = document.getElementById('cinema');
-    const cinemaImg = document.getElementById('cinemaImg');
-    const cinemaCounter = document.getElementById('cinemaCounter');
-    const cinemaCaption = document.getElementById('cinemaCaption');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
 
-    // ==================================================
-    // ГАЛЕРЕЯ — ЭФФЕКТ ВЗРЫВА
-    // ==================================================
     function renderGallery(photos) {
-        // взрывной эффект: сначала всё исчезает
-        galleryDiv.style.opacity = '0';
-        galleryDiv.style.transform = 'scale(0.98)';
-        
-        setTimeout(() => {
-            galleryDiv.innerHTML = '';
-            photos.forEach((photo, idx) => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                const img = document.createElement('img');
-                img.loading = idx < 9 ? 'eager' : 'lazy';
-                img.decoding = 'async';
-                img.src = `images/${photo.id}.jpg`;
-                img.alt = `amigo_${photo.id}`;
-                img.onclick = () => openCinema(PHOTOS.findIndex(p => p.id === photo.id));
-                item.appendChild(img);
-                
-                // 3D наклон по движению мыши
-                item.addEventListener('mousemove', (e) => {
-                    const rect = item.getBoundingClientRect();
-                    const x = (e.clientX - rect.left) / rect.width - 0.5;
-                    const y = (e.clientY - rect.top) / rect.height - 0.5;
-                    item.style.transform = `perspective(1000px) rotateX(${y * 8}deg) rotateY(${x * 8}deg) scale(1.02)`;
-                });
-                item.addEventListener('mouseleave', () => {
-                    item.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
-                });
-                
-                galleryDiv.appendChild(item);
-            });
-            galleryDiv.style.opacity = '1';
-            galleryDiv.style.transform = 'scale(1)';
-        }, 150);
+        galleryDiv.innerHTML = '';
+        photos.forEach(photo => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.src = `images/${photo.id}.jpg`;
+            img.alt = `Amigo ${photo.id}`;
+            img.onclick = () => {
+                lightboxImg.src = `images/${photo.id}.jpg`;
+                lightbox.style.display = 'flex';
+            };
+            item.appendChild(img);
+            galleryDiv.appendChild(item);
+        });
     }
 
     function filterGallery(category) {
-        if (category === 'all') {
-            currentDisplayList = [...PHOTOS];
-        } else {
-            currentDisplayList = PHOTOS.filter(p => p.cat === category);
-        }
-        renderGallery(currentDisplayList);
+        const filtered = category === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === category);
+        renderGallery(filtered);
     }
 
-    // ==================================================
-    // КИНОТЕАТР (ЛАЙТБОКС)
-    // ==================================================
-    function openCinema(index) {
-        currentIndex = index;
-        const photo = PHOTOS[currentIndex];
-        cinemaImg.src = `images/${photo.id}.jpg`;
-        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
-        updateCounter();
-        cinema.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeCinema() {
-        cinema.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    function nextImage() {
-        currentIndex = (currentIndex + 1) % PHOTOS.length;
-        const photo = PHOTOS[currentIndex];
-        cinemaImg.src = `images/${photo.id}.jpg`;
-        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
-        updateCounter();
-    }
-
-    function prevImage() {
-        currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
-        const photo = PHOTOS[currentIndex];
-        cinemaImg.src = `images/${photo.id}.jpg`;
-        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
-        updateCounter();
-    }
-
-    function updateCounter() {
-        cinemaCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-    }
-
-    // ==================================================
-    // ПИКСЕЛЬНЫЙ ДОЖДЬ
-    // ==================================================
-    function createPixelRain() {
-        const container = document.getElementById('pixelRain');
-        for (let i = 0; i < 80; i++) {
-            const pixel = document.createElement('div');
-            pixel.style.position = 'absolute';
-            pixel.style.width = '2px';
-            pixel.style.height = '2px';
-            pixel.style.background = `rgba(255,255,255,${Math.random() * 0.5})`;
-            pixel.style.left = Math.random() * 100 + '%';
-            pixel.style.top = '-10px';
-            pixel.style.opacity = Math.random() * 0.6;
-            pixel.style.animation = `fall ${3 + Math.random() * 5}s linear infinite`;
-            pixel.style.animationDelay = Math.random() * 5 + 's';
-            container.appendChild(pixel);
-        }
-    }
-
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = `
-        @keyframes fall {
-            0% { transform: translateY(0px); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(styleSheet);
-    createPixelRain();
-
-    // ==================================================
-    // КАСТОМНЫЙ КУРСОР
-    // ==================================================
-    const cursor = document.querySelector('.cursor');
-    const cursorDot = document.querySelector('.cursor-dot');
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-        cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    });
-
-    // ==================================================
-    // СОБЫТИЯ
-    // ==================================================
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.liquid-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.liquid-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.filter;
             filterGallery(currentFilter);
-        });
+        };
     });
 
-    document.getElementById('cinemaClose').onclick = closeCinema;
-    document.getElementById('cinemaPrev').onclick = prevImage;
-    document.getElementById('cinemaNext').onclick = nextImage;
-    cinema.onclick = (e) => { if (e.target === cinema) closeCinema(); };
-    document.addEventListener('keydown', (e) => {
-        if (cinema.style.display === 'flex') {
-            if (e.key === 'Escape') closeCinema();
-            if (e.key === 'ArrowLeft') prevImage();
-            if (e.key === 'ArrowRight') nextImage();
-        }
-    });
+    document.querySelector('.lightbox-close').onclick = () => lightbox.style.display = 'none';
+    lightbox.onclick = (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; };
 
-    const toTopBtn = document.getElementById('toTop');
-    window.addEventListener('scroll', () => {
-        toTopBtn.style.opacity = window.scrollY > 300 ? '1' : '0.5';
-    });
-    toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // СТАРТ
     renderGallery(PHOTOS);
-
-    // Предзагрузка первых 6 фото
-    for (let i = 0; i < 6; i++) {
-        const preload = new Image();
-        preload.src = `images/${PHOTOS[i].id}.jpg`;
-    }
-</script>
-
-<!-- Service Worker (авто-офлайн) -->
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-            const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('🔌 offline', {status: 200}))))`;
-            const blob = new Blob([swCode], {type: 'application/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
-        });
-    }
 </script>
 </body>
 </html>
