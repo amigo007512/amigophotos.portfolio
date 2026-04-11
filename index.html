@@ -3,51 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AMIGO — летающие фрагменты</title>
+    <title>AMIGO — журнал света</title>
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
-            background: #050510;
-            background-image: radial-gradient(circle at 20% 40%, rgba(80,60,150,0.2) 0%, #050510 100%);
-            min-height: 100vh;
+            background: #fef9f0;
+            font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
             overflow-x: hidden;
-            font-family: 'Courier New', 'SF Mono', monospace;
+            color: #2c2c2c;
         }
 
-        /* звёздный фон */
-        .stars {
+        /* основной контейнер с "журналом" */
+        .magazine {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px 100px;
+            position: relative;
+        }
+
+        /* герой — как обложка */
+        .cover {
+            text-align: center;
+            padding: 80px 20px 60px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+        }
+
+        .cover h1 {
+            font-size: clamp(48px, 8vw, 110px);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: #1a1a1a;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .cover p {
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* навигация — как оглавление */
+        .nav-toc {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 80px;
+            flex-wrap: wrap;
+        }
+
+        .toc-item {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 6px 0;
+            color: #aaa;
+            transition: all 0.2s;
+            border-bottom: 1px solid transparent;
+        }
+
+        .toc-item:hover {
+            color: #2c2c2c;
+        }
+
+        .toc-item.active {
+            color: #2c2c2c;
+            border-bottom-color: #2c2c2c;
+        }
+
+        /* контейнер для "разворотов" */
+        .spreads {
+            position: relative;
+            min-height: 70vh;
+        }
+
+        /* каждый разворот — отдельная секция */
+        .spread {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            animation: fadeUp 0.8s ease;
+        }
+
+        .spread.active-spread {
+            display: grid;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* левая страница — фото */
+        .photo-page {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 20px 35px -15px rgba(0,0,0,0.2);
+        }
+
+        .photo-page img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .photo-page:hover img {
+            transform: scale(1.02);
+        }
+
+        /* правая страница — текст */
+        .text-page {
+            padding: 20px;
+        }
+
+        .text-page h2 {
+            font-size: clamp(24px, 4vw, 42px);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .text-page .meta {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b0a07c;
+            margin-bottom: 20px;
+        }
+
+        .text-page .description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4a4a4a;
+            margin-bottom: 30px;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .text-page .quote {
+            font-style: italic;
+            border-left: 2px solid #d4c5a9;
+            padding-left: 20px;
+            font-size: 14px;
+            color: #6a6a6a;
+        }
+
+        /* навигация по страницам (стрелки) */
+        .nav-arrows {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .arrow {
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: monospace;
+            color: #2c2c2c;
+        }
+
+        .arrow:hover {
+            background: #2c2c2c;
+            color: #fef9f0;
+            border-color: #2c2c2c;
+        }
+
+        /* индикатор страницы */
+        .page-indicator {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #bbb;
+            letter-spacing: 2px;
+        }
+
+        /* мобильная версия */
+        @media (max-width: 800px) {
+            .magazine {
+                padding: 30px 20px 80px;
+            }
+            .spread.active-spread {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .photo-page {
+                order: 1;
+            }
+            .text-page {
+                order: 2;
+                padding: 0;
+            }
+            .nav-toc {
+                gap: 20px;
+                margin-bottom: 50px;
+            }
+            .toc-item {
+                font-size: 10px;
+            }
+        }
+
+        /* интро */
+        .intro {
             position: fixed;
             inset: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: twinkle 3s ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 0.8; transform: scale(1); }
-        }
-
-        /* приветственный ритуал */
-        .ritual {
-            position: fixed;
-            inset: 0;
-            background: #050510;
-            z-index: 2000;
+            background: #fef9f0;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -56,493 +240,266 @@
             transition: opacity 1s ease;
         }
 
-        .ritual h1 {
-            font-size: clamp(40px, 10vw, 100px);
-            font-weight: 100;
-            letter-spacing: 12px;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(200,180,255,0.6);
-            text-shadow: 0 0 30px rgba(150,130,255,0.3);
-            animation: float 3s ease infinite;
+        .intro h2 {
+            font-size: clamp(32px, 8vw, 70px);
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: #2c2c2c;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); letter-spacing: 12px; }
-            50% { transform: translateY(-10px); letter-spacing: 18px; }
-        }
-
-        .ritual p {
-            margin-top: 40px;
+        .intro p {
+            margin-top: 24px;
             font-size: 12px;
             letter-spacing: 4px;
-            color: #8888cc;
+            color: #b0a07c;
         }
 
-        /* основной космос */
-        .cosmos {
-            opacity: 0;
-            transition: opacity 1.2s ease;
-            position: relative;
-            z-index: 2;
-            min-height: 100vh;
-        }
-
-        /* летающая навигация */
-        .floating-menu {
+        /* счётчик фото в углу */
+        .badge {
             position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            display: flex;
-            gap: 12px;
-            background: rgba(10,10,30,0.7);
-            backdrop-filter: blur(20px);
-            padding: 10px 24px;
-            border-radius: 60px;
-            border: 0.5px solid rgba(150,130,255,0.3);
-        }
-
-        .float-btn {
-            background: transparent;
-            border: none;
-            color: #aaaacc;
-            padding: 8px 24px;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(0,0,0,0.05);
+            padding: 6px 14px;
             border-radius: 40px;
-            font-size: 12px;
+            font-size: 11px;
             font-family: monospace;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: lowercase;
-        }
-
-        .float-btn:hover {
-            color: #ffffff;
-            background: rgba(150,130,255,0.2);
-        }
-
-        .float-btn.active {
-            background: #8a7bff;
-            color: #050510;
-            box-shadow: 0 0 20px rgba(138,123,255,0.5);
-        }
-
-        /* счётчик в углу */
-        .star-counter {
-            position: fixed;
-            top: 30px;
-            right: 30px;
             z-index: 100;
-            background: rgba(10,10,30,0.5);
-            backdrop-filter: blur(8px);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-family: monospace;
-            color: #aaaacc;
-            letter-spacing: 1px;
-        }
-
-        /* поэтическая строка */
-        .whisper {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 100;
-            max-width: 280px;
-            background: rgba(10,10,30,0.4);
-            backdrop-filter: blur(8px);
-            padding: 16px 20px;
-            border-left: 2px solid #8a7bff;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #bbb;
-            font-style: italic;
-            pointer-events: none;
-        }
-
-        /* КОНТЕЙНЕР ДЛЯ ПАРЯЩИХ ФОТО */
-        .levitate-container {
-            position: relative;
-            min-height: 100vh;
-            padding: 100px 40px;
-            overflow: hidden;
-        }
-
-        .floating-photo {
-            position: absolute;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.4, 1.2);
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
-            border-radius: 4px;
-            will-change: transform;
-        }
-
-        .floating-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            border-radius: 4px;
-            transition: all 0.3s;
-            filter: grayscale(0.2) brightness(0.9);
-        }
-
-        .floating-photo:hover {
-            z-index: 50;
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
-        }
-
-        .floating-photo:hover img {
-            filter: grayscale(0) brightness(1.05);
-        }
-
-        /* лайтбокс — звёздные врата */
-        .stargate {
-            position: fixed;
-            inset: 0;
-            background: rgba(5,5,16,0.98);
-            backdrop-filter: blur(40px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .stargate img {
-            max-width: 80%;
-            max-height: 80%;
-            border-radius: 8px;
-            border: 1px solid rgba(138,123,255,0.3);
-            box-shadow: 0 0 50px rgba(138,123,255,0.2);
-        }
-
-        .gate-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(138,123,255,0.1);
-            border: 1px solid rgba(138,123,255,0.3);
-            width: 56px;
-            height: 56px;
-            border-radius: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #aaaacc;
-        }
-
-        .gate-nav:hover {
-            background: rgba(138,123,255,0.2);
-            color: #fff;
-        }
-
-        .gate-prev { left: 28px; }
-        .gate-next { right: 28px; }
-
-        .gate-close {
-            position: absolute;
-            top: 28px;
-            right: 32px;
-            background: rgba(138,123,255,0.1);
-            border: 1px solid rgba(138,123,255,0.3);
-            width: 48px;
-            height: 48px;
-            border-radius: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #aaaacc;
-        }
-
-        .gate-counter {
-            position: absolute;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-family: monospace;
-            color: #aaaacc;
-        }
-
-        @media (max-width: 768px) {
-            .floating-menu { bottom: 20px; padding: 6px 16px; gap: 6px; }
-            .float-btn { padding: 5px 14px; font-size: 10px; }
-            .whisper { display: none; }
-            .star-counter { top: 20px; right: 20px; font-size: 10px; }
-            .levitate-container { padding: 80px 20px; }
         }
     </style>
 </head>
 <body>
 
-<div class="stars" id="stars"></div>
-
-<div class="ritual" id="ritual">
-    <h1>AMIGO</h1>
-    <p>✦ коснись, чтобы взлететь ✦</p>
+<div class="intro" id="intro">
+    <h2>AMIGO</h2>
+    <p>журнал света</p>
 </div>
 
-<div class="cosmos" id="cosmos">
-    <div class="star-counter" id="counter">0 кадров</div>
-    <div class="whisper" id="whisperText">• парящие фрагменты реальности •</div>
-
-    <div class="floating-menu">
-        <button class="float-btn active" data-filter="all">все</button>
-        <button class="float-btn" data-filter="architecture">архитектура</button>
-        <button class="float-btn" data-filter="nature">природа</button>
-        <button class="float-btn" data-filter="details">детали</button>
+<div class="magazine" id="magazine" style="opacity:0; transition: opacity 1s;">
+    <div class="cover">
+        <h1>AMIGO</h1>
+        <p>визуальные истории</p>
     </div>
 
-    <div class="levitate-container" id="levitateContainer"></div>
+    <div class="nav-toc" id="toc">
+        <div class="toc-item active" data-cat="all">все истории</div>
+        <div class="toc-item" data-cat="architecture">архитектура</div>
+        <div class="toc-item" data-cat="nature">природа</div>
+        <div class="toc-item" data-cat="details">детали</div>
+    </div>
+
+    <div class="spreads" id="spreadsContainer"></div>
+
+    <div class="nav-arrows">
+        <button class="arrow" id="prevSpread">← предыдущая</button>
+        <button class="arrow" id="nextSpread">следующая →</button>
+    </div>
+    <div class="page-indicator" id="pageIndicator">страница 1 / 1</div>
 </div>
 
-<div class="stargate" id="stargate">
-    <div class="gate-close" id="gateClose">✕</div>
-    <div class="gate-nav gate-prev" id="gatePrev">←</div>
-    <div class="gate-nav gate-next" id="gateNext">→</div>
-    <img id="gateImg" src="">
-    <div class="gate-counter" id="gateCounter"></div>
-</div>
+<div class="badge" id="photoCountBadge">0 кадров</div>
 
 <script>
     // ==========================================
-    // ФОТОГРАФИИ
+    // ДАННЫЕ: фотографии + живые описания
     // ==========================================
     const PHOTOS = [
-        { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
-        { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
-        { id: 13, cat: 'architecture' }, { id: 14, cat: 'architecture' }, { id: 15, cat: 'architecture' }, { id: 18, cat: 'architecture' },
-        { id: 2, cat: 'nature' }, { id: 7, cat: 'nature' }, { id: 8, cat: 'nature' }, { id: 11, cat: 'nature' },
-        { id: 16, cat: 'nature' }, { id: 17, cat: 'nature' }, { id: 19, cat: 'nature' }, { id: 20, cat: 'nature' }, { id: 21, cat: 'nature' },
-        { id: 25, cat: 'nature' }, { id: 26, cat: 'nature' }, { id: 27, cat: 'nature' }, { id: 28, cat: 'nature' },
-        { id: 29, cat: 'nature' }, { id: 30, cat: 'nature' }, { id: 31, cat: 'nature' }, { id: 32, cat: 'nature' },
-        { id: 5, cat: 'details' }, { id: 12, cat: 'details' }, { id: 22, cat: 'details' }, { id: 23, cat: 'details' }, { id: 24, cat: 'details' }
+        { id: 1, cat: 'architecture', title: 'Каменная симфония', desc: 'Линии, уходящие в небо. Архитектура как застывшая музыка, которая звучит в каждом углу города.', quote: '«Геометрия — это язык света»' },
+        { id: 3, cat: 'architecture', title: 'Вертикальный ритм', desc: 'Колонны, арки, повторяющиеся элементы — город дышит своим пульсом.', quote: '«Порядок рождает красоту»' },
+        { id: 4, cat: 'architecture', title: 'Стекло и бетон', desc: 'Современные монолиты, отражающие небо. Город будущего уже здесь.', quote: '«Минимализм — высшая степень элегантности»' },
+        { id: 6, cat: 'architecture', title: 'Старый город', desc: 'Фасады, помнящие столетия. Каждая трещина — история.', quote: '«Время — лучший архитектор»' },
+        { id: 9, cat: 'architecture', title: 'Мост через время', desc: 'Конструкции, соединяющие берега и эпохи.', quote: '«Инженерия становится поэзией»' },
+        { id: 10, cat: 'architecture', title: 'Светотени', desc: 'Игра теней на древних стенах. Архитектура оживает при закате.', quote: '«Тень — это тоже свет»' },
+        { id: 13, cat: 'architecture', title: 'Башни-близнецы', desc: 'Стремление ввысь, человеческий дух.', quote: '«Гравитация — это вызов»' },
+        { id: 14, cat: 'architecture', title: 'Внутренний двор', desc: 'Тишина, спрятанная от шумных улиц.', quote: '«Секретные места города»' },
+        { id: 15, cat: 'architecture', title: 'Аркада', desc: 'Повторяющиеся своды, уводящие в бесконечность.', quote: '«Ритм — основа гармонии»' },
+        { id: 18, cat: 'architecture', title: 'Зеркало неба', desc: 'Фасад, отражающий облака. Город становится частью природы.', quote: '«Отражение — это диалог»' },
+        
+        { id: 2, cat: 'nature', title: 'Лесной покров', desc: 'Сквозь ветви пробивается золотой свет. Природа говорит на языке тишины.', quote: '«Тишина — самый громкий звук»' },
+        { id: 7, cat: 'nature', title: 'Водная гладь', desc: 'Озеро, замершее в ожидании рассвета.', quote: '«Вода помнит всё»' },
+        { id: 8, cat: 'nature', title: 'Горный хребет', desc: 'Вершины, уходящие в облака. Свобода, от которой захватывает дух.', quote: '«Высота меняет перспективу»' },
+        { id: 11, cat: 'nature', title: 'Полевые цветы', desc: 'Весенний ковёр из диких трав.', quote: '«Красота в простоте»' },
+        { id: 16, cat: 'nature', title: 'Закат над морем', desc: 'Последние лучи, танцующие на волнах.', quote: '«Каждый закат — обещание нового рассвета»' },
+        { id: 17, cat: 'nature', title: 'Зимнее утро', desc: 'Иней на ветках, первый снег.', quote: '«Холодная магия»' },
+        { id: 19, cat: 'nature', title: 'Водопад', desc: 'Сила и грация, вечное движение.', quote: '«Вода находит путь»' },
+        { id: 20, cat: 'nature', title: 'Туман в долине', desc: 'Мистическое утро, где реальность размыта.', quote: '«Таинственность привлекает»' },
+        { id: 21, cat: 'nature', title: 'Осенний парк', desc: 'Золотая листва, хрустящая под ногами.', quote: '«Осень — вторая весна»' },
+        { id: 25, cat: 'nature', title: 'Горное озеро', desc: 'Кристально чистая вода, отражающая пики.', quote: '«Природа — лучший художник»' },
+        { id: 26, cat: 'nature', title: 'Луг на закате', desc: 'Тёплый свет, ласкающий травы.', quote: '«Золотой час»' },
+        { id: 27, cat: 'nature', title: 'Берег реки', desc: 'Спокойное течение, время замедляется.', quote: '«Река течёт внутри нас»' },
+        { id: 28, cat: 'nature', title: 'Цветущий сад', desc: 'Весеннее буйство красок.', quote: '«Жизнь пробивается сквозь всё»' },
+        { id: 29, cat: 'nature', title: 'Сосновый бор', desc: 'Запах смолы и тишина.', quote: '«Лес — это лёгкие планеты»' },
+        { id: 30, cat: 'nature', title: 'Скалы на рассвете', desc: 'Первые лучи, окрашивающие камень.', quote: '«Вечность смотрит на нас»' },
+        { id: 31, cat: 'nature', title: 'Болото в тумане', desc: 'Загадочный пейзаж, полный звуков.', quote: '«Тайны природы»' },
+        { id: 32, cat: 'nature', title: 'Полярное сияние', desc: 'Небесный танец зелёного света.', quote: '«Магия высоких широт»' },
+        
+        { id: 5, cat: 'details', title: 'Текстура времени', desc: 'Ржавчина, трещины, потёртости. Время оставляет следы.', quote: '«Красота в несовершенстве»' },
+        { id: 12, cat: 'details', title: 'Капля росы', desc: 'Микроскопический мир на лепестке.', quote: '«Целая вселенная в одной капле»' },
+        { id: 22, cat: 'details', title: 'Старая дверь', desc: 'Ручка, помнящая тысячи прикосновений.', quote: '«Предметы хранят истории»' },
+        { id: 23, cat: 'details', title: 'Паутина в углу', desc: 'Искусство терпения и геометрии.', quote: '«Природа — гениальный инженер»' },
+        { id: 24, cat: 'details', title: 'Отражение в луже', desc: 'Искажённый мир, полный поэзии.', quote: '«Истина скрыта в отражениях»' }
     ];
 
-    let currentFilter = 'all';
-    let currentDisplay = [...PHOTOS];
-    let currentIndex = 0;
+    let currentCategory = 'all';
+    let currentSpreadIndex = 0;
+    let currentSpreads = [];
 
-    const container = document.getElementById('levitateContainer');
-    const counterSpan = document.getElementById('counter');
-    const whisperSpan = document.getElementById('whisperText');
-    const stargate = document.getElementById('stargate');
-    const gateImg = document.getElementById('gateImg');
-    const gateCounter = document.getElementById('gateCounter');
-
-    // живые фразы для каждой категории
-    const WHISPERS = {
-        all: '• вселенная в каждом кадре • парящие фрагменты реальности •',
-        architecture: '• каменные сны • линии уходящие в небо • застывшая музыка •',
-        nature: '• земля дышит • ветер целует листья • вода танцует с луной •',
-        details: '• магия в малом • пыльца на лепестке • трещина как улыбка времени •'
-    };
-
-    function updateWhisper() {
-        whisperSpan.textContent = WHISPERS[currentFilter] || WHISPERS.all;
-        whisperSpan.style.opacity = '0';
-        setTimeout(() => whisperSpan.style.opacity = '1', 150);
+    // Группируем фото по два для разворотов
+    function buildSpreads(photos) {
+        const spreads = [];
+        for (let i = 0; i < photos.length; i += 2) {
+            const left = photos[i];
+            const right = photos[i+1] || null;
+            spreads.push({ left, right });
+        }
+        return spreads;
     }
 
-    // ГЕНЕРАЦИЯ СЛУЧАЙНЫХ ПОЗИЦИЙ ДЛЯ ПАРЯЩИХ ФОТО
-    function randomPosition(index, total) {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const size = Math.random() * 280 + 180; // от 180 до 460px
+    function filterByCategory(category) {
+        if (category === 'all') return [...PHOTOS];
+        return PHOTOS.filter(p => p.cat === category);
+    }
+
+    function renderSpreads() {
+        const filtered = filterByCategory(currentCategory);
+        currentSpreads = buildSpreads(filtered);
+        currentSpreadIndex = 0;
+        updateDisplay();
+        document.getElementById('photoCountBadge').innerText = filtered.length + ' кадров';
+    }
+
+    function updateDisplay() {
+        const container = document.getElementById('spreadsContainer');
+        if (!container) return;
         
-        let left, top;
-        // распределяем по всей площади, но не слишком близко к краям
-        left = Math.random() * (width - size - 100) + 50;
-        top = Math.random() * (height - size - 150) + 80;
-        
-        // чтобы не накладывались слишком сильно — небольшая сетка
-        const row = Math.floor(index / 5);
-        const col = index % 5;
-        if (total < 40) {
-            left = (col * (width / 5)) + 40;
-            top = (row * 180) + 80 + Math.sin(index) * 30;
+        if (currentSpreads.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 80px;">нет фотографий в этой категории</div>';
+            document.getElementById('pageIndicator').innerText = 'страница 0 / 0';
+            return;
         }
         
-        return { left: Math.max(20, Math.min(width - size - 20, left)), 
-                 top: Math.max(60, Math.min(height - size - 60, top)), 
-                 size };
-    }
-
-    // АНИМАЦИЯ ПЛАВАНИЯ
-    function applyFloatAnimation(element, delay) {
-        const duration = 5 + Math.random() * 4;
-        const yMove = 15 + Math.random() * 20;
-        const xMove = 8 + Math.random() * 15;
-        element.style.animation = `float-${delay} ${duration}s ease-in-out infinite alternate`;
+        const spread = currentSpreads[currentSpreadIndex];
+        container.innerHTML = '';
         
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes float-${delay} {
-                0% { transform: translate(0px, 0px) rotate(0deg); }
-                100% { transform: translate(${xMove}px, ${-yMove}px) rotate(${Math.random() * 4 - 2}deg); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // РЕНДЕР ПАРЯЩИХ ФОТО
-    function renderFloating(photos) {
-        container.style.opacity = '0';
-        setTimeout(() => {
-            container.innerHTML = '';
-            const total = photos.length;
-            
-            photos.forEach((photo, idx) => {
-                const pos = randomPosition(idx, total);
-                const div = document.createElement('div');
-                div.className = 'floating-photo';
-                div.style.position = 'absolute';
-                div.style.left = pos.left + 'px';
-                div.style.top = pos.top + 'px';
-                div.style.width = pos.size + 'px';
-                div.style.height = pos.size * 0.8 + 'px';
-                
-                const img = document.createElement('img');
-                img.loading = idx < 15 ? 'eager' : 'lazy';
-                img.decoding = 'async';
-                img.src = `images/${photo.id}.jpg`;
-                img.alt = `amigo_${photo.id}`;
-                img.onclick = () => openGate(PHOTOS.findIndex(p => p.id === photo.id));
-                
-                div.appendChild(img);
-                container.appendChild(div);
-                
-                // добавляем плавающую анимацию
-                applyFloatAnimation(div, idx);
-                
-                // случайное вращение при старте
-                const rot = Math.random() * 6 - 3;
-                div.style.transform = `rotate(${rot}deg)`;
-            });
-            
-            container.style.opacity = '1';
-            counterSpan.innerText = `${total} кадров`;
-            updateWhisper();
-        }, 300);
-    }
-
-    function filterGallery(category) {
-        currentFilter = category;
-        if (category === 'all') {
-            currentDisplay = [...PHOTOS];
+        const spreadDiv = document.createElement('div');
+        spreadDiv.className = 'spread active-spread';
+        
+        // левая страница (фото)
+        if (spread.left) {
+            const leftDiv = document.createElement('div');
+            leftDiv.className = 'photo-page';
+            const img = document.createElement('img');
+            img.src = `images/${spread.left.id}.jpg`;
+            img.alt = spread.left.title;
+            leftDiv.appendChild(img);
+            spreadDiv.appendChild(leftDiv);
         } else {
-            currentDisplay = PHOTOS.filter(p => p.cat === category);
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'photo-page';
+            emptyDiv.style.background = '#f0f0e8';
+            emptyDiv.style.display = 'flex';
+            emptyDiv.style.alignItems = 'center';
+            emptyDiv.style.justifyContent = 'center';
+            emptyDiv.innerText = '✦';
+            spreadDiv.appendChild(emptyDiv);
         }
-        renderFloating(currentDisplay);
+        
+        // правая страница (текст)
+        if (spread.right) {
+            const rightDiv = document.createElement('div');
+            rightDiv.className = 'text-page';
+            rightDiv.innerHTML = `
+                <div class="meta">${spread.right.cat.toUpperCase()} / кадр ${spread.right.id}</div>
+                <h2>${spread.right.title}</h2>
+                <div class="description">${spread.right.desc}</div>
+                <div class="quote">${spread.right.quote}</div>
+            `;
+            spreadDiv.appendChild(rightDiv);
+        } else if (spread.left) {
+            // если только одно фото на развороте, используем его текст
+            const rightDiv = document.createElement('div');
+            rightDiv.className = 'text-page';
+            rightDiv.innerHTML = `
+                <div class="meta">${spread.left.cat.toUpperCase()} / кадр ${spread.left.id}</div>
+                <h2>${spread.left.title}</h2>
+                <div class="description">${spread.left.desc}</div>
+                <div class="quote">${spread.left.quote}</div>
+            `;
+            spreadDiv.appendChild(rightDiv);
+        }
+        
+        container.appendChild(spreadDiv);
+        
+        const total = currentSpreads.length;
+        document.getElementById('pageIndicator').innerText = `страница ${currentSpreadIndex+1} / ${total}`;
     }
 
-    // ЗВЁЗДНЫЕ ВРАТА (ЛАЙТБОКС)
-    function openGate(index) {
-        currentIndex = index;
-        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-        stargate.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeGate() {
-        stargate.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    function nextGate() {
-        currentIndex = (currentIndex + 1) % PHOTOS.length;
-        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-    }
-
-    function prevGate() {
-        currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
-        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-    }
-
-    // ==========================================
-    // ЗВЁЗДНОЕ НЕБО
-    // ==========================================
-    function createStars() {
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 150; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = Math.random() * 3 + 1 + 'px';
-            star.style.height = star.style.width;
-            star.style.animationDelay = Math.random() * 5 + 's';
-            star.style.animationDuration = 2 + Math.random() * 4 + 's';
-            starsContainer.appendChild(star);
+    function nextSpread() {
+        if (currentSpreads.length === 0) return;
+        if (currentSpreadIndex + 1 < currentSpreads.length) {
+            currentSpreadIndex++;
+            updateDisplay();
         }
     }
-    createStars();
+    
+    function prevSpread() {
+        if (currentSpreads.length === 0) return;
+        if (currentSpreadIndex - 1 >= 0) {
+            currentSpreadIndex--;
+            updateDisplay();
+        }
+    }
 
-    // ==========================================
-    // ИНТРО + ЗАПУСК
-    // ==========================================
-    const ritual = document.getElementById('ritual');
-    const cosmos = document.getElementById('cosmos');
-
-    ritual.addEventListener('click', () => {
-        ritual.style.opacity = '0';
-        setTimeout(() => {
-            ritual.style.display = 'none';
-            cosmos.style.opacity = '1';
-            // предзагрузка
-            for (let i = 0; i < 12; i++) {
-                const pre = new Image();
-                pre.src = `images/${PHOTOS[i].id}.jpg`;
+    // установка категории
+    function setCategory(cat) {
+        currentCategory = cat;
+        renderSpreads();
+        // обновить активный класс в TOC
+        document.querySelectorAll('.toc-item').forEach(item => {
+            if (item.dataset.cat === cat) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
             }
-        }, 1000);
-    });
+        });
+    }
 
-    // ==========================================
-    // СОБЫТИЯ
-    // ==========================================
-    document.querySelectorAll('.float-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.float-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filterGallery(btn.dataset.filter);
-        };
+    // интро + запуск
+    const introDiv = document.getElementById('intro');
+    const magazineDiv = document.getElementById('magazine');
+    
+    introDiv.addEventListener('click', () => {
+        introDiv.style.opacity = '0';
+        setTimeout(() => {
+            introDiv.style.display = 'none';
+            magazineDiv.style.opacity = '1';
+            renderSpreads();
+        }, 800);
     });
-
-    document.getElementById('gateClose').onclick = closeGate;
-    document.getElementById('gatePrev').onclick = prevGate;
-    document.getElementById('gateNext').onclick = nextGate;
-    stargate.onclick = (e) => { if (e.target === stargate) closeGate(); };
-    document.addEventListener('keydown', (e) => {
-        if (stargate.style.display === 'flex') {
-            if (e.key === 'Escape') closeGate();
-            if (e.key === 'ArrowLeft') prevGate();
-            if (e.key === 'ArrowRight') nextGate();
+    
+    // события кнопок
+    document.getElementById('prevSpread').addEventListener('click', prevSpread);
+    document.getElementById('nextSpread').addEventListener('click', nextSpread);
+    
+    document.querySelectorAll('.toc-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            setCategory(btn.dataset.cat);
+        });
+    });
+    
+    // клавиши влево/вправо
+    window.addEventListener('keydown', (e) => {
+        if (magazineDiv.style.opacity === '1') {
+            if (e.key === 'ArrowLeft') prevSpread();
+            if (e.key === 'ArrowRight') nextSpread();
         }
     });
-
-    // адаптация при ресайзе — перерендер
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            renderFloating(currentDisplay);
-        }, 300);
-    });
-
-    // СТАРТ
-    renderFloating(PHOTOS);
+    
+    // предзагрузка первых 10 фото
+    for (let i = 0; i < Math.min(10, PHOTOS.length); i++) {
+        const pre = new Image();
+        pre.src = `images/${PHOTOS[i].id}.jpg`;
+    }
 </script>
 </body>
 </html>
