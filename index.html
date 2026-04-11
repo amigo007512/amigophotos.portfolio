@@ -12,10 +12,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>АМИГО — фотоистории</title>
+    <title>AMIGO — фотоистории</title>
     
     <meta name="description" content="Визуальные нарративы. Архитектура, природа, детали — каждая фотография рассказывает историю.">
-    <meta property="og:title" content="АМИГО — фотоистории">
+    <meta property="og:title" content="AMIGO — фотоистории">
     <meta property="og:description" content="Каждый кадр — история. Архитектура, природа, детали.">
     <meta name="theme-color" content="#1a1a1a">
     
@@ -49,6 +49,113 @@
             overflow-x: hidden;
         }
 
+        /* Приветственная анимация */
+        .welcome-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            animation: welcomeFadeOut 0.8s ease-in-out forwards;
+            animation-delay: 2.4s;
+        }
+
+        .welcome-content {
+            text-align: center;
+            opacity: 0;
+            animation: welcomeText 1.2s ease-out forwards;
+        }
+
+        .welcome-icon {
+            font-size: 72px;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: welcomeIcon 0.8s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            font-weight: 500;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: welcomeText 0.8s ease-out forwards;
+            animation-delay: 0.5s;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: welcomeText 0.8s ease-out forwards;
+            animation-delay: 0.9s;
+        }
+
+        .welcome-line {
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            margin: 28px auto;
+            animation: welcomeLine 0.6s ease-out forwards;
+            animation-delay: 1.3s;
+        }
+
+        .welcome-footer {
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            opacity: 0;
+            animation: welcomeText 0.8s ease-out forwards;
+            animation-delay: 1.6s;
+        }
+
+        @keyframes welcomeIcon {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes welcomeText {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes welcomeLine {
+            0% { width: 0; }
+            100% { width: 100px; }
+        }
+
+        @keyframes welcomeFadeOut {
+            0% {
+                opacity: 1;
+                visibility: visible;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
         /* Header */
         .header {
             position: fixed;
@@ -80,11 +187,44 @@
             color: #fff;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             transition: all 0.3s;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 2.7s;
         }
 
         .header.scrolled .logo {
             color: var(--text-primary);
             text-shadow: none;
+        }
+
+        .header-menu {
+            display: flex;
+            gap: 48px;
+        }
+
+        .menu-item {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            opacity: 0.8;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header.scrolled .menu-item {
+            color: var(--text-primary);
+            text-shadow: none;
+        }
+
+        .menu-item:hover {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         /* Hero Slider */
@@ -131,20 +271,19 @@
             100% { transform: scale(1.12); }
         }
 
-        /* Оверлей для читаемости текста */
         .slide-overlay {
             position: absolute;
             inset: 0;
             background: linear-gradient(
                 to bottom,
-                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.35) 0%,
                 rgba(0,0,0,0.1) 40%,
-                rgba(0,0,0,0.4) 100%
+                rgba(0,0,0,0.45) 100%
             );
             z-index: 3;
         }
 
-        /* Контент на слайдере */
+        /* Hero Content */
         .hero-content {
             position: absolute;
             inset: 0;
@@ -159,31 +298,58 @@
             pointer-events: none;
         }
 
-        .hero-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(48px, 10vw, 100px);
-            font-weight: 600;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.02em;
-            text-shadow: 0 4px 40px rgba(0,0,0,0.3);
-            max-width: 1000px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
-            animation-delay: 0.3s;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(16px, 3vw, 22px);
-            font-weight: 300;
-            letter-spacing: 4px;
+        .hero-eyebrow {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 8px;
             text-transform: uppercase;
+            margin-bottom: 24px;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.8s var(--transition-smooth) forwards;
-            animation-delay: 0.5s;
+            animation-delay: 2.9s;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(52px, 10vw, 104px);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 28px;
+            letter-spacing: -0.02em;
+            text-shadow: 0 4px 40px rgba(0,0,0,0.3);
+            max-width: 1100px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+            animation-delay: 3.1s;
+        }
+
+        .hero-description {
+            font-size: clamp(16px, 2.5vw, 20px);
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+            animation-delay: 3.3s;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(15px, 2vw, 18px);
+            font-weight: 300;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+            animation-delay: 3.5s;
         }
 
         @keyframes fadeInUp {
@@ -193,7 +359,7 @@
             }
         }
 
-        /* Облачко внизу */
+        /* Облачко */
         .hero-cloud {
             position: absolute;
             bottom: 80px;
@@ -204,7 +370,7 @@
             cursor: pointer;
             opacity: 0;
             animation: floatIn 0.8s var(--transition-smooth) forwards;
-            animation-delay: 0.8s;
+            animation-delay: 3.8s;
         }
 
         @keyframes floatIn {
@@ -221,14 +387,14 @@
         .cloud-content {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            padding: 20px 40px;
+            padding: 20px 44px;
             border-radius: 100px;
             box-shadow: 
                 0 20px 40px rgba(0,0,0,0.1),
                 0 0 0 1px rgba(255,255,255,0.5) inset;
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 28px;
             transition: all 0.4s var(--transition-smooth);
             white-space: nowrap;
         }
@@ -244,7 +410,7 @@
         .cloud-text {
             font-size: 16px;
             font-weight: 500;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--text-primary);
         }
@@ -256,10 +422,10 @@
         }
 
         .cloud-content:hover .cloud-arrow {
-            transform: translateX(4px);
+            transform: translateY(4px);
         }
 
-        /* Индикаторы слайдов */
+        /* Индикаторы */
         .slider-indicators {
             position: absolute;
             bottom: 200px;
@@ -270,11 +436,7 @@
             gap: 16px;
             opacity: 0;
             animation: fadeIn 0.6s ease forwards;
-            animation-delay: 1s;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
+            animation-delay: 4s;
         }
 
         .indicator {
@@ -300,9 +462,39 @@
 
         /* Main Content */
         .main-content {
-            padding: 80px 48px 60px;
+            padding: 100px 48px 60px;
             max-width: 1800px;
             margin: 0 auto;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .intro-label {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .intro-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 28px;
+        }
+
+        .intro-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text-secondary);
         }
 
         /* Categories */
@@ -310,13 +502,24 @@
             margin-bottom: 60px;
         }
 
+        .categories-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
         .categories-label {
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             letter-spacing: 4px;
             text-transform: uppercase;
             color: var(--text-secondary);
-            margin-bottom: 24px;
+        }
+
+        .categories-count {
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
         .categories-row {
@@ -326,7 +529,7 @@
         }
 
         .category-btn {
-            padding: 14px 32px;
+            padding: 14px 34px;
             font-size: 16px;
             font-weight: 500;
             letter-spacing: 3px;
@@ -370,7 +573,7 @@
         /* Content Layout */
         .content-layout {
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 70px;
         }
 
@@ -381,7 +584,7 @@
         }
 
         .category-icon {
-            font-size: 64px;
+            font-size: 56px;
             margin-bottom: 28px;
             animation: iconFloat 4s ease-in-out infinite;
         }
@@ -393,7 +596,7 @@
 
         .category-title {
             font-family: 'Playfair Display', serif;
-            font-size: 46px;
+            font-size: 44px;
             font-weight: 600;
             line-height: 1.1;
             margin-bottom: 24px;
@@ -403,7 +606,16 @@
             font-size: 16px;
             line-height: 1.8;
             color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .category-note {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--text-secondary);
             margin-bottom: 36px;
+            padding-left: 16px;
+            border-left: 2px solid var(--border-medium, rgba(0,0,0,0.1));
         }
 
         .category-stats {
@@ -413,7 +625,7 @@
 
         .photo-count {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--text-secondary);
@@ -423,8 +635,8 @@
         }
 
         .photo-count .number {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 600;
             color: var(--text-primary);
             font-family: 'Playfair Display', serif;
         }
@@ -500,8 +712,8 @@
 
         .item-number {
             color: #fff;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 500;
             letter-spacing: 4px;
             transform: translateY(20px);
             opacity: 0;
@@ -512,6 +724,40 @@
         .gallery-item:hover .item-number {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            margin-top: 120px;
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-style: italic;
+            font-weight: 400;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            color: var(--text-primary);
+        }
+
+        .quote-author {
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .quote-context {
+            font-size: 13px;
+            color: var(--text-secondary);
+            opacity: 0.7;
         }
 
         /* Lightbox */
@@ -595,7 +841,7 @@
         .lightbox-counter {
             color: #fff;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 3px;
             padding: 0 16px;
             display: flex;
@@ -604,7 +850,7 @@
 
         /* Footer */
         .footer {
-            padding: 40px 48px;
+            padding: 48px;
             border-top: 1px solid rgba(0,0,0,0.06);
             display: flex;
             justify-content: space-between;
@@ -612,19 +858,37 @@
             font-size: 14px;
             color: var(--text-secondary);
             max-width: 1800px;
-            margin: 80px auto 0;
+            margin: 0 auto;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .footer-tagline {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.7;
         }
 
         .footer-links {
             display: flex;
-            gap: 40px;
+            gap: 48px;
         }
 
         .footer-link {
             color: var(--text-secondary);
             text-decoration: none;
             transition: color 0.3s;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 14px;
         }
 
         .footer-link:hover {
@@ -670,16 +934,20 @@
                 letter-spacing: 6px;
             }
             
+            .header-menu {
+                gap: 24px;
+            }
+            
+            .welcome-title {
+                font-size: 40px;
+            }
+            
             .hero-cloud {
                 bottom: 60px;
             }
             
             .cloud-content {
                 padding: 16px 28px;
-            }
-            
-            .cloud-text {
-                font-size: 14px;
             }
             
             .slider-indicators {
@@ -698,6 +966,10 @@
             .main-content {
                 padding: 60px 24px 40px;
             }
+            
+            .intro-title {
+                font-size: 34px;
+            }
         }
 
         @media (max-width: 600px) {
@@ -706,7 +978,15 @@
             }
             
             .hero-title {
-                font-size: 40px;
+                font-size: 44px;
+            }
+            
+            .hero-description {
+                font-size: 15px;
+            }
+            
+            .welcome-title {
+                font-size: 32px;
             }
             
             .cloud-content {
@@ -714,43 +994,72 @@
                 gap: 16px;
             }
             
+            .cloud-text {
+                font-size: 13px;
+            }
+            
             .footer {
                 flex-direction: column;
-                gap: 20px;
+                gap: 24px;
                 text-align: center;
             }
             
             .footer-links {
-                gap: 24px;
+                gap: 28px;
+            }
+            
+            .header-menu {
+                display: none;
+            }
+            
+            .quote-text {
+                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
 
+<!-- Приветственная анимация -->
+<div class="welcome-overlay">
+    <div class="welcome-content">
+        <div class="welcome-icon">📷</div>
+        <div class="welcome-title">Добро пожаловать<br>в фотоальбом</div>
+        <div class="welcome-line"></div>
+        <div class="welcome-subtitle">AMIGO</div>
+        <div class="welcome-footer">Визуальные истории</div>
+    </div>
+</div>
+
 <header class="header" id="header">
-    <div class="logo">АМИГО</div>
+    <div class="logo">AMIGO</div>
+    <div class="header-menu">
+        <a href="#" class="menu-item">Работы</a>
+        <a href="#" class="menu-item">О нас</a>
+        <a href="#" class="menu-item">Контакты</a>
+    </div>
 </header>
 
 <!-- Hero Slider -->
 <section class="hero-slider">
-    <div class="slider-container" id="sliderContainer">
-        <!-- Слайды будут добавлены через JS -->
-    </div>
+    <div class="slider-container" id="sliderContainer"></div>
     
-    <!-- Контент поверх слайдера -->
     <div class="hero-content">
-        <h1 class="hero-title">Истории в каждом кадре</h1>
+        <div class="hero-eyebrow">Визуальные нарративы</div>
+        <h1 class="hero-title">Каждый кадр<br>рассказывает историю</h1>
+        <p class="hero-description">
+            Коллекция моментов, запечатлённых через объектив — 
+            где архитектура встречается с эмоциями, природа раскрывает душу, 
+            а детали говорят о главном
+        </p>
         <p class="hero-subtitle">Архитектура · Природа · Детали</p>
     </div>
     
-    <!-- Индикаторы -->
     <div class="slider-indicators" id="sliderIndicators"></div>
     
-    <!-- Облачко -->
     <div class="hero-cloud" id="heroCloud">
         <div class="cloud-content">
-            <span class="cloud-text">Смотреть работы</span>
+            <span class="cloud-text">Смотреть галерею</span>
             <span class="cloud-arrow">↓</span>
         </div>
     </div>
@@ -758,9 +1067,21 @@
 
 <!-- Main Content -->
 <div class="main-content" id="mainContent">
-    <!-- Categories -->
+    <div class="intro-section">
+        <div class="intro-label">Коллекция</div>
+        <h2 class="intro-title">Истории, которые стоит рассказать,<br>моменты, которые стоит сохранить</h2>
+        <p class="intro-text">
+            Каждая фотография в этой коллекции — уникальный взгляд на мир, 
+            застывший во времени момент, несущий в себе эмоции, композицию и смысл. 
+            Исследуйте категории и откройте для себя мир через наш объектив.
+        </p>
+    </div>
+
     <div class="categories-wrapper">
-        <div class="categories-label">Выберите направление</div>
+        <div class="categories-header">
+            <span class="categories-label">Выберите категорию</span>
+            <span class="categories-count" id="totalPhotosCount">28 фотографий</span>
+        </div>
         <div class="categories-row" id="categoriesRow">
             <button class="category-btn active" data-category="all">Всё</button>
             <button class="category-btn" data-category="architecture">Архитектура</button>
@@ -769,15 +1090,16 @@
         </div>
     </div>
 
-    <!-- Content -->
     <div class="content-layout" id="contentLayout">
         <div class="category-info" id="categoryInfo">
             <div class="category-icon" id="categoryIcon">📷</div>
             <h2 class="category-title" id="categoryTitle">Все работы</h2>
             <p class="category-description" id="categoryDesc">
-                Полная коллекция визуальных историй. Архитектурные формы, 
-                природные текстуры и внимание к деталям — каждая фотография 
-                рассказывает свою уникальную историю.
+                Полная коллекция визуальных историй — от архитектурной геометрии 
+                до органических природных форм и едва заметных деталей, которые часто ускользают от взгляда.
+            </p>
+            <p class="category-note" id="categoryNote">
+                Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение и повествование
             </p>
             <div class="category-stats">
                 <div class="photo-count">
@@ -789,13 +1111,23 @@
         
         <div class="gallery-grid" id="galleryGrid"></div>
     </div>
+
+    <div class="quote-section">
+        <div class="quote-text">«Фотография — это способ чувствовать, касаться, любить то, что вы снимаете»</div>
+        <div class="quote-author">Аарон Сискинд</div>
+        <div class="quote-context">Американский фотограф, известный своими абстрактными экспрессионистскими работами</div>
+    </div>
 </div>
 
 <footer class="footer">
-    <span>© 2026 АМИГО Фото</span>
+    <div class="footer-left">
+        <span class="footer-copyright">© 2026 AMIGO Фотография</span>
+        <span class="footer-tagline">Визуальные истории с 2024 года</span>
+    </div>
     <div class="footer-links">
         <a href="#" class="footer-link">Instagram</a>
         <a href="#" class="footer-link">Telegram</a>
+        <a href="#" class="footer-link">Behance</a>
         <a href="#" class="footer-link">Контакты</a>
     </div>
 </footer>
@@ -817,56 +1149,57 @@
     (function() {
         'use strict';
 
-        // Данные для слайдера
         const SLIDER_PHOTOS = [1, 2, 3, 4, 5, 7, 9, 10, 16, 19];
         
-        // Данные категорий
         const CATEGORIES = {
             all: {
                 icon: '📷',
                 title: 'Все работы',
-                desc: 'Полная коллекция визуальных историй. Архитектурные формы, природные текстуры и внимание к деталям — каждая фотография рассказывает свою уникальную историю.',
+                desc: 'Полная коллекция визуальных историй — от архитектурной геометрии до органических природных форм и едва заметных деталей, которые часто ускользают от взгляда.',
+                note: 'Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение и повествование',
                 photos: [1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32]
             },
             architecture: {
                 icon: '🏛️',
                 title: 'Архитектура',
-                desc: 'Линии, формы и пространство. Городская геометрия и монументальные сооружения в объективе. Игра света на фасадах и строгость конструкций создают неповторимый ритм.',
+                desc: 'Линии, формы и пространство. Городская геометрия и монументальные сооружения через объектив. Игра света и тени на фасадах создаёт уникальный ритм и атмосферу, определяющую нашу искусственную среду.',
+                note: 'Исследование взаимосвязи между человеческим творением и пространственным восприятием',
                 photos: [1,3,4,6,9,10,13,14,15,18]
             },
             nature: {
                 icon: '🌿',
                 title: 'Природа',
-                desc: 'Органические формы и естественная красота. Леса, горы, водные глади — моменты тишины и величия природного мира. Каждый кадр наполнен светом и жизнью.',
+                desc: 'Органические формы и естественная красота. Леса, горы и водные глади — моменты тишины и величия природного мира. Каждый кадр наполнен светом, текстурой и первозданной энергией земли.',
+                note: 'Запечатление неукрощённого духа ландшафтов и экосистем',
                 photos: [2,7,8,16,17,19,20,21,25,26,28,30,32]
             },
             details: {
                 icon: '🔍',
                 title: 'Детали',
-                desc: 'Красота в мелочах. Текстуры, фактуры и незаметные на первый взгляд элементы создают целостную картину. Внимание к тому, что обычно ускользает от взгляда.',
+                desc: 'Красота в мелочах. Текстуры, узоры и элементы, которые обычно ускользают от нашего внимания. Пристальный взгляд открывает целые миры внутри миров — поэзию незамеченного и упущенного.',
+                note: 'Поиск значимости в кажущемся незначительным',
                 photos: [5,12,22,23,24]
             }
         };
 
-        // Состояние
         let currentSlide = 0;
         let currentCategory = 'all';
         let currentPhotos = [...CATEGORIES.all.photos];
         let slideInterval;
         
-        // DOM элементы
         const $ = id => document.getElementById(id);
         const header = $('header');
         const sliderContainer = $('sliderContainer');
         const sliderIndicators = $('sliderIndicators');
         const heroCloud = $('heroCloud');
         const mainContent = $('mainContent');
-        const categoryInfo = $('categoryInfo');
         const categoryIcon = $('categoryIcon');
         const categoryTitle = $('categoryTitle');
         const categoryDesc = $('categoryDesc');
+        const categoryNote = $('categoryNote');
         const photoCountNumber = $('photoCountNumber');
         const photoCountText = $('photoCountText');
+        const totalPhotosCount = $('totalPhotosCount');
         const galleryGrid = $('galleryGrid');
         const lightbox = $('lightbox');
         const lightboxImg = $('lightboxImg');
@@ -875,12 +1208,10 @@
         
         let lightboxIndex = 0;
 
-        // Утилиты
         const declOfNum = (n, titles) => titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2)];
 
-        // Инициализация слайдера
+        // Слайдер
         const initSlider = () => {
-            // Создаём слайды
             SLIDER_PHOTOS.forEach((photoId, index) => {
                 const slide = document.createElement('div');
                 slide.className = `slider-slide ${index === 0 ? 'active' : ''}`;
@@ -890,7 +1221,6 @@
                 `;
                 sliderContainer.appendChild(slide);
                 
-                // Индикатор
                 const indicator = document.createElement('div');
                 indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
                 indicator.addEventListener('click', () => goToSlide(index));
@@ -904,31 +1234,17 @@
             const slides = document.querySelectorAll('.slider-slide');
             const indicators = document.querySelectorAll('.indicator');
             
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
-            
-            indicators.forEach((ind, i) => {
-                ind.classList.toggle('active', i === index);
-            });
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+            indicators.forEach((ind, i) => ind.classList.toggle('active', i === index));
             
             currentSlide = index;
         };
 
-        const nextSlide = () => {
-            const nextIndex = (currentSlide + 1) % SLIDER_PHOTOS.length;
-            goToSlide(nextIndex);
-        };
+        const nextSlide = () => goToSlide((currentSlide + 1) % SLIDER_PHOTOS.length);
+        const startSlideshow = () => slideInterval = setInterval(nextSlide, 5000);
+        const stopSlideshow = () => clearInterval(slideInterval);
 
-        const startSlideshow = () => {
-            slideInterval = setInterval(nextSlide, 5000);
-        };
-
-        const stopSlideshow = () => {
-            clearInterval(slideInterval);
-        };
-
-        // Рендер галереи
+        // Галерея
         const renderGallery = (photoIds) => {
             const fragment = document.createDocumentFragment();
             const photos = photoIds.map(id => ({ id }));
@@ -949,7 +1265,6 @@
                 
                 item.appendChild(img);
                 item.appendChild(overlay);
-                
                 item.addEventListener('click', () => openLightbox(idx));
                 
                 fragment.appendChild(item);
@@ -961,36 +1276,28 @@
             const count = photos.length;
             photoCountNumber.textContent = count;
             photoCountText.textContent = declOfNum(count, ['фотография', 'фотографии', 'фотографий']);
+            totalPhotosCount.textContent = `${count} ${declOfNum(count, ['работа', 'работы', 'работ'])}`;
             
             currentPhotos = photos;
             updateLightboxCounter();
         };
 
-        // Обновление категории
         const updateCategoryInfo = (category) => {
             const data = CATEGORIES[category];
-            
             categoryIcon.textContent = data.icon;
             categoryTitle.textContent = data.title;
             categoryDesc.textContent = data.desc;
-            
+            categoryNote.textContent = data.note;
             renderGallery(data.photos);
         };
 
-        // Переключение категории
         const switchCategory = (category, clickedBtn) => {
             if (category === currentCategory) return;
             
             const rect = clickedBtn.getBoundingClientRect();
-            
             const flyingBtn = clickedBtn.cloneNode(true);
             flyingBtn.classList.add('flying-btn');
-            flyingBtn.style.cssText = `
-                left: ${rect.left}px;
-                top: ${rect.top}px;
-                width: ${rect.width}px;
-                height: ${rect.height}px;
-            `;
+            flyingBtn.style.cssText = `left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: ${rect.height}px;`;
             document.body.appendChild(flyingBtn);
             
             requestAnimationFrame(() => {
@@ -1002,9 +1309,7 @@
             
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.dataset.category === category) {
-                    btn.classList.add('active');
-                }
+                if (btn.dataset.category === category) btn.classList.add('active');
             });
             
             updateCategoryInfo(category);
@@ -1021,8 +1326,7 @@
         };
 
         const updateLightboxImage = () => {
-            const photo = currentPhotos[lightboxIndex];
-            lightboxImg.src = `images/${photo.id}.jpg`;
+            lightboxImg.src = `images/${currentPhotos[lightboxIndex].id}.jpg`;
             updateLightboxCounter();
         };
 
@@ -1058,19 +1362,16 @@
             initSlider();
             renderGallery(CATEGORIES.all.photos);
             
-            // Плавный скролл при клике на облачко
             heroCloud.addEventListener('click', () => {
                 mainContent.scrollIntoView({ behavior: 'smooth' });
             });
             
-            // Категории
             $('categoriesRow').addEventListener('click', (e) => {
                 const btn = e.target.closest('.category-btn');
                 if (!btn) return;
                 switchCategory(btn.dataset.category, btn);
             });
             
-            // Лайтбокс
             $('lightboxClose').addEventListener('click', closeLightbox);
             $('lightboxNext').addEventListener('click', nextLightbox);
             $('lightboxPrev').addEventListener('click', prevLightbox);
@@ -1081,13 +1382,11 @@
             
             document.addEventListener('keydown', (e) => {
                 if (lightbox.style.display !== 'flex') return;
-                
                 if (e.key === 'Escape') closeLightbox();
                 if (e.key === 'ArrowLeft') prevLightbox();
                 if (e.key === 'ArrowRight') nextLightbox();
             });
             
-            // Скролл
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
             
