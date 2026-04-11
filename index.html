@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AMIGO — photo alchemy</title>
+    <title>AMIGO █░▒▓  —  floating fragments</title>
     
     <style>
         * {
@@ -13,181 +13,191 @@
         }
 
         body {
-            background: #f8f8f6;
-            color: #1a1a1a;
-            font-family: 'Times New Roman', 'SF Pro Text', -apple-system, 'Helvetica Neue', serif;
-            font-weight: 400;
-            line-height: 1.4;
-            -webkit-font-smoothing: antialiased;
+            background: #030303;
+            color: #eaeaea;
+            font-family: 'Inter', 'SF Mono', monospace;
+            overflow-x: hidden;
         }
 
-        /* smooth scroll */
-        html {
-            scroll-behavior: smooth;
+        /* жирный приветственный экран */
+        .intro {
+            position: fixed;
+            inset: 0;
+            background: #030303;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
-        /* container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
+        .intro h1 {
+            font-size: clamp(32px, 10vw, 120px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            background: linear-gradient(125deg, #fff, #666, #fff);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: breathe 3s ease infinite;
         }
 
-        /* header — как в фотоальбомах Leica */
-        .header {
-            padding: 48px 0 32px;
-            border-bottom: 0.5px solid rgba(0,0,0,0.1);
-            margin-bottom: 48px;
+        @keyframes breathe {
+            0%, 100% { opacity: 0.7; letter-spacing: -0.02em; }
+            50% { opacity: 1; letter-spacing: 4px; }
         }
 
-        .logo {
-            font-size: 13px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-weight: 400;
-            color: #2c2c2c;
-        }
-
-        .logo sup {
-            font-size: 8px;
-            letter-spacing: 0;
-        }
-
-        /* hero — кинематографичный */
-        .hero {
-            margin-bottom: 80px;
-            position: relative;
-        }
-
-        .hero-image {
-            width: 100%;
-            height: 70vh;
-            object-fit: cover;
-            filter: grayscale(0.15);
-        }
-
-        .hero-caption {
-            text-align: center;
+        .intro p {
             margin-top: 24px;
             font-size: 12px;
-            letter-spacing: 2px;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            color: #888;
+            color: #444;
         }
 
-        /* навигация — минималистичная */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 2px;
-            margin-bottom: 56px;
-            flex-wrap: wrap;
-            border-bottom: 0.5px solid rgba(0,0,0,0.08);
-            padding-bottom: 20px;
+        /* основной контент — сначала скрыт */
+        .main {
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        .nav-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 28px;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-family: inherit;
-            cursor: pointer;
-            color: #999;
-            transition: all 0.2s ease;
-            font-weight: 400;
-        }
-
-        .nav-btn:hover {
-            color: #1a1a1a;
-        }
-
-        .nav-btn.active {
-            color: #1a1a1a;
-            position: relative;
-        }
-
-        .nav-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -21px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 1px;
-            background: #1a1a1a;
-        }
-
-        /* галерея — как в премиум фотоальбомах */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px 32px;
-            margin-bottom: 100px;
-        }
-
-        .gallery-item {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            aspect-ratio: 4 / 5;
-            object-fit: cover;
-            display: block;
-            transition: opacity 0.4s ease;
-            filter: grayscale(0.05);
-        }
-
-        .gallery-item:hover img {
-            opacity: 0.92;
-        }
-
-        .item-info {
-            margin-top: 16px;
+        /* плавающий хедер */
+        .floating-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 24px 32px;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .logo {
             font-size: 12px;
-            letter-spacing: 0.5px;
-            color: #666;
-            border-top: 0.5px solid rgba(0,0,0,0.05);
-            padding-top: 14px;
-        }
-
-        .item-cat {
+            letter-spacing: 2px;
             text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 1px;
+            font-weight: 300;
+            background: rgba(3,3,3,0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            pointer-events: auto;
         }
 
-        .item-id {
+        .counter {
+            font-size: 12px;
             font-family: monospace;
-            font-size: 11px;
+            background: rgba(3,3,3,0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            pointer-events: auto;
         }
 
-        /* особые размеры для драматизма */
-        .gallery-item:nth-child(2),
-        .gallery-item:nth-child(7),
-        .gallery-item:nth-child(13) {
-            transform: translateY(20px);
+        /* кнопки-трансформеры */
+        .shape-nav {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+            background: rgba(3,3,3,0.7);
+            backdrop-filter: blur(20px);
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 0.5px solid rgba(255,255,255,0.08);
         }
 
-        .gallery-item:nth-child(5),
-        .gallery-item:nth-child(11),
-        .gallery-item:nth-child(18) {
-            transform: translateY(-15px);
+        .shape-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-family: monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
         }
 
-        /* лайтбокс — как просмотр фотоальбома */
-        .lightbox {
+        .shape-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .shape-btn.active {
+            background: #fff;
+            color: #030303;
+        }
+
+        /* ГЛАВНАЯ СЕТКА — ДЫШАЩАЯ, ХАОТИЧНАЯ */
+        .grid {
+            min-height: 100vh;
+            padding: 120px 40px 140px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            transition: all 0.4s ease;
+        }
+
+        .cell {
+            position: relative;
+            background: #0a0a0a;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+            aspect-ratio: 1 / 1;
+        }
+
+        .cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.4s;
+            filter: grayscale(0.3) contrast(1.05);
+        }
+
+        .cell:hover img {
+            transform: scale(1.08);
+            filter: grayscale(0) contrast(1.1);
+        }
+
+        /* случайные размеры — НИКАКОЙ СЕТКИ НЕТ */
+        .cell:nth-child(3n+1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .cell:nth-child(5n+2) {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+        .cell:nth-child(7n+4) {
+            grid-column: span 2;
+            grid-row: span 1;
+            aspect-ratio: 2 / 1;
+        }
+        .cell:nth-child(11n+7) {
+            grid-column: span 1;
+            grid-row: span 2;
+            aspect-ratio: 1 / 2;
+        }
+
+        /* лайтбокс — портал */
+        .portal {
             position: fixed;
             inset: 0;
-            background: rgba(248,248,246,0.98);
-            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(40px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -195,42 +205,43 @@
             cursor: pointer;
         }
 
-        .lightbox img {
-            max-width: 85%;
-            max-height: 85%;
-            object-fit: contain;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .portal img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 4px;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
         }
 
-        .lightbox-nav {
+        .portal-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.03);
-            width: 52px;
-            height: 52px;
-            border-radius: 52px;
+            background: rgba(255,255,255,0.03);
+            border: 0.5px solid rgba(255,255,255,0.1);
+            width: 56px;
+            height: 56px;
+            border-radius: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            transition: all 0.2s;
-            color: #1a1a1a;
+            transition: 0.2s;
         }
 
-        .lightbox-nav:hover {
-            background: rgba(0,0,0,0.08);
+        .portal-nav:hover {
+            background: rgba(255,255,255,0.1);
         }
 
-        .lightbox-prev { left: 32px; }
-        .lightbox-next { right: 32px; }
+        .portal-prev { left: 28px; }
+        .portal-next { right: 28px; }
 
-        .lightbox-close {
+        .portal-close {
             position: absolute;
-            top: 32px;
+            top: 28px;
             right: 32px;
-            background: rgba(0,0,0,0.03);
+            background: rgba(255,255,255,0.03);
+            border: 0.5px solid rgba(255,255,255,0.1);
             width: 48px;
             height: 48px;
             border-radius: 48px;
@@ -238,171 +249,93 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .lightbox-close:hover {
-            background: rgba(0,0,0,0.08);
-        }
-
-        .lightbox-counter {
+        .portal-counter {
             position: absolute;
-            bottom: 32px;
+            bottom: 28px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #aaa;
-            background: rgba(0,0,0,0.03);
-            padding: 6px 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 18px;
             border-radius: 40px;
+            font-size: 12px;
             font-family: monospace;
         }
 
-        /* кнопка наверх */
-        #toTop {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            background: #1a1a1a;
-            color: #f8f8f6;
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 44px;
-            cursor: pointer;
-            display: none;
-            z-index: 99;
-            font-size: 18px;
-            transition: all 0.2s;
-            font-family: monospace;
-        }
-
-        #toTop:hover {
-            transform: translateY(-2px);
-            background: #333;
-        }
-
-        /* footer */
-        .footer {
-            border-top: 0.5px solid rgba(0,0,0,0.08);
-            padding: 48px 32px 64px;
-            text-align: center;
-            font-size: 11px;
-            letter-spacing: 1px;
-            color: #aaa;
-            text-transform: uppercase;
-        }
-
-        /* анимация появления */
-        @keyframes appear {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .gallery-item {
-            animation: appear 0.6s ease backwards;
-        }
-
-        /* адаптив */
-        @media (max-width: 900px) {
-            .gallery {
+        @media (max-width: 1000px) {
+            .grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 28px;
+                gap: 6px;
+                padding: 100px 16px 120px;
             }
-            .container {
-                padding: 0 20px;
+            .cell:nth-child(3n+1),
+            .cell:nth-child(7n+4),
+            .cell:nth-child(11n+7) {
+                grid-column: span 1;
+                grid-row: span 1;
+                aspect-ratio: 1 / 1;
             }
-            .hero-image {
-                height: 50vh;
-            }
-            .gallery-item:nth-child(2),
-            .gallery-item:nth-child(7),
-            .gallery-item:nth-child(13),
-            .gallery-item:nth-child(5),
-            .gallery-item:nth-child(11),
-            .gallery-item:nth-child(18) {
-                transform: none;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-            .nav-btn {
+            .shape-nav {
+                bottom: 20px;
                 padding: 6px 16px;
-                font-size: 11px;
             }
-            .nav-btn.active::after {
-                bottom: -19px;
+            .shape-btn {
+                padding: 4px 14px;
+                font-size: 10px;
             }
-            .lightbox-nav {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            .lightbox-prev { left: 12px; }
-            .lightbox-next { right: 12px; }
         }
 
-        /* скелетон */
-        .skeleton {
-            background: #e8e8e6;
-            aspect-ratio: 4 / 5;
-            width: 100%;
-            border-radius: 0;
+        /* футер — минимальный */
+        .footer {
+            position: fixed;
+            bottom: 16px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9px;
+            color: #222;
+            z-index: 99;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="logo">AMIGO <sup>®</sup></div>
-    </div>
-
-    <div class="hero">
-        <img class="hero-image" id="heroImage" src="images/1.jpg" alt="hero">
-        <div class="hero-caption">THE ARCHIVE — VOL.1</div>
-    </div>
-
-    <div class="nav" id="nav">
-        <button class="nav-btn active" data-filter="all">All</button>
-        <button class="nav-btn" data-filter="architecture">Architecture</button>
-        <button class="nav-btn" data-filter="nature">Nature</button>
-        <button class="nav-btn" data-filter="details">Details</button>
-    </div>
-
-    <div class="gallery" id="gallery"></div>
+<div class="intro" id="intro">
+    <h1>AMIGO</h1>
+    <p>enter ▸</p>
 </div>
 
-<div class="footer">
-    <p>AMIGO PHOTOS — analogue spirit / digital soul</p>
+<div class="main" id="main">
+    <div class="floating-header">
+        <div class="logo">FRAGMENTS</div>
+        <div class="counter" id="globalCounter">0 frames</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="shape-nav">
+        <button class="shape-btn active" data-filter="all">all</button>
+        <button class="shape-btn" data-filter="architecture">arch</button>
+        <button class="shape-btn" data-filter="nature">nature</button>
+        <button class="shape-btn" data-filter="details">detail</button>
+    </div>
+    <div class="footer">✦ random grid ✦</div>
 </div>
 
-<div class="lightbox" id="lightbox">
-    <div class="lightbox-close" id="lightboxClose">✕</div>
-    <div class="lightbox-nav lightbox-prev" id="lightboxPrev">←</div>
-    <div class="lightbox-nav lightbox-next" id="lightboxNext">→</div>
-    <img id="lightboxImg" src="">
-    <div class="lightbox-counter" id="lightboxCounter"></div>
+<div class="portal" id="portal">
+    <div class="portal-close" id="portalClose">✕</div>
+    <div class="portal-nav portal-prev" id="portalPrev">←</div>
+    <div class="portal-nav portal-next" id="portalNext">→</div>
+    <img id="portalImg" src="">
+    <div class="portal-counter" id="portalCounter"></div>
 </div>
-
-<button id="toTop">↑</button>
 
 <script>
-    // ==================================================
-    // ФОТОГРАФИИ
-    // ==================================================
+    // ==========================================
+    // ДАННЫЕ — 32 кадра
+    // ==========================================
     const PHOTOS = [
         { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
         { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
@@ -415,47 +348,42 @@
     ];
 
     let currentFilter = 'all';
-    let currentIndex = 0;
     let currentDisplay = [...PHOTOS];
+    let currentIndex = 0;
 
-    const galleryDiv = document.getElementById('gallery');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxCounter = document.getElementById('lightboxCounter');
-    const heroImage = document.getElementById('heroImage');
+    const gridEl = document.getElementById('grid');
+    const portal = document.getElementById('portal');
+    const portalImg = document.getElementById('portalImg');
+    const portalCounter = document.getElementById('portalCounter');
+    const globalCounter = document.getElementById('globalCounter');
 
-    // ==================================================
-    // ГАЛЕРЕЯ
-    // ==================================================
-    function renderGallery(photos) {
-        galleryDiv.style.opacity = '0';
+    // обновляем счётчик
+    function updateCounter() {
+        globalCounter.innerText = `${currentDisplay.length} frames`;
+    }
+
+    // ГЛАВНАЯ ФУНКЦИЯ — РЕНДЕР С ХАОТИЧНОЙ СЕТКОЙ
+    function renderGrid(photos) {
+        gridEl.style.opacity = '0';
         setTimeout(() => {
-            galleryDiv.innerHTML = '';
+            gridEl.innerHTML = '';
             photos.forEach((photo, idx) => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.style.animationDelay = `${idx * 0.03}s`;
+                const cell = document.createElement('div');
+                cell.className = 'cell';
                 
                 const img = document.createElement('img');
-                img.loading = idx < 9 ? 'eager' : 'lazy';
+                img.loading = idx < 12 ? 'eager' : 'lazy';
                 img.decoding = 'async';
                 img.src = `images/${photo.id}.jpg`;
-                img.alt = `amigo ${photo.id}`;
-                img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
+                img.alt = `amigo_${photo.id}`;
+                img.onclick = () => openPortal(PHOTOS.findIndex(p => p.id === photo.id));
                 
-                const info = document.createElement('div');
-                info.className = 'item-info';
-                info.innerHTML = `
-                    <span class="item-cat">${photo.cat}</span>
-                    <span class="item-id">${String(photo.id).padStart(2, '0')}</span>
-                `;
-                
-                item.appendChild(img);
-                item.appendChild(info);
-                galleryDiv.appendChild(item);
+                cell.appendChild(img);
+                gridEl.appendChild(cell);
             });
-            galleryDiv.style.opacity = '1';
-        }, 150);
+            gridEl.style.opacity = '1';
+            updateCounter();
+        }, 200);
     }
 
     function filterGallery(category) {
@@ -464,94 +392,81 @@
         } else {
             currentDisplay = PHOTOS.filter(p => p.cat === category);
         }
-        renderGallery(currentDisplay);
+        renderGrid(currentDisplay);
     }
 
-    // ==================================================
-    // ЛАЙТБОКС
-    // ==================================================
-    function openLightbox(index) {
+    // ПОРТАЛ (ЛАЙТБОКС)
+    function openPortal(index) {
         currentIndex = index;
         const photo = PHOTOS[currentIndex];
-        lightboxImg.src = `images/${photo.id}.jpg`;
-        lightboxCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-        lightbox.style.display = 'flex';
+        portalImg.src = `images/${photo.id}.jpg`;
+        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        portal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    function closeLightbox() {
-        lightbox.style.display = 'none';
+    function closePortal() {
+        portal.style.display = 'none';
         document.body.style.overflow = '';
     }
 
-    function nextImage() {
+    function nextPortal() {
         currentIndex = (currentIndex + 1) % PHOTOS.length;
-        lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        lightboxCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        portalImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
     }
 
-    function prevImage() {
+    function prevPortal() {
         currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
-        lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        lightboxCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        portalImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
     }
 
-    // ==================================================
+    // ==========================================
+    // ИНТРО + ЗАПУСК
+    // ==========================================
+    const intro = document.getElementById('intro');
+    const main = document.getElementById('main');
+
+    intro.addEventListener('click', () => {
+        intro.style.opacity = '0';
+        setTimeout(() => {
+            intro.style.display = 'none';
+            main.style.opacity = '1';
+            // предзагружаем первые 10 фото
+            for (let i = 0; i < 10; i++) {
+                const pre = new Image();
+                pre.src = `images/${PHOTOS[i].id}.jpg`;
+            }
+        }, 800);
+    });
+
+    // ==========================================
     // СОБЫТИЯ
-    // ==================================================
-    document.querySelectorAll('.nav-btn').forEach(btn => {
+    // ==========================================
+    document.querySelectorAll('.shape-btn').forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.filter;
             filterGallery(currentFilter);
         };
     });
 
-    document.getElementById('lightboxClose').onclick = closeLightbox;
-    document.getElementById('lightboxPrev').onclick = prevImage;
-    document.getElementById('lightboxNext').onclick = nextImage;
-    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+    document.getElementById('portalClose').onclick = closePortal;
+    document.getElementById('portalPrev').onclick = prevPortal;
+    document.getElementById('portalNext').onclick = nextPortal;
+    portal.onclick = (e) => { if (e.target === portal) closePortal(); };
     document.addEventListener('keydown', (e) => {
-        if (lightbox.style.display === 'flex') {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') prevImage();
-            if (e.key === 'ArrowRight') nextImage();
+        if (portal.style.display === 'flex') {
+            if (e.key === 'Escape') closePortal();
+            if (e.key === 'ArrowLeft') prevPortal();
+            if (e.key === 'ArrowRight') nextPortal();
         }
     });
 
-    // кнопка наверх
-    const toTop = document.getElementById('toTop');
-    window.addEventListener('scroll', () => {
-        toTop.style.display = window.scrollY > 500 ? 'flex' : 'none';
-    });
-    toTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // меняем hero-фото случайно раз в 8 секунд
-    let heroIndex = 0;
-    const heroImages = [1, 5, 9, 14, 22, 28];
-    setInterval(() => {
-        heroIndex = (heroIndex + 1) % heroImages.length;
-        heroImage.style.opacity = '0.5';
-        setTimeout(() => {
-            heroImage.src = `images/${heroImages[heroIndex]}.jpg`;
-            heroImage.style.opacity = '1';
-        }, 200);
-    }, 8000);
-
-    // старт
-    renderGallery(PHOTOS);
-</script>
-
-<!-- Service Worker для офлайн -->
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-            const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('offline'))));`;
-            const blob = new Blob([swCode], {type: 'application/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
-        });
-    }
+    // старт (интро активно, сетка пока скрыта, но рендерим фоном)
+    renderGrid(PHOTOS);
 </script>
 </body>
 </html>
