@@ -1,602 +1,575 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2D4VS5FRD"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-Y2D4VS5FRD');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Amigo Photos — portfolio</title>
-    
-    <meta name="description" content="Amigo Photos. Architecture, nature, details. Premium photography portfolio.">
-    <meta name="keywords" content="photography, portfolio, architecture, nature, details">
-    <meta name="author" content="Amigo Photos">
-    <meta property="og:title" content="Amigo Photos">
-    <meta property="og:description" content="Premium photography portfolio">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="images/1.jpg">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E<text y='.9em' font-size='90'>📷</text>%3C/svg%3E">
+    <title>AMIGO // FRACTAL EYE</title>
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: none;
         }
 
         body {
-            background: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #050505;
+            color: #f0f0f0;
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            overflow-x: hidden;
             font-weight: 400;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Apple-style smooth scroll */
-        html {
-            scroll-behavior: smooth;
+        /* кастомный курсор */
+        .cursor {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: 0.1s ease-out;
+            transform: translate(-50%, -50%);
+            backdrop-filter: invert(1);
+            mix-blend-mode: difference;
         }
 
-        /* Hero section — fullscreen */
-        .hero {
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            background: #000;
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: 0.05s linear;
+            transform: translate(-50%, -50%);
         }
 
-        .hero-slides {
-            position: absolute;
-            inset: 0;
-        }
-
-        .hero-slide {
-            position: absolute;
+        /* пиксельный дождь */
+        .pixel-rain {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.2s cubic-bezier(0.25, 0.1, 0.15, 1);
-            will-change: opacity;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
         }
 
-        .hero-slide.active {
-            opacity: 1;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
-            z-index: 1;
-        }
-
-        .hero-content {
+        /* герой-взрыв */
+        .hero {
+            height: 100vh;
             position: relative;
-            z-index: 2;
-            height: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 0 24px;
-            backdrop-filter: blur(0px);
+            z-index: 2;
+            background: radial-gradient(circle at 50% 30%, #0a0a0a, #000000);
         }
 
-        .hero-title {
-            font-size: clamp(48px, 8vw, 96px);
-            font-weight: 600;
-            letter-spacing: -0.015em;
-            color: #fff;
-            margin-bottom: 16px;
-            animation: fadeInUp 0.8s ease-out;
+        .hero h1 {
+            font-size: clamp(3rem, 12vw, 9rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff, #aaa, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
+            animation: glitch 3s infinite;
         }
 
-        .hero-subtitle {
-            font-size: clamp(18px, 3vw, 24px);
-            font-weight: 400;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 8px;
-            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        @keyframes glitch {
+            0%, 100% { transform: skew(0deg, 0deg); opacity: 1; }
+            95% { transform: skew(0deg, 0deg); opacity: 1; }
+            96% { transform: skew(5deg, 2deg); opacity: 0.8; text-shadow: -3px 0 red; }
+            97% { transform: skew(-5deg, -2deg); opacity: 0.9; text-shadow: 3px 0 blue; }
+            98% { transform: skew(0deg, 0deg); opacity: 1; }
         }
 
-        .hero-tagline {
-            font-size: 15px;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 0.3em;
+        .hero p {
+            font-size: 1rem;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
-            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+            color: #888;
+            margin-top: 1.5rem;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Categories — Apple style pills */
-        .categories {
+        /* кнопки-трансформеры */
+        .filter-bar {
             position: sticky;
-            top: 20px;
+            top: 2rem;
             z-index: 100;
             display: flex;
             justify-content: center;
-            gap: 12px;
-            padding: 20px 24px;
-            background: transparent;
+            gap: 1rem;
+            padding: 1rem;
             flex-wrap: wrap;
-            pointer-events: none;
-        }
-
-        .category-btn {
-            pointer-events: auto;
-            background: rgba(255,255,255,0.95);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(0,0,0,0.08);
-            color: #1d1d1f;
-            padding: 8px 24px;
+            border-radius: 60px;
+            width: fit-content;
+            margin: 2rem auto 0;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ddd;
+            padding: 0.6rem 1.8rem;
             border-radius: 40px;
-            font-size: 15px;
+            font-family: monospace;
             font-weight: 500;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.15, 1);
-            font-family: inherit;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(4px);
         }
 
-        .category-btn:hover {
-            background: #ffffff;
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        .filter-btn:hover {
+            border-color: white;
+            color: white;
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.05);
         }
 
-        .category-btn.active {
-            background: #1d1d1f;
-            color: #ffffff;
-            border-color: #1d1d1f;
+        .filter-btn.active {
+            background: white;
+            color: black;
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
 
-        /* Gallery — Apple masonry grid */
+        /* галерея — взрывная сетка */
         .gallery {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 60px 32px 100px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            padding: 4rem 2rem 8rem;
+            position: relative;
+            z-index: 2;
+            background: #050505;
         }
 
         .gallery-item {
             position: relative;
+            aspect-ratio: 1 / 1;
             overflow: hidden;
-            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            transform-style: preserve-3d;
             cursor: pointer;
-            background: #f5f5f7;
-            aspect-ratio: 4 / 5;
-            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.15, 1);
         }
 
-        .gallery-item:nth-child(2),
-        .gallery-item:nth-child(5),
-        .gallery-item:nth-child(8) {
-            aspect-ratio: 3 / 4;
+        /* 3D-наклон */
+        .gallery-item:hover {
+            z-index: 10;
+            transform: scale(1.05) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
-            transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
-            will-change: transform;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-8px);
+            transition: transform 0.8s ease;
+            filter: grayscale(0.2) contrast(1.1);
         }
 
         .gallery-item:hover img {
-            transform: scale(1.05);
+            transform: scale(1.1);
+            filter: grayscale(0) contrast(1.2);
         }
 
-        /* Lightbox — Apple style */
-        #lightbox {
+        /* случайные размеры в сетке — хаос */
+        .gallery-item:nth-child(3n+1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .gallery-item:nth-child(5n+2) {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+        .gallery-item:nth-child(7n+4) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        /* лайтбокс — кинотеатр */
+        .cinema {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(30px);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
+            flex-direction: column;
             cursor: pointer;
-            backdrop-filter: blur(20px);
         }
 
-        #lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        .cinema-img {
+            max-width: 85%;
+            max-height: 80%;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            transition: 0.2s;
         }
 
-        .lightbox-nav {
+        .cinema-caption {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: #aaa;
+        }
+
+        .cinema-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            border: none;
-            width: 52px;
-            height: 52px;
-            border-radius: 52px;
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 2rem;
+            transition: 0.2s;
         }
 
-        .lightbox-nav:hover {
+        .cinema-nav:hover {
             background: rgba(255,255,255,0.2);
-            transform: translateY(-50%) scale(1.05);
+            transform: translateY(-50%) scale(1.1);
         }
 
-        .lightbox-prev { left: 24px; }
-        .lightbox-next { right: 24px; }
-
-        .lightbox-close {
+        .cinema-prev { left: 2rem; }
+        .cinema-next { right: 2rem; }
+        .cinema-close {
             position: absolute;
-            top: 24px;
-            right: 32px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: none;
-            color: #fff;
-            font-size: 28px;
-            width: 48px;
-            height: 48px;
-            border-radius: 48px;
-            cursor: pointer;
-            transition: all 0.2s;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .lightbox-close:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
-        }
-
-        /* Counter */
-        .lightbox-counter {
+        /* счётчик */
+        .cinema-counter {
             position: absolute;
-            bottom: 24px;
+            bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
-            font-weight: 500;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            padding: 6px 16px;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
-        }
-
-        /* To Top button */
-        #toTop {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            color: #1d1d1f;
-            border: 0.5px solid rgba(0,0,0,0.08);
-            padding: 12px 18px;
+            background: rgba(0,0,0,0.6);
+            padding: 0.4rem 1.2rem;
             border-radius: 40px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* кнопка наверх — глитч */
+        .glitch-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.8rem 1.4rem;
+            border-radius: 40px;
+            font-family: monospace;
             cursor: pointer;
-            display: none;
-            z-index: 99;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            transition: 0.2s;
+            backdrop-filter: blur(12px);
         }
 
-        #toTop:hover {
-            transform: translateY(-2px);
-            background: #ffffff;
+        .glitch-top:hover {
+            background: white;
+            color: black;
+            border-color: white;
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 48px 24px 32px;
-            font-size: 13px;
-            color: #86868b;
-            border-top: 0.5px solid rgba(0,0,0,0.08);
-            background: #fbfbfd;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .gallery {
-                gap: 16px;
-                padding: 40px 20px 80px;
-            }
-        }
-
-        @media (max-width: 768px) {
+        /* адаптив */
+        @media (max-width: 1000px) {
             .gallery {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-                padding: 32px 16px 60px;
+                gap: 2px;
             }
-            
-            .gallery-item,
-            .gallery-item:nth-child(2),
-            .gallery-item:nth-child(5),
-            .gallery-item:nth-child(8) {
-                aspect-ratio: 4 / 5;
+            .gallery-item:nth-child(3n+1),
+            .gallery-item:nth-child(7n+4) {
+                grid-column: span 1;
+                grid-row: span 1;
             }
-            
-            .categories {
-                top: 12px;
-                gap: 8px;
-                padding: 12px 16px;
+            .filter-bar {
+                top: 1rem;
+                margin: 1rem auto 0;
             }
-            
-            .category-btn {
-                padding: 6px 18px;
-                font-size: 13px;
-            }
-            
-            .lightbox-nav {
-                width: 44px;
-                height: 44px;
-                font-size: 22px;
-            }
-            
-            .lightbox-prev { left: 12px; }
-            .lightbox-next { right: 12px; }
-            .lightbox-close { top: 16px; right: 16px; width: 44px; height: 44px; }
+            .cursor, .cursor-dot { display: none; }
+            body { cursor: auto; }
         }
 
-        @media (max-width: 480px) {
-            .hero-content {
-                padding: 0 20px;
-            }
-        }
-
-        /* Loading skeleton */
-        .gallery-item.skeleton {
-            background: linear-gradient(90deg, #e8e8ed 0%, #f0f0f5 50%, #e8e8ed 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.2s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        /* шумовая текстура */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.03;
+            background: repeating-radial-gradient(circle at 20% 30%, #000, #fff 1px);
         }
     </style>
 </head>
 <body>
 
+<div class="cursor"></div>
+<div class="cursor-dot"></div>
+<div class="pixel-rain" id="pixelRain"></div>
+<div class="noise"></div>
+
 <section class="hero">
-    <div class="hero-slides">
-        <div class="hero-slide active" style="background-image:url('images/1.jpg')"></div>
-        <div class="hero-slide" style="background-image:url('images/2.jpg')"></div>
-        <div class="hero-slide" style="background-image:url('images/3.jpg')"></div>
-        <div class="hero-slide" style="background-image:url('images/4.jpg')"></div>
-        <div class="hero-slide" style="background-image:url('images/5.jpg')"></div>
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <h1 class="hero-title">Amigo Photos</h1>
-        <p class="hero-subtitle">Architecture · Nature · Details</p>
-        <p class="hero-tagline">Visual Stories</p>
+    <div>
+        <h1>AMIGO<br>PHOTOS</h1>
+        <p>// FRACTAL VISION //</p>
     </div>
 </section>
 
-<div class="categories" id="categories"></div>
-<section class="gallery" id="gallery"></section>
-
-<div id="lightbox">
-    <button class="lightbox-close">✕</button>
-    <button class="lightbox-nav lightbox-prev">←</button>
-    <button class="lightbox-nav lightbox-next">→</button>
-    <img src="">
-    <div class="lightbox-counter" id="lightboxCounter"></div>
+<div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all">ALL</button>
+    <button class="filter-btn" data-filter="architecture">ARCHITECTURE</button>
+    <button class="filter-btn" data-filter="nature">NATURE</button>
+    <button class="filter-btn" data-filter="details">DETAILS</button>
 </div>
 
-<button id="toTop">↑ Top</button>
+<div class="gallery" id="gallery"></div>
 
-<footer>
-    <p>© 2026 Amigo Photos — All Rights Reserved</p>
-</footer>
+<div class="cinema" id="cinema">
+    <div class="cinema-close" id="cinemaClose">✕</div>
+    <div class="cinema-nav cinema-prev" id="cinemaPrev">←</div>
+    <div class="cinema-nav cinema-next" id="cinemaNext">→</div>
+    <img class="cinema-img" id="cinemaImg" src="">
+    <div class="cinema-caption" id="cinemaCaption">AMIGO // FRAME</div>
+    <div class="cinema-counter" id="cinemaCounter"></div>
+</div>
+
+<div class="glitch-top" id="toTop">↑ // TOP</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  🎯 CONFIGURATION
-// ═══════════════════════════════════════════════════════════════
+    // ==================================================
+    // ДАННЫЕ — ПОЛНЫЙ ХАОС И КРАСОТА
+    // ==================================================
+    const PHOTOS = [
+        { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
+        { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
+        { id: 13, cat: 'architecture' }, { id: 14, cat: 'architecture' }, { id: 15, cat: 'architecture' }, { id: 18, cat: 'architecture' },
+        { id: 2, cat: 'nature' }, { id: 7, cat: 'nature' }, { id: 8, cat: 'nature' }, { id: 11, cat: 'nature' },
+        { id: 16, cat: 'nature' }, { id: 17, cat: 'nature' }, { id: 19, cat: 'nature' }, { id: 20, cat: 'nature' }, { id: 21, cat: 'nature' },
+        { id: 25, cat: 'nature' }, { id: 26, cat: 'nature' }, { id: 27, cat: 'nature' }, { id: 28, cat: 'nature' },
+        { id: 29, cat: 'nature' }, { id: 30, cat: 'nature' }, { id: 31, cat: 'nature' }, { id: 32, cat: 'nature' },
+        { id: 5, cat: 'details' }, { id: 12, cat: 'details' }, { id: 22, cat: 'details' }, { id: 23, cat: 'details' }, { id: 24, cat: 'details' }
+    ];
 
-const CATEGORIES = {
-    all: { name: 'All Work' },
-    architecture: { name: 'Architecture' },
-    nature: { name: 'Nature' },
-    details: { name: 'Details' }
-};
+    let currentFilter = 'all';
+    let currentIndex = 0;
+    let currentDisplayList = [...PHOTOS];
 
-const PHOTOS = [
-    { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
-    { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
-    { id: 13, cat: 'architecture' }, { id: 14, cat: 'architecture' }, { id: 15, cat: 'architecture' }, { id: 18, cat: 'architecture' },
-    { id: 2, cat: 'nature' }, { id: 7, cat: 'nature' }, { id: 8, cat: 'nature' }, { id: 11, cat: 'nature' },
-    { id: 16, cat: 'nature' }, { id: 17, cat: 'nature' }, { id: 19, cat: 'nature' }, { id: 20, cat: 'nature' }, { id: 21, cat: 'nature' },
-    { id: 25, cat: 'nature' }, { id: 26, cat: 'nature' }, { id: 27, cat: 'nature' }, { id: 28, cat: 'nature' },
-    { id: 29, cat: 'nature' }, { id: 30, cat: 'nature' }, { id: 31, cat: 'nature' }, { id: 32, cat: 'nature' },
-    { id: 5, cat: 'details' }, { id: 12, cat: 'details' }, { id: 22, cat: 'details' }, { id: 23, cat: 'details' }, { id: 24, cat: 'details' }
-];
+    const galleryDiv = document.getElementById('gallery');
+    const cinema = document.getElementById('cinema');
+    const cinemaImg = document.getElementById('cinemaImg');
+    const cinemaCounter = document.getElementById('cinemaCounter');
+    const cinemaCaption = document.getElementById('cinemaCaption');
 
-// ═══════════════════════════════════════════════════════════════
-//  ⚡ APP CORE
-// ═══════════════════════════════════════════════════════════════
+    // ==================================================
+    // ГАЛЕРЕЯ — ЭФФЕКТ ВЗРЫВА
+    // ==================================================
+    function renderGallery(photos) {
+        // взрывной эффект: сначала всё исчезает
+        galleryDiv.style.opacity = '0';
+        galleryDiv.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+            galleryDiv.innerHTML = '';
+            photos.forEach((photo, idx) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                const img = document.createElement('img');
+                img.loading = idx < 9 ? 'eager' : 'lazy';
+                img.decoding = 'async';
+                img.src = `images/${photo.id}.jpg`;
+                img.alt = `amigo_${photo.id}`;
+                img.onclick = () => openCinema(PHOTOS.findIndex(p => p.id === photo.id));
+                item.appendChild(img);
+                
+                // 3D наклон по движению мыши
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    item.style.transform = `perspective(1000px) rotateX(${y * 8}deg) rotateY(${x * 8}deg) scale(1.02)`;
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+                });
+                
+                galleryDiv.appendChild(item);
+            });
+            galleryDiv.style.opacity = '1';
+            galleryDiv.style.transform = 'scale(1)';
+        }, 150);
+    }
 
-const gallery = document.getElementById('gallery');
-const categoriesDiv = document.getElementById('categories');
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = lightbox.querySelector('img');
-const lightboxCounter = document.getElementById('lightboxCounter');
-let currentIndex = 0;
+    function filterGallery(category) {
+        if (category === 'all') {
+            currentDisplayList = [...PHOTOS];
+        } else {
+            currentDisplayList = PHOTOS.filter(p => p.cat === category);
+        }
+        renderGallery(currentDisplayList);
+    }
 
-// Build category buttons
-Object.keys(CATEGORIES).forEach(key => {
-    const btn = document.createElement('button');
-    btn.className = 'category-btn' + (key === 'all' ? ' active' : '');
-    btn.textContent = CATEGORIES[key].name;
-    btn.onclick = () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filtered = key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key);
-        renderGallery(filtered);
-    };
-    categoriesDiv.appendChild(btn);
-});
+    // ==================================================
+    // КИНОТЕАТР (ЛАЙТБОКС)
+    // ==================================================
+    function openCinema(index) {
+        currentIndex = index;
+        const photo = PHOTOS[currentIndex];
+        cinemaImg.src = `images/${photo.id}.jpg`;
+        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
+        updateCounter();
+        cinema.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 
-function renderGallery(photos) {
-    gallery.innerHTML = '';
-    // Show skeletons first
-    photos.forEach(() => {
-        const skeleton = document.createElement('div');
-        skeleton.className = 'gallery-item skeleton';
-        gallery.appendChild(skeleton);
+    function closeCinema() {
+        cinema.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % PHOTOS.length;
+        const photo = PHOTOS[currentIndex];
+        cinemaImg.src = `images/${photo.id}.jpg`;
+        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
+        updateCounter();
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
+        const photo = PHOTOS[currentIndex];
+        cinemaImg.src = `images/${photo.id}.jpg`;
+        cinemaCaption.innerText = `AMIGO // ${photo.cat.toUpperCase()} // FRAME ${photo.id}`;
+        updateCounter();
+    }
+
+    function updateCounter() {
+        cinemaCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+    }
+
+    // ==================================================
+    // ПИКСЕЛЬНЫЙ ДОЖДЬ
+    // ==================================================
+    function createPixelRain() {
+        const container = document.getElementById('pixelRain');
+        for (let i = 0; i < 80; i++) {
+            const pixel = document.createElement('div');
+            pixel.style.position = 'absolute';
+            pixel.style.width = '2px';
+            pixel.style.height = '2px';
+            pixel.style.background = `rgba(255,255,255,${Math.random() * 0.5})`;
+            pixel.style.left = Math.random() * 100 + '%';
+            pixel.style.top = '-10px';
+            pixel.style.opacity = Math.random() * 0.6;
+            pixel.style.animation = `fall ${3 + Math.random() * 5}s linear infinite`;
+            pixel.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(pixel);
+        }
+    }
+
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+        @keyframes fall {
+            0% { transform: translateY(0px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+    createPixelRain();
+
+    // ==================================================
+    // КАСТОМНЫЙ КУРСОР
+    // ==================================================
+    const cursor = document.querySelector('.cursor');
+    const cursorDot = document.querySelector('.cursor-dot');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     });
-    
-    // Load real images
-    setTimeout(() => {
-        photos.forEach((photo, idx) => {
-            const skeleton = gallery.children[idx];
-            const div = document.createElement('div');
-            div.className = 'gallery-item';
-            const img = document.createElement('img');
-            img.loading = idx < 6 ? 'eager' : 'lazy';
-            img.decoding = 'async';
-            img.src = `images/${photo.id}.jpg`;
-            img.alt = `Amigo Photos ${photo.id}`;
-            img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
-            div.appendChild(img);
-            gallery.replaceChild(div, skeleton);
+
+    // ==================================================
+    // СОБЫТИЯ
+    // ==================================================
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            filterGallery(currentFilter);
         });
-    }, 50);
-}
+    });
 
-function openLightbox(idx) {
-    currentIndex = idx;
-    updateLightboxImage();
-    lightbox.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
+    document.getElementById('cinemaClose').onclick = closeCinema;
+    document.getElementById('cinemaPrev').onclick = prevImage;
+    document.getElementById('cinemaNext').onclick = nextImage;
+    cinema.onclick = (e) => { if (e.target === cinema) closeCinema(); };
+    document.addEventListener('keydown', (e) => {
+        if (cinema.style.display === 'flex') {
+            if (e.key === 'Escape') closeCinema();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        }
+    });
 
-function updateLightboxImage() {
-    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-    lightboxCounter.textContent = `${currentIndex + 1} / ${PHOTOS.length}`;
-}
+    const toTopBtn = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+        toTopBtn.style.opacity = window.scrollY > 300 ? '1' : '0.5';
+    });
+    toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-function closeLightbox() {
-    lightbox.style.display = 'none';
-    document.body.style.overflow = '';
-}
+    // СТАРТ
+    renderGallery(PHOTOS);
 
-function nextImage() {
-    currentIndex = (currentIndex + 1) % PHOTOS.length;
-    updateLightboxImage();
-}
-
-function prevImage() {
-    currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
-    updateLightboxImage();
-}
-
-// Hero slider
-let currentSlide = 0;
-const slides = document.querySelectorAll('.hero-slide');
-const totalSlides = slides.length;
-
-function nextSlide() {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % totalSlides;
-    slides[currentSlide].classList.add('active');
-}
-
-setInterval(nextSlide, 5000);
-
-// Preload hero images
-slides.forEach(slide => {
-    const bg = slide.style.backgroundImage;
-    if (bg && bg !== 'none') {
-        const url = bg.slice(5, -2);
-        const img = new Image();
-        img.src = url;
+    // Предзагрузка первых 6 фото
+    for (let i = 0; i < 6; i++) {
+        const preload = new Image();
+        preload.src = `images/${PHOTOS[i].id}.jpg`;
     }
-});
-
-// To Top button
-const toTopBtn = document.getElementById('toTop');
-window.addEventListener('scroll', () => {
-    toTopBtn.style.display = window.scrollY > 500 ? 'flex' : 'none';
-});
-toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-// Lightbox controls
-document.querySelector('.lightbox-close').onclick = closeLightbox;
-document.querySelector('.lightbox-prev').onclick = prevImage;
-document.querySelector('.lightbox-next').onclick = nextImage;
-lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
-document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'flex') {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'ArrowRight') nextImage();
-    }
-});
-
-// Initial render
-renderGallery(PHOTOS);
 </script>
 
-<!-- Service Worker for offline -->
+<!-- Service Worker (авто-офлайн) -->
 <script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-        // Auto-create sw.js if missing
-        const swCode = `const CACHE_NAME = 'amigo-v1';
-const urlsToCache = ['/', '/index.html'];
-self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))));
-self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));`;
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(blob));
-    });
-}
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('🔌 offline', {status: 200}))))`;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        });
+    }
 </script>
 </body>
 </html>
