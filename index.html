@@ -11,286 +11,647 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigo Photos — архитектура · природа · детали</title>
+    <title>🌀 Amigo Photos — 3D Куб · перспектива в кубе</title>
     
-    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе. Работает офлайн!">
-    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали">
+    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали на гранях 3D-куба.">
+    <meta name="keywords" content="фотография, 3D, куб, архитектура, природа, детали">
     <meta name="author" content="Amigo Photos">
-    <meta property="og:title" content="Amigo Photos — фотопортфолио">
-    <meta property="og:description" content="Архитектура, природа и детали в объективе.">
+    <meta property="og:title" content="Amigo Photos — 3D фотокуб">
+    <meta property="og:description" content="Вращайте куб и выбирайте категории.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📷%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎲%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0e0e0e;color:#fff;font-family:Arial,sans-serif}
-        .hero{height:85vh;position:relative;overflow:hidden}
-        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity .8s}
-        .slide.active{opacity:1}
-        .hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:1}
-        .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
-        .hero h1{font-size:4em}
-        .hero p{margin-top:15px;font-size:1.2em}
-        .categories{padding:30px 60px 0;text-align:center;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-        .category-btn{background:#2a2a2a;border:none;color:#fff;padding:10px 24px;border-radius:30px;cursor:pointer;transition:transform .2s}
-        .category-btn:hover{background:#444;transform:translateY(-2px)}
-        .category-btn.active{background:#fff;color:#000}
-        .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer}
-        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s}
-        .gallery-item:hover img{transform:scale(1.03)}
-        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
-        #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
-        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001;border-radius:5px;user-select:none}
-        .lightbox-nav:hover{background:rgba(255,255,255,.4)}
-        .lightbox-prev{left:20px}
-        .lightbox-next{right:20px}
-        .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
-        #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
-        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none;font-weight:bold}
-        @media (max-width:768px){
-            .hero{height:60vh}
-            .hero h1{font-size:2em}
-            .hero p{font-size:1em}
-            .gallery{grid-template-columns:repeat(2,1fr);padding:20px 12px;gap:8px}
-            .gallery img{height:170px}
-            .categories{padding:20px 12px 0}
-            .category-btn{padding:6px 16px;font-size:12px}
-            .lightbox-nav{font-size:25px;padding:10px}
-            .offline-badge{bottom:80px}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #1a1a2e, #0a0a0a);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            perspective: 1500px;
+        }
+
+        /* Главный контейнер: куб слева/по центру, меню справа */
+        .app {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* ----- 3D КУБ ----- */
+        .cube-wrapper {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            flex-shrink: 0;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .cube {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(-15deg) rotateY(25deg);
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: grab;
+            user-select: none;
+        }
+
+        .cube:active {
+            cursor: grabbing;
+        }
+
+        .face {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            background-color: #111;
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5) inset, 0 0 20px rgba(102,126,234,0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: filter 0.3s;
+            backface-visibility: visible;
+        }
+
+        .face::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+        }
+
+        /* Позиции граней */
+        .front  { transform: translateZ(200px); }
+        .back   { transform: rotateY(180deg) translateZ(200px); }
+        .right  { transform: rotateY(90deg) translateZ(200px); }
+        .left   { transform: rotateY(-90deg) translateZ(200px); }
+        .top    { transform: rotateX(90deg) translateZ(200px); }
+        .bottom { transform: rotateX(-90deg) translateZ(200px); }
+
+        /* Подпись категории на грани (небольшая) */
+        .face-label {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 8px black;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 14px;
+            text-transform: uppercase;
+            background: rgba(0,0,0,0.4);
+            padding: 6px;
+            backdrop-filter: blur(4px);
+            border-radius: 0 0 12px 12px;
+            z-index: 2;
+        }
+
+        /* Кнопки вращения (дополнительно) */
+        .rotate-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .rotate-btn {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rotate-btn:hover {
+            background: rgba(102,126,234,0.4);
+            transform: scale(1.1);
+        }
+
+        /* ----- ПАНЕЛЬ КАТЕГОРИЙ (справа) ----- */
+        .categories-panel {
+            background: rgba(20, 20, 40, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 30px 25px;
+            min-width: 260px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .categories-panel h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cat-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: 1px;
+        }
+
+        .cat-btn span {
+            font-size: 24px;
+        }
+
+        .cat-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(8px);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .cat-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            box-shadow: 0 0 20px #667eea80;
+            transform: translateX(8px);
+        }
+
+        /* Индикатор текущей категории на кубе */
+        .cube-category-badge {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            border: 1px solid rgba(255,255,255,0.2);
+            white-space: nowrap;
+            z-index: 5;
+        }
+
+        /* Лайтбокс */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #lightbox img {
+            max-width: 85%;
+            max-height: 85%;
+            border-radius: 20px;
+            box-shadow: 0 0 60px #000;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 32px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.2s;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,0,0,0.3);
+            transform: scale(1.1);
+        }
+
+        /* Офлайн бейдж */
+        .offline-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #f5576c;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: none;
+            z-index: 99;
+            box-shadow: 0 5px 20px #f5576c80;
+        }
+
+        /* Кнопка наверх */
+        #toTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: none;
+            font-weight: bold;
+            z-index: 99;
+        }
+
+        /* Адаптация */
+        @media (max-width: 900px) {
+            .app {
+                flex-direction: column;
+            }
+            .cube-wrapper {
+                width: 300px;
+                height: 300px;
+            }
+            .face {
+                width: 300px;
+                height: 300px;
+            }
+            .front  { transform: translateZ(150px); }
+            .back   { transform: rotateY(180deg) translateZ(150px); }
+            .right  { transform: rotateY(90deg) translateZ(150px); }
+            .left   { transform: rotateY(-90deg) translateZ(150px); }
+            .top    { transform: rotateX(90deg) translateZ(150px); }
+            .bottom { transform: rotateX(-90deg) translateZ(150px); }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-<section class="hero">
-    <div class="slide active" style="background-image:url('images/1.jpg')"></div>
-    <div class="slide" style="background-image:url('images/2.jpg')"></div>
-    <div class="slide" style="background-image:url('images/3.jpg')"></div>
-    <div class="slide" style="background-image:url('images/4.jpg')"></div>
-    <div class="slide" style="background-image:url('images/5.jpg')"></div>
-    <div class="hero-content">
-        <h1>Amigo Photos</h1>
-        <p>Архитектура · Природа · Детали</p>
-        <p>Фотография — способ сохранить моменты</p>
+<div class="app">
+    <!-- КУБ -->
+    <div style="position: relative;">
+        <div class="cube-category-badge" id="cubeCategoryLabel">🏛️ АРХИТЕКТУРА</div>
+        <div class="cube-wrapper">
+            <div class="cube" id="cube">
+                <div class="face front" id="face-front"><div class="face-label"></div></div>
+                <div class="face back" id="face-back"><div class="face-label"></div></div>
+                <div class="face right" id="face-right"><div class="face-label"></div></div>
+                <div class="face left" id="face-left"><div class="face-label"></div></div>
+                <div class="face top" id="face-top"><div class="face-label"></div></div>
+                <div class="face bottom" id="face-bottom"><div class="face-label"></div></div>
+            </div>
+        </div>
+        <!-- Кнопки быстрого поворота -->
+        <div class="rotate-controls">
+            <button class="rotate-btn" id="rotateLeft" title="Повернуть влево">↺</button>
+            <button class="rotate-btn" id="rotateRight" title="Повернуть вправо">↻</button>
+            <button class="rotate-btn" id="rotateUp" title="Повернуть вверх">↻</button>
+        </div>
     </div>
-</section>
 
-<div class="categories" id="categories"></div>
-<section class="gallery" id="gallery"></section>
-
-<div id="lightbox">
-    <button class="lightbox-close" aria-label="Закрыть">✕</button>
-    <button class="lightbox-nav lightbox-prev" aria-label="Предыдущее">❮</button>
-    <button class="lightbox-nav lightbox-next" aria-label="Следующее">❯</button>
-    <img src="" alt="Просмотр фото">
+    <!-- ПАНЕЛЬ КАТЕГОРИЙ -->
+    <div class="categories-panel">
+        <h3>🎲 КАТЕГОРИИ</h3>
+        <div class="category-list">
+            <button class="cat-btn active" data-cat="architecture"><span>🏛️</span> Архитектура</button>
+            <button class="cat-btn" data-cat="nature"><span>🌿</span> Природа</button>
+            <button class="cat-btn" data-cat="details"><span>🔍</span> Детали</button>
+            <button class="cat-btn" data-cat="all"><span>✨</span> Всё вместе</button>
+        </div>
+        <p style="margin-top: 30px; font-size: 12px; opacity: 0.7; text-align: center;">
+            Кликни на грань — увеличить<br>Крути куб мышью
+        </p>
+    </div>
 </div>
 
-<button id="toTop" aria-label="Наверх">↑ Наверх</button>
+<!-- Лайтбокс -->
+<div id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img id="lightboxImg" src="" alt="Просмотр">
+</div>
+
 <div class="offline-badge" id="offlineBadge">📡 Офлайн-режим</div>
-<footer>© 2026 Amigo Photos — All Rights Reserved</footer>
+<button id="toTop">↑ Наверх</button>
+<footer>© 2026 Amigo Photos — 3D Куб впечатлений</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-//  📸 НАСТРОЙКИ (меняй здесь под себя)
+//  📸 ДАННЫЕ (без 11, 27, 29, 31)
 // ═══════════════════════════════════════════════════════════════
-
 const CATEGORIES = {
-    all:       { name: '📷 Все' },
-    architecture: { name: '🏛️ Архитектура' },
-    nature:    { name: '🌿 Природа' },
-    details:   { name: '🔍 Детали' }
+    architecture: { name: '🏛️ Архитектура', label: 'АРХИТЕКТУРА' },
+    nature:      { name: '🌿 Природа', label: 'ПРИРОДА' },
+    details:     { name: '🔍 Детали', label: 'ДЕТАЛИ' },
+    all:         { name: '✨ Всё', label: 'ВСЕ КАТЕГОРИИ' }
 };
 
-// ФОТОГРАФИИ (удалены 11, 27, 29, 31)
+// Все фото (как в исходном, но без удалённых)
 const PHOTOS = [
-    // Архитектура (10 фото) id: 1,3,4,6,9,10,13,14,15,18
     { id:1, cat:'architecture' }, { id:3, cat:'architecture' }, { id:4, cat:'architecture' },
     { id:6, cat:'architecture' }, { id:9, cat:'architecture' }, { id:10,cat:'architecture' },
     { id:13,cat:'architecture' }, { id:14,cat:'architecture' }, { id:15,cat:'architecture' }, { id:18,cat:'architecture' },
-    // Природа (13 фото, было 17, удалены 11, 27, 29, 31) 
-    // id: 2,7,8,16,17,19,20,21,25,26,28,30,32
     { id:2, cat:'nature' }, { id:7, cat:'nature' }, { id:8, cat:'nature' }, 
     { id:16,cat:'nature' }, { id:17,cat:'nature' }, { id:19,cat:'nature' }, { id:20,cat:'nature' }, { id:21,cat:'nature' },
     { id:25,cat:'nature' }, { id:26,cat:'nature' }, { id:28,cat:'nature' },
     { id:30,cat:'nature' }, { id:32,cat:'nature' },
-    // Детали (5 фото) id: 5,12,22,23,24
     { id:5, cat:'details' }, { id:12,cat:'details' }, { id:22,cat:'details' }, { id:23,cat:'details' }, { id:24,cat:'details' }
 ];
 
-// ═══════════════════════════════════════════════════════════════
-//  ⚡ ДВИЖОК
-// ═══════════════════════════════════════════════════════════════
+// Группируем фото по категориям для быстрого доступа
+const photosByCat = {
+    architecture: PHOTOS.filter(p => p.cat === 'architecture'),
+    nature: PHOTOS.filter(p => p.cat === 'nature'),
+    details: PHOTOS.filter(p => p.cat === 'details'),
+    all: PHOTOS
+};
 
-const gallery = document.getElementById('gallery');
-const categoriesDiv = document.getElementById('categories');
+// Текущая категория и фото на гранях
+let currentCategory = 'architecture';
+let currentFacePhotos = []; // массив из 6 объектов {id, cat}
+
+// Элементы
+const cube = document.getElementById('cube');
+const faces = {
+    front: document.getElementById('face-front'),
+    back: document.getElementById('face-back'),
+    right: document.getElementById('face-right'),
+    left: document.getElementById('face-left'),
+    top: document.getElementById('face-top'),
+    bottom: document.getElementById('face-bottom')
+};
+const categoryLabel = document.getElementById('cubeCategoryLabel');
+const catBtns = document.querySelectorAll('.cat-btn');
 const lightbox = document.getElementById('lightbox');
-const lightboxImg = lightbox.querySelector('img');
+const lightboxImg = document.getElementById('lightboxImg');
 
-// Текущий отфильтрованный массив для корректной навигации в лайтбоксе
-let currentFilteredPhotos = PHOTOS;
-let currentLightboxIndex = 0;
+// Инициализация: выбираем 6 случайных фото из категории "architecture"
+function getRandomPhotosFromCat(cat, count = 6) {
+    const arr = photosByCat[cat] || photosByCat.all;
+    if (arr.length === 0) return [];
+    // Перемешиваем и берём первые count (или сколько есть)
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+}
 
-// Генерация кнопок
-Object.keys(CATEGORIES).forEach(key => {
-    const btn = document.createElement('button');
-    btn.className = 'category-btn' + (key === 'all' ? ' active' : '');
-    btn.textContent = CATEGORIES[key].name;
-    btn.onclick = () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (key === 'all') {
-            currentFilteredPhotos = PHOTOS;
-        } else {
-            currentFilteredPhotos = PHOTOS.filter(p => p.cat === key);
-        }
-        render(currentFilteredPhotos);
-    };
-    categoriesDiv.appendChild(btn);
-});
-
-// Отрисовка галереи
-function render(photos) {
-    gallery.innerHTML = '';
-    photos.forEach((photo, index) => {
-        const div = document.createElement('div');
-        div.className = 'gallery-item';
-        const img = document.createElement('img');
-        img.src = `images/${photo.id}.jpg`;
-        img.alt = `Фото ${photo.id}`;
-        img.onclick = () => {
-            // Открываем лайтбокс с учетом текущего индекса в ОТФИЛЬТРОВАННОМ массиве
-            currentLightboxIndex = index;
-            updateLightboxImage();
-            lightbox.style.display = 'flex';
-        };
-        div.appendChild(img);
-        gallery.appendChild(div);
+// Заполнить грани куба фотографиями
+function updateCubeFaces(photosArray) {
+    const faceKeys = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+    // Если фото меньше 6, дублируем
+    while (photosArray.length < 6) {
+        photosArray.push(photosArray[0]);
+    }
+    currentFacePhotos = photosArray.slice(0, 6);
+    
+    faceKeys.forEach((key, idx) => {
+        const photo = currentFacePhotos[idx];
+        const faceDiv = faces[key];
+        const imgUrl = `images/${photo.id}.jpg`;
+        faceDiv.style.backgroundImage = `url('${imgUrl}')`;
+        // Подпись
+        const label = faceDiv.querySelector('.face-label');
+        label.textContent = `${CATEGORIES[photo.cat].name.split(' ')[1] || ''} #${photo.id}`;
+        
+        // Сохраняем данные для клика
+        faceDiv.dataset.photoId = photo.id;
+        faceDiv.dataset.cat = photo.cat;
     });
 }
 
-function updateLightboxImage() {
-    if (currentFilteredPhotos.length > 0) {
-        lightboxImg.src = `images/${currentFilteredPhotos[currentLightboxIndex].id}.jpg`;
+// Обработчик клика по грани -> лайтбокс
+function onFaceClick(e) {
+    const face = e.currentTarget;
+    const photoId = face.dataset.photoId;
+    if (photoId) {
+        lightboxImg.src = `images/${photoId}.jpg`;
+        lightbox.style.display = 'flex';
     }
 }
 
-function closeLightbox() { lightbox.style.display = 'none'; }
-function prev() { 
-    if (currentFilteredPhotos.length === 0) return;
-    currentLightboxIndex = (currentLightboxIndex - 1 + currentFilteredPhotos.length) % currentFilteredPhotos.length; 
-    updateLightboxImage();
-}
-function next() { 
-    if (currentFilteredPhotos.length === 0) return;
-    currentLightboxIndex = (currentLightboxIndex + 1) % currentFilteredPhotos.length; 
-    updateLightboxImage();
+// Назначаем обработчики
+Object.values(faces).forEach(face => {
+    face.addEventListener('click', onFaceClick);
+});
+
+// Смена категории
+function setCategory(cat) {
+    currentCategory = cat;
+    
+    // Обновляем активную кнопку
+    catBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.cat === cat);
+    });
+    
+    // Обновляем текст над кубом
+    categoryLabel.textContent = CATEGORIES[cat].label;
+    
+    // Выбираем 6 случайных фото категории
+    const selectedPhotos = getRandomPhotosFromCat(cat, 6);
+    updateCubeFaces(selectedPhotos);
+    
+    // Анимация: куб слегка "встряхивается" (небольшой поворот)
+    cube.style.transform = `rotateX(-15deg) rotateY(${25 + Math.random() * 20}deg)`;
 }
 
-// Слайдер
-let s=0, slides=document.querySelectorAll('.slide');
-setInterval(() => { 
-    if(slides.length > 0) {
-        slides[s].classList.remove('active'); 
-        s=(s+1)%slides.length; 
-        slides[s].classList.add('active'); 
+// Обработчики кнопок категорий
+catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        setCategory(cat);
+    });
+});
+
+// ─── Вращение куба мышью ─────────────────────────────
+let isDragging = false;
+let startX, startY;
+let currentRotateX = -15, currentRotateY = 25;
+
+cube.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    cube.style.cursor = 'grabbing';
+    e.preventDefault();
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    
+    currentRotateY += dx * 0.5;
+    currentRotateX -= dy * 0.5;
+    
+    // Ограничиваем X, чтобы не переворачивать слишком сильно
+    currentRotateX = Math.max(-40, Math.min(40, currentRotateX));
+    
+    cube.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+    
+    startX = e.clientX;
+    startY = e.clientY;
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+    cube.style.cursor = 'grab';
+});
+
+// Кнопки быстрого поворота
+document.getElementById('rotateLeft').addEventListener('click', () => {
+    currentRotateY -= 30;
+    cube.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+});
+document.getElementById('rotateRight').addEventListener('click', () => {
+    currentRotateY += 30;
+    cube.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+});
+document.getElementById('rotateUp').addEventListener('click', () => {
+    currentRotateX = Math.max(-40, currentRotateX - 20);
+    cube.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+});
+
+// Лайтбокс
+lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+        lightbox.style.display = 'none';
     }
-}, 5000);
+});
+document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex' && e.key === 'Escape') {
+        lightbox.style.display = 'none';
+    }
+});
 
 // Кнопка наверх
 const toTop = document.getElementById('toTop');
-window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
-toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
+window.addEventListener('scroll', () => {
+    toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
+});
+toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
 
-// События лайтбокса
-document.querySelector('.lightbox-close').onclick = closeLightbox;
-document.querySelector('.lightbox-prev').onclick = (e) => { e.stopPropagation(); prev(); };
-document.querySelector('.lightbox-next').onclick = (e) => { e.stopPropagation(); next(); };
-lightbox.onclick = e => { if(e.target === lightbox || e.target.classList.contains('lightbox-close')) closeLightbox(); };
-document.onkeydown = e => { 
-    if(lightbox.style.display === 'flex') { 
-        if(e.key === 'Escape') closeLightbox(); 
-        if(e.key === 'ArrowLeft') prev(); 
-        if(e.key === 'ArrowRight') next(); 
-    } 
-};
-
-// ═══════════════════════════════════════════════════════════════
-//  📡 SERVICE WORKER (ОФЛАЙН-РЕЖИМ)
-// ═══════════════════════════════════════════════════════════════
-
+// ─── ОФЛАЙН И SW ─────────────────────────────────────
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        // Создаем Service Worker "на лету", чтобы не зависеть от внешнего файла sw.js
         const swCode = `
-const CACHE_NAME = 'amigo-photos-v3';
+const CACHE_NAME = 'amigo-cube-v1';
 const urlsToCache = [
     '/',
     '/index.html',
-    // Кэшируем все картинки из списка PHOTOS (динамически вставлены, без удаленных)
     ${JSON.stringify(PHOTOS.map(p => `/images/${p.id}.jpg`))}
 ].flat();
 
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Кэширование ресурсов');
-                return cache.addAll(urlsToCache);
-            })
-    );
+self.addEventListener('install', e => {
+    e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
 });
-
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                // Возвращаем из кэша, если есть, иначе идем в сеть
-                return response || fetch(event.request);
-            })
-    );
+self.addEventListener('fetch', e => {
+    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
 });
-
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
-            );
-        })
-    );
+self.addEventListener('activate', e => {
+    e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
 });
 `;
-        
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        
-        navigator.serviceWorker.register(swUrl)
-            .then(reg => console.log('✅ Service Worker зарегистрирован (динамический)'))
-            .catch(err => console.log('❌ Ошибка регистрации SW:', err));
+        const blob = new Blob([swCode], {type: 'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(blob));
     }
 }
 
-// Показываем индикатор при офлайн-режиме
+const offlineBadge = document.getElementById('offlineBadge');
+window.addEventListener('online', () => offlineBadge.style.display = 'none');
+window.addEventListener('offline', () => {
+    offlineBadge.style.display = 'block';
+    setTimeout(() => offlineBadge.style.display = 'none', 3000);
+});
 window.addEventListener('load', () => {
     registerServiceWorker();
-    
-    const badge = document.getElementById('offlineBadge');
-    function updateOnlineStatus() {
-        if (!navigator.onLine) {
-            badge.style.display = 'block';
-            setTimeout(() => badge.style.display = 'none', 3000);
-        }
+    if (!navigator.onLine) {
+        offlineBadge.style.display = 'block';
+        setTimeout(() => offlineBadge.style.display = 'none', 3000);
     }
-    window.addEventListener('online', () => badge.style.display = 'none');
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus(); // Проверка при загрузке
 });
 
-// Старт рендеринга
-currentFilteredPhotos = PHOTOS;
-render(PHOTOS);
+// ─── СТАРТ ───────────────────────────────────────────
+setCategory('architecture');
+
+// Дополнительно: анимация "дыхания" куба при смене категории
+function animateCubePulse() {
+    cube.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    setTimeout(() => cube.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)', 600);
+}
+// Переопределим setCategory с анимацией
+const originalSetCategory = setCategory;
+setCategory = function(cat) {
+    currentCategory = cat;
+    catBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.cat === cat));
+    categoryLabel.textContent = CATEGORIES[cat].label;
+    const selectedPhotos = getRandomPhotosFromCat(cat, 6);
+    updateCubeFaces(selectedPhotos);
+    
+    // Пульсация
+    cube.style.transform = `rotateX(${currentRotateX-5}deg) rotateY(${currentRotateY+10}deg) scale(0.98)`;
+    setTimeout(() => {
+        cube.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg) scale(1)`;
+    }, 150);
+};
+setCategory('architecture');
+
+// Подсказка: начальный поворот
+cube.style.cursor = 'grab';
 </script>
 </body>
 </html>
