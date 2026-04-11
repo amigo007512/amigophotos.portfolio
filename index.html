@@ -3,200 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AMIGO █░▒▓  —  floating fragments</title>
+    <title>AMIGO — летающие фрагменты</title>
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         body {
-            background: #030303;
-            color: #eaeaea;
-            font-family: 'Inter', 'SF Mono', monospace;
+            background: #050510;
+            background-image: radial-gradient(circle at 20% 40%, rgba(80,60,150,0.2) 0%, #050510 100%);
+            min-height: 100vh;
             overflow-x: hidden;
+            font-family: 'Courier New', 'SF Mono', monospace;
         }
 
-        /* жирный приветственный экран */
-        .intro {
+        /* звёздный фон */
+        .stars {
             position: fixed;
             inset: 0;
-            background: #030303;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1); }
+        }
+
+        /* приветственный ритуал */
+        .ritual {
+            position: fixed;
+            inset: 0;
+            background: #050510;
             z-index: 2000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-
-        .intro h1 {
-            font-size: clamp(32px, 10vw, 120px);
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            background: linear-gradient(125deg, #fff, #666, #fff);
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: breathe 3s ease infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { opacity: 0.7; letter-spacing: -0.02em; }
-            50% { opacity: 1; letter-spacing: 4px; }
-        }
-
-        .intro p {
-            margin-top: 24px;
-            font-size: 12px;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            color: #444;
-        }
-
-        /* основной контент — сначала скрыт */
-        .main {
-            opacity: 0;
             transition: opacity 1s ease;
         }
 
-        /* плавающий хедер */
-        .floating-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 24px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            background: transparent;
-            pointer-events: none;
+        .ritual h1 {
+            font-size: clamp(40px, 10vw, 100px);
+            font-weight: 100;
+            letter-spacing: 12px;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(200,180,255,0.6);
+            text-shadow: 0 0 30px rgba(150,130,255,0.3);
+            animation: float 3s ease infinite;
         }
 
-        .logo {
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); letter-spacing: 12px; }
+            50% { transform: translateY(-10px); letter-spacing: 18px; }
+        }
+
+        .ritual p {
+            margin-top: 40px;
             font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 300;
-            background: rgba(3,3,3,0.6);
-            backdrop-filter: blur(8px);
-            padding: 6px 14px;
-            border-radius: 40px;
-            pointer-events: auto;
+            letter-spacing: 4px;
+            color: #8888cc;
         }
 
-        .counter {
-            font-size: 12px;
-            font-family: monospace;
-            background: rgba(3,3,3,0.6);
-            backdrop-filter: blur(8px);
-            padding: 6px 14px;
-            border-radius: 40px;
-            pointer-events: auto;
+        /* основной космос */
+        .cosmos {
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
         }
 
-        /* кнопки-трансформеры */
-        .shape-nav {
+        /* летающая навигация */
+        .floating-menu {
             position: fixed;
-            bottom: 32px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
             display: flex;
             gap: 12px;
-            background: rgba(3,3,3,0.7);
+            background: rgba(10,10,30,0.7);
             backdrop-filter: blur(20px);
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 60px;
-            border: 0.5px solid rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(150,130,255,0.3);
         }
 
-        .shape-btn {
+        .float-btn {
             background: transparent;
             border: none;
-            color: #888;
-            padding: 6px 20px;
+            color: #aaaacc;
+            padding: 8px 24px;
             border-radius: 40px;
             font-size: 12px;
             font-family: monospace;
             cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
         }
 
-        .shape-btn:hover {
-            color: #fff;
-            background: rgba(255,255,255,0.05);
+        .float-btn:hover {
+            color: #ffffff;
+            background: rgba(150,130,255,0.2);
         }
 
-        .shape-btn.active {
-            background: #fff;
-            color: #030303;
+        .float-btn.active {
+            background: #8a7bff;
+            color: #050510;
+            box-shadow: 0 0 20px rgba(138,123,255,0.5);
         }
 
-        /* ГЛАВНАЯ СЕТКА — ДЫШАЩАЯ, ХАОТИЧНАЯ */
-        .grid {
-            min-height: 100vh;
-            padding: 120px 40px 140px;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            transition: all 0.4s ease;
+        /* счётчик в углу */
+        .star-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 100;
+            background: rgba(10,10,30,0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-family: monospace;
+            color: #aaaacc;
+            letter-spacing: 1px;
         }
 
-        .cell {
+        /* поэтическая строка */
+        .whisper {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 100;
+            max-width: 280px;
+            background: rgba(10,10,30,0.4);
+            backdrop-filter: blur(8px);
+            padding: 16px 20px;
+            border-left: 2px solid #8a7bff;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #bbb;
+            font-style: italic;
+            pointer-events: none;
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ ПАРЯЩИХ ФОТО */
+        .levitate-container {
             position: relative;
-            background: #0a0a0a;
+            min-height: 100vh;
+            padding: 100px 40px;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.4, 1.2);
-            aspect-ratio: 1 / 1;
         }
 
-        .cell img {
+        .floating-photo {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+            border-radius: 4px;
+            will-change: transform;
+        }
+
+        .floating-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease, filter 0.4s;
-            filter: grayscale(0.3) contrast(1.05);
+            display: block;
+            border-radius: 4px;
+            transition: all 0.3s;
+            filter: grayscale(0.2) brightness(0.9);
         }
 
-        .cell:hover img {
-            transform: scale(1.08);
-            filter: grayscale(0) contrast(1.1);
+        .floating-photo:hover {
+            z-index: 50;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
         }
 
-        /* случайные размеры — НИКАКОЙ СЕТКИ НЕТ */
-        .cell:nth-child(3n+1) {
-            grid-column: span 2;
-            grid-row: span 2;
-        }
-        .cell:nth-child(5n+2) {
-            grid-column: span 1;
-            grid-row: span 1;
-        }
-        .cell:nth-child(7n+4) {
-            grid-column: span 2;
-            grid-row: span 1;
-            aspect-ratio: 2 / 1;
-        }
-        .cell:nth-child(11n+7) {
-            grid-column: span 1;
-            grid-row: span 2;
-            aspect-ratio: 1 / 2;
+        .floating-photo:hover img {
+            filter: grayscale(0) brightness(1.05);
         }
 
-        /* лайтбокс — портал */
-        .portal {
+        /* лайтбокс — звёздные врата */
+        .stargate {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.98);
+            background: rgba(5,5,16,0.98);
             backdrop-filter: blur(40px);
             display: none;
             justify-content: center;
@@ -205,19 +210,20 @@
             cursor: pointer;
         }
 
-        .portal img {
+        .stargate img {
             max-width: 80%;
             max-height: 80%;
-            border-radius: 4px;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(138,123,255,0.3);
+            box-shadow: 0 0 50px rgba(138,123,255,0.2);
         }
 
-        .portal-nav {
+        .gate-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.03);
-            border: 0.5px solid rgba(255,255,255,0.1);
+            background: rgba(138,123,255,0.1);
+            border: 1px solid rgba(138,123,255,0.3);
             width: 56px;
             height: 56px;
             border-radius: 56px;
@@ -227,21 +233,23 @@
             font-size: 28px;
             cursor: pointer;
             transition: 0.2s;
+            color: #aaaacc;
         }
 
-        .portal-nav:hover {
-            background: rgba(255,255,255,0.1);
+        .gate-nav:hover {
+            background: rgba(138,123,255,0.2);
+            color: #fff;
         }
 
-        .portal-prev { left: 28px; }
-        .portal-next { right: 28px; }
+        .gate-prev { left: 28px; }
+        .gate-next { right: 28px; }
 
-        .portal-close {
+        .gate-close {
             position: absolute;
             top: 28px;
             right: 32px;
-            background: rgba(255,255,255,0.03);
-            border: 0.5px solid rgba(255,255,255,0.1);
+            background: rgba(138,123,255,0.1);
+            border: 1px solid rgba(138,123,255,0.3);
             width: 48px;
             height: 48px;
             border-radius: 48px;
@@ -249,9 +257,10 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            color: #aaaacc;
         }
 
-        .portal-counter {
+        .gate-counter {
             position: absolute;
             bottom: 28px;
             left: 50%;
@@ -261,80 +270,52 @@
             border-radius: 40px;
             font-size: 12px;
             font-family: monospace;
+            color: #aaaacc;
         }
 
-        @media (max-width: 1000px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-                padding: 100px 16px 120px;
-            }
-            .cell:nth-child(3n+1),
-            .cell:nth-child(7n+4),
-            .cell:nth-child(11n+7) {
-                grid-column: span 1;
-                grid-row: span 1;
-                aspect-ratio: 1 / 1;
-            }
-            .shape-nav {
-                bottom: 20px;
-                padding: 6px 16px;
-            }
-            .shape-btn {
-                padding: 4px 14px;
-                font-size: 10px;
-            }
-        }
-
-        /* футер — минимальный */
-        .footer {
-            position: fixed;
-            bottom: 16px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 9px;
-            color: #222;
-            z-index: 99;
-            pointer-events: none;
+        @media (max-width: 768px) {
+            .floating-menu { bottom: 20px; padding: 6px 16px; gap: 6px; }
+            .float-btn { padding: 5px 14px; font-size: 10px; }
+            .whisper { display: none; }
+            .star-counter { top: 20px; right: 20px; font-size: 10px; }
+            .levitate-container { padding: 80px 20px; }
         }
     </style>
 </head>
 <body>
 
-<div class="intro" id="intro">
+<div class="stars" id="stars"></div>
+
+<div class="ritual" id="ritual">
     <h1>AMIGO</h1>
-    <p>enter ▸</p>
+    <p>✦ коснись, чтобы взлететь ✦</p>
 </div>
 
-<div class="main" id="main">
-    <div class="floating-header">
-        <div class="logo">FRAGMENTS</div>
-        <div class="counter" id="globalCounter">0 frames</div>
+<div class="cosmos" id="cosmos">
+    <div class="star-counter" id="counter">0 кадров</div>
+    <div class="whisper" id="whisperText">• парящие фрагменты реальности •</div>
+
+    <div class="floating-menu">
+        <button class="float-btn active" data-filter="all">все</button>
+        <button class="float-btn" data-filter="architecture">архитектура</button>
+        <button class="float-btn" data-filter="nature">природа</button>
+        <button class="float-btn" data-filter="details">детали</button>
     </div>
 
-    <div class="grid" id="grid"></div>
-
-    <div class="shape-nav">
-        <button class="shape-btn active" data-filter="all">all</button>
-        <button class="shape-btn" data-filter="architecture">arch</button>
-        <button class="shape-btn" data-filter="nature">nature</button>
-        <button class="shape-btn" data-filter="details">detail</button>
-    </div>
-    <div class="footer">✦ random grid ✦</div>
+    <div class="levitate-container" id="levitateContainer"></div>
 </div>
 
-<div class="portal" id="portal">
-    <div class="portal-close" id="portalClose">✕</div>
-    <div class="portal-nav portal-prev" id="portalPrev">←</div>
-    <div class="portal-nav portal-next" id="portalNext">→</div>
-    <img id="portalImg" src="">
-    <div class="portal-counter" id="portalCounter"></div>
+<div class="stargate" id="stargate">
+    <div class="gate-close" id="gateClose">✕</div>
+    <div class="gate-nav gate-prev" id="gatePrev">←</div>
+    <div class="gate-nav gate-next" id="gateNext">→</div>
+    <img id="gateImg" src="">
+    <div class="gate-counter" id="gateCounter"></div>
 </div>
 
 <script>
     // ==========================================
-    // ДАННЫЕ — 32 кадра
+    // ФОТОГРАФИИ
     // ==========================================
     const PHOTOS = [
         { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
@@ -351,122 +332,217 @@
     let currentDisplay = [...PHOTOS];
     let currentIndex = 0;
 
-    const gridEl = document.getElementById('grid');
-    const portal = document.getElementById('portal');
-    const portalImg = document.getElementById('portalImg');
-    const portalCounter = document.getElementById('portalCounter');
-    const globalCounter = document.getElementById('globalCounter');
+    const container = document.getElementById('levitateContainer');
+    const counterSpan = document.getElementById('counter');
+    const whisperSpan = document.getElementById('whisperText');
+    const stargate = document.getElementById('stargate');
+    const gateImg = document.getElementById('gateImg');
+    const gateCounter = document.getElementById('gateCounter');
 
-    // обновляем счётчик
-    function updateCounter() {
-        globalCounter.innerText = `${currentDisplay.length} frames`;
+    // живые фразы для каждой категории
+    const WHISPERS = {
+        all: '• вселенная в каждом кадре • парящие фрагменты реальности •',
+        architecture: '• каменные сны • линии уходящие в небо • застывшая музыка •',
+        nature: '• земля дышит • ветер целует листья • вода танцует с луной •',
+        details: '• магия в малом • пыльца на лепестке • трещина как улыбка времени •'
+    };
+
+    function updateWhisper() {
+        whisperSpan.textContent = WHISPERS[currentFilter] || WHISPERS.all;
+        whisperSpan.style.opacity = '0';
+        setTimeout(() => whisperSpan.style.opacity = '1', 150);
     }
 
-    // ГЛАВНАЯ ФУНКЦИЯ — РЕНДЕР С ХАОТИЧНОЙ СЕТКОЙ
-    function renderGrid(photos) {
-        gridEl.style.opacity = '0';
+    // ГЕНЕРАЦИЯ СЛУЧАЙНЫХ ПОЗИЦИЙ ДЛЯ ПАРЯЩИХ ФОТО
+    function randomPosition(index, total) {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const size = Math.random() * 280 + 180; // от 180 до 460px
+        
+        let left, top;
+        // распределяем по всей площади, но не слишком близко к краям
+        left = Math.random() * (width - size - 100) + 50;
+        top = Math.random() * (height - size - 150) + 80;
+        
+        // чтобы не накладывались слишком сильно — небольшая сетка
+        const row = Math.floor(index / 5);
+        const col = index % 5;
+        if (total < 40) {
+            left = (col * (width / 5)) + 40;
+            top = (row * 180) + 80 + Math.sin(index) * 30;
+        }
+        
+        return { left: Math.max(20, Math.min(width - size - 20, left)), 
+                 top: Math.max(60, Math.min(height - size - 60, top)), 
+                 size };
+    }
+
+    // АНИМАЦИЯ ПЛАВАНИЯ
+    function applyFloatAnimation(element, delay) {
+        const duration = 5 + Math.random() * 4;
+        const yMove = 15 + Math.random() * 20;
+        const xMove = 8 + Math.random() * 15;
+        element.style.animation = `float-${delay} ${duration}s ease-in-out infinite alternate`;
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float-${delay} {
+                0% { transform: translate(0px, 0px) rotate(0deg); }
+                100% { transform: translate(${xMove}px, ${-yMove}px) rotate(${Math.random() * 4 - 2}deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // РЕНДЕР ПАРЯЩИХ ФОТО
+    function renderFloating(photos) {
+        container.style.opacity = '0';
         setTimeout(() => {
-            gridEl.innerHTML = '';
+            container.innerHTML = '';
+            const total = photos.length;
+            
             photos.forEach((photo, idx) => {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
+                const pos = randomPosition(idx, total);
+                const div = document.createElement('div');
+                div.className = 'floating-photo';
+                div.style.position = 'absolute';
+                div.style.left = pos.left + 'px';
+                div.style.top = pos.top + 'px';
+                div.style.width = pos.size + 'px';
+                div.style.height = pos.size * 0.8 + 'px';
                 
                 const img = document.createElement('img');
-                img.loading = idx < 12 ? 'eager' : 'lazy';
+                img.loading = idx < 15 ? 'eager' : 'lazy';
                 img.decoding = 'async';
                 img.src = `images/${photo.id}.jpg`;
                 img.alt = `amigo_${photo.id}`;
-                img.onclick = () => openPortal(PHOTOS.findIndex(p => p.id === photo.id));
+                img.onclick = () => openGate(PHOTOS.findIndex(p => p.id === photo.id));
                 
-                cell.appendChild(img);
-                gridEl.appendChild(cell);
+                div.appendChild(img);
+                container.appendChild(div);
+                
+                // добавляем плавающую анимацию
+                applyFloatAnimation(div, idx);
+                
+                // случайное вращение при старте
+                const rot = Math.random() * 6 - 3;
+                div.style.transform = `rotate(${rot}deg)`;
             });
-            gridEl.style.opacity = '1';
-            updateCounter();
-        }, 200);
+            
+            container.style.opacity = '1';
+            counterSpan.innerText = `${total} кадров`;
+            updateWhisper();
+        }, 300);
     }
 
     function filterGallery(category) {
+        currentFilter = category;
         if (category === 'all') {
             currentDisplay = [...PHOTOS];
         } else {
             currentDisplay = PHOTOS.filter(p => p.cat === category);
         }
-        renderGrid(currentDisplay);
+        renderFloating(currentDisplay);
     }
 
-    // ПОРТАЛ (ЛАЙТБОКС)
-    function openPortal(index) {
+    // ЗВЁЗДНЫЕ ВРАТА (ЛАЙТБОКС)
+    function openGate(index) {
         currentIndex = index;
-        const photo = PHOTOS[currentIndex];
-        portalImg.src = `images/${photo.id}.jpg`;
-        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
-        portal.style.display = 'flex';
+        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        stargate.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    function closePortal() {
-        portal.style.display = 'none';
+    function closeGate() {
+        stargate.style.display = 'none';
         document.body.style.overflow = '';
     }
 
-    function nextPortal() {
+    function nextGate() {
         currentIndex = (currentIndex + 1) % PHOTOS.length;
-        portalImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
     }
 
-    function prevPortal() {
+    function prevGate() {
         currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
-        portalImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
-        portalCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        gateImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        gateCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
     }
+
+    // ==========================================
+    // ЗВЁЗДНОЕ НЕБО
+    // ==========================================
+    function createStars() {
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.animationDuration = 2 + Math.random() * 4 + 's';
+            starsContainer.appendChild(star);
+        }
+    }
+    createStars();
 
     // ==========================================
     // ИНТРО + ЗАПУСК
     // ==========================================
-    const intro = document.getElementById('intro');
-    const main = document.getElementById('main');
+    const ritual = document.getElementById('ritual');
+    const cosmos = document.getElementById('cosmos');
 
-    intro.addEventListener('click', () => {
-        intro.style.opacity = '0';
+    ritual.addEventListener('click', () => {
+        ritual.style.opacity = '0';
         setTimeout(() => {
-            intro.style.display = 'none';
-            main.style.opacity = '1';
-            // предзагружаем первые 10 фото
-            for (let i = 0; i < 10; i++) {
+            ritual.style.display = 'none';
+            cosmos.style.opacity = '1';
+            // предзагрузка
+            for (let i = 0; i < 12; i++) {
                 const pre = new Image();
                 pre.src = `images/${PHOTOS[i].id}.jpg`;
             }
-        }, 800);
+        }, 1000);
     });
 
     // ==========================================
     // СОБЫТИЯ
     // ==========================================
-    document.querySelectorAll('.shape-btn').forEach(btn => {
+    document.querySelectorAll('.float-btn').forEach(btn => {
         btn.onclick = () => {
-            document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.float-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            filterGallery(currentFilter);
+            filterGallery(btn.dataset.filter);
         };
     });
 
-    document.getElementById('portalClose').onclick = closePortal;
-    document.getElementById('portalPrev').onclick = prevPortal;
-    document.getElementById('portalNext').onclick = nextPortal;
-    portal.onclick = (e) => { if (e.target === portal) closePortal(); };
+    document.getElementById('gateClose').onclick = closeGate;
+    document.getElementById('gatePrev').onclick = prevGate;
+    document.getElementById('gateNext').onclick = nextGate;
+    stargate.onclick = (e) => { if (e.target === stargate) closeGate(); };
     document.addEventListener('keydown', (e) => {
-        if (portal.style.display === 'flex') {
-            if (e.key === 'Escape') closePortal();
-            if (e.key === 'ArrowLeft') prevPortal();
-            if (e.key === 'ArrowRight') nextPortal();
+        if (stargate.style.display === 'flex') {
+            if (e.key === 'Escape') closeGate();
+            if (e.key === 'ArrowLeft') prevGate();
+            if (e.key === 'ArrowRight') nextGate();
         }
     });
 
-    // старт (интро активно, сетка пока скрыта, но рендерим фоном)
-    renderGrid(PHOTOS);
+    // адаптация при ресайзе — перерендер
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            renderFloating(currentDisplay);
+        }, 300);
+    });
+
+    // СТАРТ
+    renderFloating(PHOTOS);
 </script>
 </body>
 </html>
