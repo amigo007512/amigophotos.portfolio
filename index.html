@@ -1,244 +1,605 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2D4VS5FRD"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-Y2D4VS5FRD');
-    </script>
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigo Photos — архитектура · природа · детали</title>
-    
-    <meta name="description" content="Фотопортфолио Amigo Photos. Архитектура, природа и детали в объективе. Работает офлайн!">
-    <meta name="keywords" content="фотография, портфолио, архитектура, природа, детали">
-    <meta name="author" content="Amigo Photos">
-    <meta property="og:title" content="Amigo Photos — фотопортфолио">
-    <meta property="og:description" content="Архитектура, природа и детали в объективе.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E<text y='.9em' font-size='90'>📷</text>%3C/svg%3E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AMIGO — kinetic gallery</title>
     
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0e0e0e;color:#fff;font-family:Arial,sans-serif}
-        .hero{height:85vh;position:relative;overflow:hidden}
-        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;opacity:0;transition:opacity .8s}
-        .slide.active{opacity:1}
-        .hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:1}
-        .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
-        .hero h1{font-size:4em}
-        .hero p{margin-top:15px;font-size:1.2em}
-        .categories{padding:30px 60px 0;text-align:center;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-        .category-btn{background:#2a2a2a;border:none;color:#fff;padding:10px 24px;border-radius:30px;cursor:pointer;transition:transform .2s}
-        .category-btn:hover{background:#444;transform:translateY(-2px)}
-        .category-btn.active{background:#fff;color:#000}
-        .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer}
-        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s}
-        .gallery-item:hover img{transform:scale(1.03)}
-        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
-        #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
-        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001}
-        .lightbox-nav:hover{background:rgba(255,255,255,.4)}
-        .lightbox-prev{left:20px}
-        .lightbox-next{right:20px}
-        .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
-        #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
-        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none}
-        @media (max-width:768px){
-            .hero{height:60vh}
-            .hero h1{font-size:2em}
-            .hero p{font-size:1em}
-            .gallery{grid-template-columns:repeat(2,1fr);padding:20px 12px;gap:8px}
-            .gallery img{height:170px}
-            .categories{padding:20px 12px 0}
-            .category-btn{padding:6px 16px;font-size:12px}
-            .lightbox-nav{font-size:25px;padding:10px}
-            .offline-badge{bottom:80px}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
         }
-        footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
+
+        body {
+            background: #0a0a0f;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            color: #fff;
+        }
+
+        /* индикатор загрузки */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .loader-text {
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .loader-progress {
+            width: 200px;
+            height: 1px;
+            background: #222;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        /* Hero — голографический */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 120px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #888888 50%, #ffffff 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 4s ease infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero p {
+            margin-top: 20px;
+            font-size: 14px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .hero-stats {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 12px;
+            color: #444;
+            font-family: monospace;
+        }
+
+        /* навигация — плавающие кристаллы */
+        .nav {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: rgba(10,10,15,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            width: fit-content;
+            margin: 0 auto 40px;
+            border: 0.5px solid rgba(255,255,255,0.08);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 8px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            font-family: inherit;
+            position: relative;
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-btn:hover::after,
+        .nav-btn.active::after {
+            width: 30px;
+        }
+
+        .nav-btn.active {
+            color: #fff;
+        }
+
+        /* галерея — кинетическая сетка */
+        .gallery {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px 40px 100px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            position: relative;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 4 / 5;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
+        /* случайные размеры для драматизма */
+        .gallery-item:nth-child(6),
+        .gallery-item:nth-child(14),
+        .gallery-item:nth-child(22) {
+            grid-column: span 2;
+            grid-row: span 1;
+            aspect-ratio: 2 / 1;
+        }
+
+        .gallery-item:nth-child(3),
+        .gallery-item:nth-child(11),
+        .gallery-item:nth-child(19) {
+            grid-column: span 1;
+            grid-row: span 2;
+            aspect-ratio: 1 / 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            filter: brightness(0.85) contrast(1.05);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            z-index: 10;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.06);
+            filter: brightness(1) contrast(1.1);
+        }
+
+        /* подпись, появляется при ховере */
+        .item-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px 16px 12px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .gallery-item:hover .item-caption {
+            transform: translateY(0);
+        }
+
+        /* лайтбокс — кинозал */
+        .cinema {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(40px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .cinema img {
+            max-width: 85%;
+            max-height: 80%;
+            border-radius: 16px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transition: transform 0.2s;
+        }
+
+        .cinema-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 56px;
+            height: 56px;
+            border-radius: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cinema-nav:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .cinema-prev { left: 28px; }
+        .cinema-next { right: 28px; }
+
+        .cinema-close {
+            position: absolute;
+            top: 28px;
+            right: 32px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cinema-counter {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        /* кнопка наверх — моргающая */
+        #toTop {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255,255,255,0.15);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: none;
+            z-index: 99;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        #toTop:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        /* анимация появления при скролле */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gallery-item {
+            animation: fadeUp 0.6s ease backwards;
+        }
+
+        /* адаптив */
+        @media (max-width: 1024px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                padding: 20px 20px 80px;
+            }
+            .gallery-item:nth-child(6),
+            .gallery-item:nth-child(14),
+            .gallery-item:nth-child(22),
+            .gallery-item:nth-child(3),
+            .gallery-item:nth-child(11),
+            .gallery-item:nth-child(19) {
+                grid-column: span 1;
+                grid-row: span 1;
+                aspect-ratio: 4 / 5;
+            }
+            .nav {
+                top: 12px;
+                padding: 8px 16px;
+            }
+            .nav-btn {
+                padding: 6px 18px;
+                font-size: 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .gallery-item {
+                animation: none;
+            }
+        }
     </style>
 </head>
 <body>
 
+<div class="loader" id="loader">
+    <div style="text-align: center">
+        <div class="loader-text">AMIGO // LOADING</div>
+        <div class="loader-progress"><div class="loader-progress-bar" id="progressBar"></div></div>
+    </div>
+</div>
+
 <section class="hero">
-    <div class="slide active" style="background-image:url('images/1.jpg')"></div>
-    <div class="slide" style="background-image:url('images/2.jpg')"></div>
-    <div class="slide" style="background-image:url('images/3.jpg')"></div>
-    <div class="slide" style="background-image:url('images/4.jpg')"></div>
-    <div class="slide" style="background-image:url('images/5.jpg')"></div>
-    <div class="hero-content">
-        <h1>Amigo Photos</h1>
-        <p>Архитектура · Природа · Детали</p>
-        <p>Фотография — способ сохранить моменты</p>
+    <h1>AMIGO</h1>
+    <p>kinetic gallery</p>
+    <div class="hero-stats">
+        <span id="photoCount">0</span> FRAMES
+        <span>✦</span>
+        <span>INFINITE</span>
     </div>
 </section>
 
-<div class="categories" id="categories"></div>
-<section class="gallery" id="gallery"></section>
-
-<div id="lightbox">
-    <button class="lightbox-close">✕</button>
-    <button class="lightbox-nav lightbox-prev">❮</button>
-    <button class="lightbox-nav lightbox-next">❯</button>
-    <img src="">
+<div class="nav">
+    <button class="nav-btn active" data-filter="all">ALL</button>
+    <button class="nav-btn" data-filter="architecture">ARCHITECTURE</button>
+    <button class="nav-btn" data-filter="nature">NATURE</button>
+    <button class="nav-btn" data-filter="details">DETAILS</button>
 </div>
 
-<button id="toTop">↑ Наверх</button>
-<div class="offline-badge" id="offlineBadge">📡 Офлайн-режим</div>
-<footer>© 2026 Amigo Photos — All Rights Reserved</footer>
+<div class="gallery" id="gallery"></div>
+
+<div class="cinema" id="cinema">
+    <div class="cinema-close" id="cinemaClose">✕</div>
+    <div class="cinema-nav cinema-prev" id="cinemaPrev">←</div>
+    <div class="cinema-nav cinema-next" id="cinemaNext">→</div>
+    <img id="cinemaImg" src="">
+    <div class="cinema-counter" id="cinemaCounter"></div>
+</div>
+
+<button id="toTop">↑ TOP</button>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  📸 НАСТРОЙКИ (меняй здесь под себя)
-// ═══════════════════════════════════════════════════════════════
+    // ==================================================
+    // DATA
+    // ==================================================
+    const PHOTOS = [
+        { id: 1, cat: 'architecture' }, { id: 3, cat: 'architecture' }, { id: 4, cat: 'architecture' },
+        { id: 6, cat: 'architecture' }, { id: 9, cat: 'architecture' }, { id: 10, cat: 'architecture' },
+        { id: 13, cat: 'architecture' }, { id: 14, cat: 'architecture' }, { id: 15, cat: 'architecture' }, { id: 18, cat: 'architecture' },
+        { id: 2, cat: 'nature' }, { id: 7, cat: 'nature' }, { id: 8, cat: 'nature' }, { id: 11, cat: 'nature' },
+        { id: 16, cat: 'nature' }, { id: 17, cat: 'nature' }, { id: 19, cat: 'nature' }, { id: 20, cat: 'nature' }, { id: 21, cat: 'nature' },
+        { id: 25, cat: 'nature' }, { id: 26, cat: 'nature' }, { id: 27, cat: 'nature' }, { id: 28, cat: 'nature' },
+        { id: 29, cat: 'nature' }, { id: 30, cat: 'nature' }, { id: 31, cat: 'nature' }, { id: 32, cat: 'nature' },
+        { id: 5, cat: 'details' }, { id: 12, cat: 'details' }, { id: 22, cat: 'details' }, { id: 23, cat: 'details' }, { id: 24, cat: 'details' }
+    ];
 
-const CATEGORIES = {
-    all:       { name: '📷 Все' },
-    architecture: { name: '🏛️ Архитектура' },
-    nature:    { name: '🌿 Природа' },
-    details:   { name: '🔍 Детали' }
-};
+    document.getElementById('photoCount').innerText = PHOTOS.length;
 
-// ФОТОГРАФИИ (добавлены 24-32)
-const PHOTOS = [
-    // Архитектура (10 фото) id: 1,3,4,6,9,10,13,14,15,18
-    { id:1, cat:'architecture' }, { id:3, cat:'architecture' }, { id:4, cat:'architecture' },
-    { id:6, cat:'architecture' }, { id:9, cat:'architecture' }, { id:10,cat:'architecture' },
-    { id:13,cat:'architecture' }, { id:14,cat:'architecture' }, { id:15,cat:'architecture' }, { id:18,cat:'architecture' },
-    // Природа (17 фото) id: 2,7,8,11,16,17,19,20,21,25,26,27,28,29,30,31,32
-    { id:2, cat:'nature' }, { id:7, cat:'nature' }, { id:8, cat:'nature' }, { id:11,cat:'nature' },
-    { id:16,cat:'nature' }, { id:17,cat:'nature' }, { id:19,cat:'nature' }, { id:20,cat:'nature' }, { id:21,cat:'nature' },
-    { id:25,cat:'nature' }, { id:26,cat:'nature' }, { id:27,cat:'nature' }, { id:28,cat:'nature' },
-    { id:29,cat:'nature' }, { id:30,cat:'nature' }, { id:31,cat:'nature' }, { id:32,cat:'nature' },
-    // Детали (5 фото) id: 5,12,22,23,24
-    { id:5, cat:'details' }, { id:12,cat:'details' }, { id:22,cat:'details' }, { id:23,cat:'details' }, { id:24,cat:'details' }
-];
+    let currentFilter = 'all';
+    let currentIndex = 0;
+    let currentDisplayPhotos = [...PHOTOS];
 
-// ═══════════════════════════════════════════════════════════════
-//  ⚡ ДВИЖОК (ничего не трогать)
-// ═══════════════════════════════════════════════════════════════
+    const galleryDiv = document.getElementById('gallery');
+    const cinema = document.getElementById('cinema');
+    const cinemaImg = document.getElementById('cinemaImg');
+    const cinemaCounter = document.getElementById('cinemaCounter');
 
-const gallery = document.getElementById('gallery');
-const categoriesDiv = document.getElementById('categories');
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = lightbox.querySelector('img');
-let currentIndex = 0;
+    // ==================================================
+    // PRELOADER (эффект загрузки)
+    // ==================================================
+    let loaded = 0;
+    const total = Math.min(PHOTOS.length, 12); // предзагружаем первые 12
 
-// Генерация кнопок
-Object.keys(CATEGORIES).forEach(key => {
-    const btn = document.createElement('button');
-    btn.className = 'category-btn' + (key === 'all' ? ' active' : '');
-    btn.textContent = CATEGORIES[key].name;
-    btn.onclick = () => {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        render(key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key));
-    };
-    categoriesDiv.appendChild(btn);
-});
-
-// Отрисовка галереи
-function render(photos) {
-    gallery.innerHTML = '';
-    photos.forEach(photo => {
-        const div = document.createElement('div');
-        div.className = 'gallery-item';
-        const img = document.createElement('img');
-        img.src = `images/${photo.id}.jpg`;
-        img.alt = `Фото ${photo.id}`;
-        img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
-        div.appendChild(img);
-        gallery.appendChild(div);
-    });
-}
-
-// Лайтбокс
-function openLightbox(idx) { currentIndex = idx; lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; lightbox.style.display = 'flex'; }
-function closeLightbox() { lightbox.style.display = 'none'; }
-function prev() { currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
-function next() { currentIndex = (currentIndex + 1) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
-
-// Слайдер
-let s=0, slides=document.querySelectorAll('.slide');
-setInterval(() => { slides[s].classList.remove('active'); s=(s+1)%slides.length; slides[s].classList.add('active'); }, 5000);
-
-// Кнопка наверх
-const toTop = document.getElementById('toTop');
-window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
-toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
-
-// События
-document.querySelector('.lightbox-close').onclick = closeLightbox;
-document.querySelector('.lightbox-prev').onclick = prev;
-document.querySelector('.lightbox-next').onclick = next;
-lightbox.onclick = e => { if(e.target === lightbox) closeLightbox(); };
-document.onkeydown = e => { if(lightbox.style.display === 'flex') { if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowLeft') prev(); if(e.key === 'ArrowRight') next(); } };
-
-// ═══════════════════════════════════════════════════════════════
-//  📡 SERVICE WORKER (ОФЛАЙН-РЕЖИМ)
-// ═══════════════════════════════════════════════════════════════
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-        console.log('Service Worker зарегистрирован:', reg);
-    }).catch(err => {
-        console.log('Ошибка регистрации Service Worker:', err);
-    });
-}
-
-// Показываем индикатор при офлайн-режиме
-window.addEventListener('load', () => {
-    const badge = document.getElementById('offlineBadge');
-    if (!navigator.onLine) {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
+    function updateProgress() {
+        const percent = (loaded / total) * 100;
+        document.getElementById('progressBar').style.width = percent + '%';
+        if (loaded >= total) {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 800);
+            }, 300);
+        }
     }
-    window.addEventListener('online', () => badge.style.display = 'none');
-    window.addEventListener('offline', () => {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
-    });
-});
 
-// Старт
-render(PHOTOS);
+    for (let i = 0; i < total; i++) {
+        const img = new Image();
+        img.onload = () => { loaded++; updateProgress(); };
+        img.onerror = () => { loaded++; updateProgress(); };
+        img.src = `images/${PHOTOS[i].id}.jpg`;
+    }
+
+    // ==================================================
+    // КИНЕТИЧЕСКАЯ ГАЛЕРЕЯ
+    // ==================================================
+    function renderGallery(photos) {
+        galleryDiv.style.opacity = '0';
+        setTimeout(() => {
+            galleryDiv.innerHTML = '';
+            photos.forEach((photo, idx) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.style.animationDelay = `${idx * 0.02}s`;
+                
+                const img = document.createElement('img');
+                img.loading = idx < 8 ? 'eager' : 'lazy';
+                img.decoding = 'async';
+                img.src = `images/${photo.id}.jpg`;
+                img.alt = `amigo_${photo.id}`;
+                img.onclick = () => openCinema(PHOTOS.findIndex(p => p.id === photo.id));
+                
+                const caption = document.createElement('div');
+                caption.className = 'item-caption';
+                caption.innerText = `${photo.cat.toUpperCase()} // ${photo.id}`;
+                
+                item.appendChild(img);
+                item.appendChild(caption);
+                
+                // параллакс при движении мыши (3D эффект)
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    item.style.transform = `perspective(800px) rotateY(${x * 5}deg) rotateX(${y * -3}deg) translateY(-8px)`;
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = '';
+                });
+                
+                galleryDiv.appendChild(item);
+            });
+            galleryDiv.style.opacity = '1';
+        }, 200);
+    }
+
+    function filterGallery(category) {
+        if (category === 'all') {
+            currentDisplayPhotos = [...PHOTOS];
+        } else {
+            currentDisplayPhotos = PHOTOS.filter(p => p.cat === category);
+        }
+        renderGallery(currentDisplayPhotos);
+    }
+
+    // ==================================================
+    // КИНОТЕАТР
+    // ==================================================
+    function openCinema(index) {
+        currentIndex = index;
+        const photo = PHOTOS[currentIndex];
+        cinemaImg.src = `images/${photo.id}.jpg`;
+        cinemaCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+        cinema.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCinema() {
+        cinema.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % PHOTOS.length;
+        cinemaImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        cinemaCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length;
+        cinemaImg.src = `images/${PHOTOS[currentIndex].id}.jpg`;
+        cinemaCounter.innerText = `${currentIndex + 1} / ${PHOTOS.length}`;
+    }
+
+    // ==================================================
+    // СОБЫТИЯ
+    // ==================================================
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            filterGallery(currentFilter);
+        };
+    });
+
+    document.getElementById('cinemaClose').onclick = closeCinema;
+    document.getElementById('cinemaPrev').onclick = prevImage;
+    document.getElementById('cinemaNext').onclick = nextImage;
+    cinema.onclick = (e) => { if (e.target === cinema) closeCinema(); };
+    document.addEventListener('keydown', (e) => {
+        if (cinema.style.display === 'flex') {
+            if (e.key === 'Escape') closeCinema();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        }
+    });
+
+    const toTopBtn = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+        toTopBtn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+    });
+    toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // старт
+    renderGallery(PHOTOS);
 </script>
 
+<!-- Service Worker -->
 <script>
-// Дополнительный скрипт для создания sw.js (если файла нет)
-if ('serviceWorker' in navigator) {
-    fetch('/sw.js').catch(() => {
-        const swCode = `const CACHE_NAME = 'amigo-photos-v1';
-const urlsToCache = [
-    '/',
-    '/index.html'
-];
-
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
-    );
-});
-
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-    );
-});`;
-        
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const url = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(url).then(reg => {
-            console.log('Service Worker создан автоматически');
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('offline', {status: 200}))))`;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
         });
-    });
-}
+    }
 </script>
 </body>
 </html>
