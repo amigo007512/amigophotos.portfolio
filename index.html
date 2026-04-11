@@ -37,7 +37,6 @@
         .category-btn.active{background:#fff;color:#000}
         .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
         .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer;background:#1a1a1a}
-        /* Скелетон-лоадер */
         .gallery-item.skeleton{background:linear-gradient(90deg,#1a1a1a 25%,#2a2a2a 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s;background:#1a1a1a}
@@ -63,11 +62,11 @@
             .offline-badge{bottom:80px}
         }
         footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
-        /* Оптимизация: убираем анимации на слабых устройствах */
         @media (prefers-reduced-motion:reduce){
             .gallery-item:hover img{transform:none}
             .category-btn:hover{transform:none}
             .slide{transition:none}
+            .gallery-item.skeleton{animation:none}
         }
     </style>
 </head>
@@ -128,7 +127,28 @@ const PHOTOS = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-//  ⚡ ОПТИМИЗИРОВАННЫЙ ДВИЖОК (ленивая загрузка, приоритеты)
+//  📱 ОПРЕДЕЛЕНИЕ ТИПА УСТРОЙСТВА
+// ═══════════════════════════════════════════════════════════════
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent) || window.innerWidth < 768;
+const isSlowDevice = (navigator.deviceMemory && navigator.deviceMemory < 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+
+// Если телефон или слабое устройство — включаем облегчённый режим
+if (isMobile || isSlowDevice) {
+    const style = document.createElement('style');
+    style.textContent = `
+        .gallery-item:hover img { transform: none !important; }
+        .category-btn:hover { transform: none !important; }
+        .category-btn:hover { background: #2a2a2a !important; }
+        .slide { transition: opacity 0.3s ease !important; }
+        .gallery-item.skeleton { animation-duration: 0.8s !important; }
+    `;
+    document.head.appendChild(style);
+    console.log('📱 Облегчённый режим: анимации отключены');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ⚡ ОПТИМИЗИРОВАННЫЙ ДВИЖОК
 // ═══════════════════════════════════════════════════════════════
 
 const gallery = document.getElementById('gallery');
@@ -154,7 +174,6 @@ Object.keys(CATEGORIES).forEach(key => {
 
 // Показываем скелетон, потом загружаем реальные фото
 function renderWithSkeleton(photos) {
-    // Быстро показываем скелетоны
     gallery.innerHTML = '';
     photos.forEach((photo, idx) => {
         const skeletonDiv = document.createElement('div');
@@ -165,12 +184,15 @@ function renderWithSkeleton(photos) {
         gallery.appendChild(skeletonDiv);
     });
     
-    // Асинхронно заменяем на реальные фото (чтобы не блокировать UI)
-    requestIdleCallback ? requestIdleCallback(() => renderRealImages(photos)) : setTimeout(() => renderRealImages(photos), 50);
+    // Асинхронно заменяем на реальные фото
+    if (window.requestIdleCallback) {
+        requestIdleCallback(() => renderRealImages(photos));
+    } else {
+        setTimeout(() => renderRealImages(photos), 50);
+    }
 }
 
 function renderRealImages(photos) {
-    // Заменяем скелетоны на реальные картинки
     photos.forEach((photo, idx) => {
         const skeleton = gallery.children[idx];
         if (!skeleton) return;
@@ -179,33 +201,40 @@ function renderRealImages(photos) {
         div.className = 'gallery-item';
         
         const img = document.createElement('img');
-        // Ленивая загрузка + асинхронный декодинг
-        img.loading = 'lazy';
+        
+        // Адаптивная загрузка: на телефонах агрессивнее
+        if (isMobile || isSlowDevice) {
+            img.loading = 'lazy';
+            img.fetchPriority = 'low';
+            // На телефонах только первые 3 фото грузим сразу
+            if (idx < 3) {
+                img.loading = 'eager';
+                img.fetchPriority = 'high';
+            }
+        } else {
+            // На ПК: первые 8 фото сразу, остальные лениво
+            img.loading = idx < 8 ? 'eager' : 'lazy';
+            img.fetchPriority = idx < 8 ? 'high' : 'low';
+        }
+        
         img.decoding = 'async';
         img.src = `images/${photo.id}.jpg`;
         img.alt = `Фото ${photo.id}`;
-        
-        // Приоритет для первых 6 фото (видимая область)
-        if (idx < 6) {
-            img.fetchPriority = 'high';
-            img.loading = 'eager';
-        } else {
-            img.fetchPriority = 'low';
-        }
-        
         img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
         
-        // Предзагрузка следующего фото при ховере (опционально)
-        div.addEventListener('mouseenter', () => {
-            const nextIdx = idx + 1;
-            if (nextIdx < photos.length) {
-                const preloadLink = document.createElement('link');
-                preloadLink.rel = 'preload';
-                preloadLink.as = 'image';
-                preloadLink.href = `images/${photos[nextIdx].id}.jpg`;
-                document.head.appendChild(preloadLink);
-            }
-        });
+        // Предзагрузка следующего фото при ховере (только на ПК)
+        if (!isMobile && !isSlowDevice) {
+            div.addEventListener('mouseenter', () => {
+                const nextIdx = idx + 1;
+                if (nextIdx < photos.length) {
+                    const preloadLink = document.createElement('link');
+                    preloadLink.rel = 'preload';
+                    preloadLink.as = 'image';
+                    preloadLink.href = `images/${photos[nextIdx].id}.jpg`;
+                    document.head.appendChild(preloadLink);
+                }
+            });
+        }
         
         div.appendChild(img);
         gallery.replaceChild(div, skeleton);
@@ -228,10 +257,9 @@ function next() {
     lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; 
 }
 
-// Слайдер (оптимизирован: предзагрузка следующих слайдов)
+// Слайдер с предзагрузкой
 let s=0, slides=document.querySelectorAll('.slide');
 const totalSlides = slides.length;
-// Предзагружаем все слайды фоном
 for(let i=0; i<totalSlides; i++) {
     const bg = slides[i].style.backgroundImage;
     if(bg && bg !== 'none') {
@@ -244,7 +272,6 @@ setInterval(() => {
     slides[s].classList.remove('active'); 
     s=(s+1)%totalSlides; 
     slides[s].classList.add('active');
-    // Предзагрузка следующего слайда
     const nextSlide = (s+1)%totalSlides;
     const nextBg = slides[nextSlide].style.backgroundImage;
     if(nextBg && nextBg !== 'none') {
@@ -278,7 +305,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Показываем индикатор при офлайн-режиме
 window.addEventListener('load', () => {
     const badge = document.getElementById('offlineBadge');
     if (!navigator.onLine) {
@@ -292,7 +318,7 @@ window.addEventListener('load', () => {
     });
 });
 
-// Старт со скелетонами
+// Старт
 renderWithSkeleton(PHOTOS);
 </script>
 
