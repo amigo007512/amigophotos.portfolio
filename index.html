@@ -14,9 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>AMIGO — фотоистории</title>
     
-    <meta name="description" content="Визуальные нарративы. Архитектура, природа, детали — каждая фотография рассказывает историю.">
+    <meta name="description" content="Снимаю для души. Архитектура, природа, детали.">
     <meta property="og:title" content="AMIGO — фотоистории">
-    <meta property="og:description" content="Визуальные нарративы в объективе.">
+    <meta property="og:description" content="Снимаю для души. Если она есть — душа.">
     <meta name="theme-color" content="#1a1a1a">
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%231a1a1a'/%3E%3Ctext x='50' y='67' font-family='Arial' font-size='40' fill='%23fff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
@@ -122,25 +122,13 @@
         }
 
         @keyframes welcomeIcon {
-            0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         @keyframes welcomeText {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes welcomeLine {
@@ -149,14 +137,8 @@
         }
 
         @keyframes welcomeFadeOut {
-            0% {
-                opacity: 1;
-                visibility: visible;
-            }
-            100% {
-                opacity: 0;
-                visibility: hidden;
-            }
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
         }
 
         /* Header */
@@ -252,12 +234,7 @@
         .slide-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                to bottom,
-                rgba(0,0,0,0.35) 0%,
-                rgba(0,0,0,0.1) 40%,
-                rgba(0,0,0,0.45) 100%
-            );
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.45) 100%);
             z-index: 3;
         }
 
@@ -291,29 +268,24 @@
 
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(52px, 10vw, 96px);
+            font-size: clamp(48px, 10vw, 88px);
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.15;
             margin-bottom: 28px;
             letter-spacing: -0.02em;
             text-shadow: 0 4px 40px rgba(0,0,0,0.3);
-            max-width: 1000px;
+            max-width: 1100px;
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 0.8s var(--transition-smooth) forwards;
             animation-delay: 2.9s;
         }
 
-        .hero-title span {
-            font-style: italic;
-            font-weight: 400;
-        }
-
         .hero-description {
             font-size: clamp(16px, 2.5vw, 19px);
             font-weight: 300;
             line-height: 1.7;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             opacity: 0;
@@ -336,44 +308,7 @@
         }
 
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Кнопка вниз */
-        .scroll-down-btn {
-            position: absolute;
-            bottom: 160px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            pointer-events: auto;
-            cursor: pointer;
-            opacity: 0;
-            animation: floatIn 0.8s var(--transition-smooth) forwards;
-            animation-delay: 3.5s;
-        }
-
-        .scroll-down-content {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s var(--transition-smooth);
-            color: #fff;
-            font-size: 24px;
-        }
-
-        .scroll-down-content:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(4px);
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Облачко */
@@ -387,18 +322,12 @@
             cursor: pointer;
             opacity: 0;
             animation: floatIn 0.8s var(--transition-smooth) forwards;
-            animation-delay: 3.7s;
+            animation-delay: 3.5s;
         }
 
         @keyframes floatIn {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+            from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
         .cloud-content {
@@ -406,9 +335,7 @@
             backdrop-filter: blur(20px);
             padding: 18px 40px;
             border-radius: 100px;
-            box-shadow: 
-                0 20px 40px rgba(0,0,0,0.08),
-                0 0 0 1px rgba(255,255,255,0.5) inset;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.5) inset;
             display: flex;
             align-items: center;
             gap: 24px;
@@ -418,9 +345,7 @@
 
         .cloud-content:hover {
             transform: translateY(-6px);
-            box-shadow: 
-                0 30px 50px rgba(0,0,0,0.12),
-                0 0 0 1px rgba(255,255,255,0.6) inset;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.6) inset;
             background: rgba(255, 255, 255, 0.96);
         }
 
@@ -453,7 +378,7 @@
             gap: 20px;
             opacity: 0;
             animation: fadeIn 0.6s ease forwards;
-            animation-delay: 3.9s;
+            animation-delay: 3.7s;
         }
 
         .indicator {
@@ -484,36 +409,18 @@
             margin: 0 auto;
         }
 
-        /* Анимации появления при скролле - разнообразные */
+        /* Анимации появления */
         .animate-on-scroll {
             opacity: 0;
             transition: all 0.9s var(--transition-smooth);
         }
 
-        /* Разные направления и эффекты */
-        .animate-on-scroll.fly-left {
-            transform: translateX(-100px) rotate(-5deg);
-        }
-
-        .animate-on-scroll.fly-right {
-            transform: translateX(100px) rotate(5deg);
-        }
-
-        .animate-on-scroll.fly-bottom {
-            transform: translateY(60px);
-        }
-
-        .animate-on-scroll.fly-top {
-            transform: translateY(-60px);
-        }
-
-        .animate-on-scroll.scale-in {
-            transform: scale(0.8);
-        }
-
-        .animate-on-scroll.rotate-in {
-            transform: rotate(-10deg) scale(0.9);
-        }
+        .animate-on-scroll.fly-left { transform: translateX(-100px) rotate(-5deg); }
+        .animate-on-scroll.fly-right { transform: translateX(100px) rotate(5deg); }
+        .animate-on-scroll.fly-bottom { transform: translateY(60px); }
+        .animate-on-scroll.fly-top { transform: translateY(-60px); }
+        .animate-on-scroll.scale-in { transform: scale(0.8); }
+        .animate-on-scroll.rotate-in { transform: rotate(-10deg) scale(0.9); }
 
         .animate-on-scroll.visible {
             opacity: 1;
@@ -531,9 +438,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .stat-item {
-            text-align: center;
-        }
+        .stat-item { text-align: center; }
 
         .stat-number {
             font-family: 'Playfair Display', serif;
@@ -679,6 +584,7 @@
             display: grid;
             grid-template-columns: 380px 1fr;
             gap: 70px;
+            margin-bottom: 80px;
         }
 
         .category-info {
@@ -804,10 +710,7 @@
         .item-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, 
-                rgba(0,0,0,0.5) 0%, 
-                rgba(0,0,0,0.15) 40%, 
-                transparent 70%);
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 40%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s;
             display: flex;
@@ -838,7 +741,7 @@
 
         /* Quote Section */
         .quote-section {
-            margin-top: 120px;
+            margin-top: 80px;
             padding: 70px 0;
             text-align: center;
             border-top: 1px solid rgba(0,0,0,0.04);
@@ -977,10 +880,10 @@
         .footer {
             padding: 48px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 13px;
-            color: var(--text-secondary);
+            gap: 20px;
             max-width: 1800px;
             margin: 0 auto;
             border-top: 1px solid rgba(0,0,0,0.04);
@@ -990,6 +893,18 @@
             font-size: 13px;
             letter-spacing: 2px;
             text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.6;
+            font-style: italic;
+            letter-spacing: 0.5px;
         }
 
         /* Scroll to top */
@@ -1052,10 +967,6 @@
                 bottom: 160px;
             }
             
-            .scroll-down-btn {
-                bottom: 130px;
-            }
-            
             .content-layout {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -1084,7 +995,7 @@
             }
             
             .hero-title {
-                font-size: 40px;
+                font-size: 36px;
             }
             
             .hero-description {
@@ -1148,18 +1059,13 @@
     <div class="slider-container" id="sliderContainer"></div>
     
     <div class="hero-content">
-        <div class="hero-eyebrow">Визуальные нарративы</div>
-        <h1 class="hero-title">Свет и тень<br><span>в каждом</span> мгновении</h1>
+        <div class="hero-eyebrow">Тихое наблюдение</div>
+        <h1 class="hero-title">Снимаю для души</h1>
         <p class="hero-description">
-            Коллекция моментов, запечатлённых через объектив — 
-            где архитектура встречается с эмоциями, природа раскрывает душу, 
-            а детали говорят о главном
+            Я не профессионал и не стремлюсь им стать. Фотография — это то, что приносит мне радость. 
+            Способ замедлиться, заметить что-то вокруг и оставить себе на память. Если душа лежит — снимаю.
         </p>
         <p class="hero-subtitle">Архитектура · Природа · Детали</p>
-    </div>
-    
-    <div class="scroll-down-btn" id="scrollDownBtn">
-        <div class="scroll-down-content">↓</div>
     </div>
     
     <div class="slider-indicators" id="sliderIndicators"></div>
@@ -1176,34 +1082,35 @@
 <div class="main-content" id="mainContent">
     <!-- Stats Section -->
     <div class="stats-section">
-        <div class="stat-item animate-on-scroll fly-left" data-delay="0">
+        <div class="stat-item animate-on-scroll fly-left">
             <div class="stat-number" data-target="28">0</div>
-            <div class="stat-label">Уникальных работ</div>
+            <div class="stat-label">Кадров в альбоме</div>
         </div>
-        <div class="stat-item animate-on-scroll scale-in" data-delay="100">
+        <div class="stat-item animate-on-scroll scale-in">
             <div class="stat-number" data-target="3">0</div>
-            <div class="stat-label">Категории</div>
+            <div class="stat-label">Направления</div>
         </div>
-        <div class="stat-item animate-on-scroll fly-right" data-delay="200">
+        <div class="stat-item animate-on-scroll fly-right">
             <div class="stat-number" data-target="100">0</div>
-            <div class="stat-label">Процент эмоций</div>
+            <div class="stat-label">Процент души</div>
         </div>
     </div>
 
     <div class="intro-section">
-        <div class="intro-label animate-on-scroll fly-top">Коллекция</div>
-        <h2 class="intro-title animate-on-scroll rotate-in">Истории, которые стоит рассказать,<br>моменты, которые стоит сохранить</h2>
+        <div class="intro-label animate-on-scroll fly-top">Обо мне</div>
+        <h2 class="intro-title animate-on-scroll rotate-in">Учусь, пробую,<br>ошибаюсь</h2>
         <p class="intro-text animate-on-scroll fly-bottom">
-            Каждая фотография в этой коллекции — уникальный взгляд на мир, 
-            застывший во времени момент, несущий в себе эмоции, композицию и смысл. 
-            Исследуйте категории и откройте для себя мир через мой объектив.
+            В этом альбоме нет шедевров. Есть только мои попытки поймать то, что тронуло. 
+            Учусь, пробую, ошибаюсь. Если вам что-то откликнется — я буду рад. 
+            Если нет — я всё равно продолжу снимать, потому что мне это нравится. 
+            Если она есть — душа.
         </p>
     </div>
 
     <div class="categories-wrapper">
         <div class="categories-header">
             <span class="categories-label animate-on-scroll fly-left">Выберите категорию</span>
-            <span class="categories-count animate-on-scroll fly-right" id="totalPhotosCount">28 работ</span>
+            <span class="categories-count animate-on-scroll fly-right" id="totalPhotosCount">28 кадров</span>
         </div>
         <div class="categories-row" id="categoriesRow">
             <button class="category-btn active animate-on-scroll fly-bottom" data-category="all" style="transition-delay: 0s;">Всё</button>
@@ -1222,7 +1129,7 @@
                 до органических природных форм и едва заметных деталей, которые часто ускользают от взгляда.
             </p>
             <p class="category-note animate-on-scroll fly-bottom" id="categoryNote" style="transition-delay: 0.3s;">
-                Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение и повествование
+                Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение
             </p>
             <div class="category-stats animate-on-scroll scale-in" style="transition-delay: 0.4s;">
                 <div class="photo-count">
@@ -1238,12 +1145,17 @@
     <div class="quote-section">
         <div class="quote-text animate-on-scroll fly-left">«Фотография — это способ чувствовать, касаться, любить то, что вы снимаете»</div>
         <div class="quote-author animate-on-scroll fly-right" style="transition-delay: 0.1s;">Аарон Сискинд</div>
-        <div class="quote-context animate-on-scroll fly-bottom" style="transition-delay: 0.2s;">Американский фотограф, известный своими абстрактными экспрессионистскими работами</div>
+        <div class="quote-context animate-on-scroll fly-bottom" style="transition-delay: 0.2s;">Американский фотограф, известный абстрактными работами</div>
     </div>
 </div>
 
 <footer class="footer">
     <span class="footer-copyright">© 2026 AMIGO</span>
+    <p class="footer-note">
+        Я только начинаю свой путь в фотографии и веб-дизайне. 
+        Если вы опытный дизайнер или фотограф — буду рад любому совету и обратной связи. 
+        Давайте расти вместе 🤍
+    </p>
 </footer>
 
 <!-- Lightbox -->
@@ -1270,7 +1182,7 @@
                 icon: '📷',
                 title: 'Все работы',
                 desc: 'Полная коллекция визуальных историй — от архитектурной геометрии до органических природных форм и едва заметных деталей, которые часто ускользают от взгляда.',
-                note: 'Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение и повествование',
+                note: 'Каждое изображение тщательно отобрано и обработано, чтобы передать определённое настроение',
                 photos: [1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32]
             },
             architecture: {
@@ -1306,7 +1218,6 @@
         const sliderContainer = $('sliderContainer');
         const sliderIndicators = $('sliderIndicators');
         const heroCloud = $('heroCloud');
-        const scrollDownBtn = $('scrollDownBtn');
         const mainContent = $('mainContent');
         const categoryIcon = $('categoryIcon');
         const categoryTitle = $('categoryTitle');
@@ -1327,30 +1238,23 @@
         const declOfNum = (n, titles) => titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2)];
 
         // Анимация появления при скролле
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: '0px 0px -30px 0px'
-        };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 
         document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
         // Анимация цифр
         const animateNumbers = () => {
-            const numbers = document.querySelectorAll('.stat-number');
-            numbers.forEach(num => {
+            document.querySelectorAll('.stat-number').forEach(num => {
                 const target = parseInt(num.dataset.target);
                 let current = 0;
-                const increment = target / 50;
                 const timer = setInterval(() => {
-                    current += increment;
+                    current += target / 50;
                     if (current >= target) {
                         num.textContent = target;
                         clearInterval(timer);
@@ -1378,10 +1282,7 @@
             SLIDER_PHOTOS.forEach((photoId, index) => {
                 const slide = document.createElement('div');
                 slide.className = `slider-slide ${index === 0 ? 'active' : ''}`;
-                slide.innerHTML = `
-                    <img src="images/${photoId}.jpg" alt="Фото ${photoId}">
-                    <div class="slide-overlay"></div>
-                `;
+                slide.innerHTML = `<img src="images/${photoId}.jpg" alt="Фото ${photoId}"><div class="slide-overlay"></div>`;
                 sliderContainer.appendChild(slide);
                 
                 const indicator = document.createElement('div');
@@ -1394,12 +1295,8 @@
         };
 
         const goToSlide = (index) => {
-            const slides = document.querySelectorAll('.slider-slide');
-            const indicators = document.querySelectorAll('.indicator');
-            
-            slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-            indicators.forEach((ind, i) => ind.classList.toggle('active', i === index));
-            
+            document.querySelectorAll('.slider-slide').forEach((s, i) => s.classList.toggle('active', i === index));
+            document.querySelectorAll('.indicator').forEach((ind, i) => ind.classList.toggle('active', i === index));
             currentSlide = index;
         };
 
@@ -1438,7 +1335,7 @@
             const count = photos.length;
             photoCountNumber.textContent = count;
             photoCountText.textContent = declOfNum(count, ['фотография', 'фотографии', 'фотографий']);
-            totalPhotosCount.textContent = `${count} ${declOfNum(count, ['работа', 'работы', 'работ'])}`;
+            totalPhotosCount.textContent = `${count} ${declOfNum(count, ['кадр', 'кадра', 'кадров'])}`;
             
             currentPhotos = photos;
             updateLightboxCounter();
@@ -1489,7 +1386,7 @@
 
         const updateLightboxImage = () => {
             lightboxImg.src = `images/${currentPhotos[lightboxIndex].id}.jpg`;
-            updateLightboxCounter();
+            lightboxCounter.textContent = `${lightboxIndex + 1} / ${currentPhotos.length}`;
         };
 
         const updateLightboxCounter = () => {
@@ -1527,13 +1424,7 @@
             initSlider();
             renderGallery(CATEGORIES.all.photos);
             
-            heroCloud.addEventListener('click', () => {
-                mainContent.scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            scrollDownBtn.addEventListener('click', () => {
-                mainContent.scrollIntoView({ behavior: 'smooth' });
-            });
+            heroCloud.addEventListener('click', () => mainContent.scrollIntoView({ behavior: 'smooth' }));
             
             $('categoriesRow').addEventListener('click', (e) => {
                 const btn = e.target.closest('.category-btn');
@@ -1559,9 +1450,7 @@
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
             
-            $('scrollTop').addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            $('scrollTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         };
 
         init();
