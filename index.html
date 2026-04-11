@@ -36,8 +36,11 @@
         .category-btn:hover{background:#444;transform:translateY(-2px)}
         .category-btn.active{background:#fff;color:#000}
         .gallery{display:grid;gap:20px;padding:40px 60px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer}
-        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s}
+        .gallery-item{overflow:hidden;border-radius:8px;cursor:pointer;background:#1a1a1a}
+        /* Скелетон-лоадер */
+        .gallery-item.skeleton{background:linear-gradient(90deg,#1a1a1a 25%,#2a2a2a 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        .gallery img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .3s;background:#1a1a1a}
         .gallery-item:hover img{transform:scale(1.03)}
         #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
         #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
@@ -60,6 +63,12 @@
             .offline-badge{bottom:80px}
         }
         footer{text-align:center;padding:40px 20px;font-size:14px;opacity:.6}
+        /* Оптимизация: убираем анимации на слабых устройствах */
+        @media (prefers-reduced-motion:reduce){
+            .gallery-item:hover img{transform:none}
+            .category-btn:hover{transform:none}
+            .slide{transition:none}
+        }
     </style>
 </head>
 <body>
@@ -119,7 +128,7 @@ const PHOTOS = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-//  ⚡ ДВИЖОК (ничего не трогать)
+//  ⚡ ОПТИМИЗИРОВАННЫЙ ДВИЖОК (ленивая загрузка, приоритеты)
 // ═══════════════════════════════════════════════════════════════
 
 const gallery = document.getElementById('gallery');
@@ -127,6 +136,7 @@ const categoriesDiv = document.getElementById('categories');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
 let currentIndex = 0;
+let currentRenderPhotos = PHOTOS;
 
 // Генерация кнопок
 Object.keys(CATEGORIES).forEach(key => {
@@ -136,42 +146,120 @@ Object.keys(CATEGORIES).forEach(key => {
     btn.onclick = () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        render(key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key));
+        currentRenderPhotos = key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key);
+        renderWithSkeleton(currentRenderPhotos);
     };
     categoriesDiv.appendChild(btn);
 });
 
-// Отрисовка галереи
-function render(photos) {
+// Показываем скелетон, потом загружаем реальные фото
+function renderWithSkeleton(photos) {
+    // Быстро показываем скелетоны
     gallery.innerHTML = '';
-    photos.forEach(photo => {
+    photos.forEach((photo, idx) => {
+        const skeletonDiv = document.createElement('div');
+        skeletonDiv.className = 'gallery-item skeleton';
+        skeletonDiv.style.height = '300px';
+        skeletonDiv.style.borderRadius = '8px';
+        skeletonDiv.dataset.index = idx;
+        gallery.appendChild(skeletonDiv);
+    });
+    
+    // Асинхронно заменяем на реальные фото (чтобы не блокировать UI)
+    requestIdleCallback ? requestIdleCallback(() => renderRealImages(photos)) : setTimeout(() => renderRealImages(photos), 50);
+}
+
+function renderRealImages(photos) {
+    // Заменяем скелетоны на реальные картинки
+    photos.forEach((photo, idx) => {
+        const skeleton = gallery.children[idx];
+        if (!skeleton) return;
+        
         const div = document.createElement('div');
         div.className = 'gallery-item';
+        
         const img = document.createElement('img');
+        // Ленивая загрузка + асинхронный декодинг
+        img.loading = 'lazy';
+        img.decoding = 'async';
         img.src = `images/${photo.id}.jpg`;
         img.alt = `Фото ${photo.id}`;
+        
+        // Приоритет для первых 6 фото (видимая область)
+        if (idx < 6) {
+            img.fetchPriority = 'high';
+            img.loading = 'eager';
+        } else {
+            img.fetchPriority = 'low';
+        }
+        
         img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
+        
+        // Предзагрузка следующего фото при ховере (опционально)
+        div.addEventListener('mouseenter', () => {
+            const nextIdx = idx + 1;
+            if (nextIdx < photos.length) {
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.as = 'image';
+                preloadLink.href = `images/${photos[nextIdx].id}.jpg`;
+                document.head.appendChild(preloadLink);
+            }
+        });
+        
         div.appendChild(img);
-        gallery.appendChild(div);
+        gallery.replaceChild(div, skeleton);
     });
 }
 
 // Лайтбокс
-function openLightbox(idx) { currentIndex = idx; lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; lightbox.style.display = 'flex'; }
+function openLightbox(idx) { 
+    currentIndex = idx; 
+    lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; 
+    lightbox.style.display = 'flex'; 
+}
 function closeLightbox() { lightbox.style.display = 'none'; }
-function prev() { currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
-function next() { currentIndex = (currentIndex + 1) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
+function prev() { 
+    currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; 
+    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; 
+}
+function next() { 
+    currentIndex = (currentIndex + 1) % PHOTOS.length; 
+    lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; 
+}
 
-// Слайдер
+// Слайдер (оптимизирован: предзагрузка следующих слайдов)
 let s=0, slides=document.querySelectorAll('.slide');
-setInterval(() => { slides[s].classList.remove('active'); s=(s+1)%slides.length; slides[s].classList.add('active'); }, 5000);
+const totalSlides = slides.length;
+// Предзагружаем все слайды фоном
+for(let i=0; i<totalSlides; i++) {
+    const bg = slides[i].style.backgroundImage;
+    if(bg && bg !== 'none') {
+        const url = bg.slice(5, -2);
+        const preload = new Image();
+        preload.src = url;
+    }
+}
+setInterval(() => { 
+    slides[s].classList.remove('active'); 
+    s=(s+1)%totalSlides; 
+    slides[s].classList.add('active');
+    // Предзагрузка следующего слайда
+    const nextSlide = (s+1)%totalSlides;
+    const nextBg = slides[nextSlide].style.backgroundImage;
+    if(nextBg && nextBg !== 'none') {
+        const nextUrl = nextBg.slice(5, -2);
+        const preloadNext = new Image();
+        preloadNext.src = nextUrl;
+    }
+}, 5000);
 
 // Кнопка наверх
 const toTop = document.getElementById('toTop');
 window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
 toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
 
-// События
+// События лайтбокса
 document.querySelector('.lightbox-close').onclick = closeLightbox;
 document.querySelector('.lightbox-prev').onclick = prev;
 document.querySelector('.lightbox-next').onclick = next;
@@ -204,17 +292,15 @@ window.addEventListener('load', () => {
     });
 });
 
-// Старт
-render(PHOTOS);
+// Старт со скелетонами
+renderWithSkeleton(PHOTOS);
 </script>
 
 <script>
 // Дополнительный скрипт для создания sw.js (если файла нет)
-// Этот скрипт создаст service worker автоматически
 if ('serviceWorker' in navigator) {
-    // Проверяем, существует ли sw.js, если нет — создаём через Blob
     fetch('/sw.js').catch(() => {
-        const swCode = `const CACHE_NAME = 'amigo-photos-v1';
+        const swCode = `const CACHE_NAME = 'amigo-photos-v2';
 const urlsToCache = [
     '/',
     '/index.html'
