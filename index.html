@@ -19,7 +19,7 @@
     <meta property="og:title" content="Amigo Photos — фотопортфолио">
     <meta property="og:description" content="Архитектура, природа и детали в объективе.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E<text y='.9em' font-size='90'>📷</text>%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📷%3C/text%3E%3C/svg%3E">
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -41,13 +41,13 @@
         .gallery-item:hover img{transform:scale(1.03)}
         #lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;justify-content:center;align-items:center;z-index:1000;cursor:pointer}
         #lightbox img{max-width:85%;max-height:85%;border-radius:10px}
-        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001}
+        .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);color:#fff;border:none;font-size:40px;padding:20px 15px;cursor:pointer;z-index:1001;border-radius:5px;user-select:none}
         .lightbox-nav:hover{background:rgba(255,255,255,.4)}
         .lightbox-prev{left:20px}
         .lightbox-next{right:20px}
         .lightbox-close{position:absolute;top:20px;right:30px;background:0 0;border:none;color:#fff;font-size:40px;cursor:pointer;z-index:1001}
         #toTop{position:fixed;bottom:20px;right:20px;background:#fff;color:#000;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;display:none;z-index:99}
-        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none}
+        .offline-badge{position:fixed;bottom:20px;left:20px;background:#ff4444;color:#fff;padding:8px 15px;border-radius:50px;font-size:12px;z-index:99;display:none;font-weight:bold}
         @media (max-width:768px){
             .hero{height:60vh}
             .hero h1{font-size:2em}
@@ -81,13 +81,13 @@
 <section class="gallery" id="gallery"></section>
 
 <div id="lightbox">
-    <button class="lightbox-close">✕</button>
-    <button class="lightbox-nav lightbox-prev">❮</button>
-    <button class="lightbox-nav lightbox-next">❯</button>
-    <img src="">
+    <button class="lightbox-close" aria-label="Закрыть">✕</button>
+    <button class="lightbox-nav lightbox-prev" aria-label="Предыдущее">❮</button>
+    <button class="lightbox-nav lightbox-next" aria-label="Следующее">❯</button>
+    <img src="" alt="Просмотр фото">
 </div>
 
-<button id="toTop">↑ Наверх</button>
+<button id="toTop" aria-label="Наверх">↑ Наверх</button>
 <div class="offline-badge" id="offlineBadge">📡 Офлайн-режим</div>
 <footer>© 2026 Amigo Photos — All Rights Reserved</footer>
 
@@ -119,14 +119,17 @@ const PHOTOS = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-//  ⚡ ДВИЖОК (ничего не трогать)
+//  ⚡ ДВИЖОК
 // ═══════════════════════════════════════════════════════════════
 
 const gallery = document.getElementById('gallery');
 const categoriesDiv = document.getElementById('categories');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = lightbox.querySelector('img');
-let currentIndex = 0;
+
+// Текущий отфильтрованный массив для корректной навигации в лайтбоксе
+let currentFilteredPhotos = PHOTOS;
+let currentLightboxIndex = 0;
 
 // Генерация кнопок
 Object.keys(CATEGORIES).forEach(key => {
@@ -136,7 +139,12 @@ Object.keys(CATEGORIES).forEach(key => {
     btn.onclick = () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        render(key === 'all' ? PHOTOS : PHOTOS.filter(p => p.cat === key));
+        if (key === 'all') {
+            currentFilteredPhotos = PHOTOS;
+        } else {
+            currentFilteredPhotos = PHOTOS.filter(p => p.cat === key);
+        }
+        render(currentFilteredPhotos);
     };
     categoriesDiv.appendChild(btn);
 });
@@ -144,101 +152,144 @@ Object.keys(CATEGORIES).forEach(key => {
 // Отрисовка галереи
 function render(photos) {
     gallery.innerHTML = '';
-    photos.forEach(photo => {
+    photos.forEach((photo, index) => {
         const div = document.createElement('div');
         div.className = 'gallery-item';
         const img = document.createElement('img');
         img.src = `images/${photo.id}.jpg`;
         img.alt = `Фото ${photo.id}`;
-        img.onclick = () => openLightbox(PHOTOS.findIndex(p => p.id === photo.id));
+        img.onclick = () => {
+            // Открываем лайтбокс с учетом текущего индекса в ОТФИЛЬТРОВАННОМ массиве
+            currentLightboxIndex = index;
+            updateLightboxImage();
+            lightbox.style.display = 'flex';
+        };
         div.appendChild(img);
         gallery.appendChild(div);
     });
 }
 
-// Лайтбокс
-function openLightbox(idx) { currentIndex = idx; lightboxImg.src = `images/${PHOTOS[idx].id}.jpg`; lightbox.style.display = 'flex'; }
+function updateLightboxImage() {
+    if (currentFilteredPhotos.length > 0) {
+        lightboxImg.src = `images/${currentFilteredPhotos[currentLightboxIndex].id}.jpg`;
+    }
+}
+
 function closeLightbox() { lightbox.style.display = 'none'; }
-function prev() { currentIndex = (currentIndex - 1 + PHOTOS.length) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
-function next() { currentIndex = (currentIndex + 1) % PHOTOS.length; lightboxImg.src = `images/${PHOTOS[currentIndex].id}.jpg`; }
+function prev() { 
+    if (currentFilteredPhotos.length === 0) return;
+    currentLightboxIndex = (currentLightboxIndex - 1 + currentFilteredPhotos.length) % currentFilteredPhotos.length; 
+    updateLightboxImage();
+}
+function next() { 
+    if (currentFilteredPhotos.length === 0) return;
+    currentLightboxIndex = (currentLightboxIndex + 1) % currentFilteredPhotos.length; 
+    updateLightboxImage();
+}
 
 // Слайдер
 let s=0, slides=document.querySelectorAll('.slide');
-setInterval(() => { slides[s].classList.remove('active'); s=(s+1)%slides.length; slides[s].classList.add('active'); }, 5000);
+setInterval(() => { 
+    if(slides.length > 0) {
+        slides[s].classList.remove('active'); 
+        s=(s+1)%slides.length; 
+        slides[s].classList.add('active'); 
+    }
+}, 5000);
 
 // Кнопка наверх
 const toTop = document.getElementById('toTop');
 window.onscroll = () => toTop.style.display = window.scrollY > 300 ? 'block' : 'none';
 toTop.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
 
-// События
+// События лайтбокса
 document.querySelector('.lightbox-close').onclick = closeLightbox;
-document.querySelector('.lightbox-prev').onclick = prev;
-document.querySelector('.lightbox-next').onclick = next;
-lightbox.onclick = e => { if(e.target === lightbox) closeLightbox(); };
-document.onkeydown = e => { if(lightbox.style.display === 'flex') { if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowLeft') prev(); if(e.key === 'ArrowRight') next(); } };
+document.querySelector('.lightbox-prev').onclick = (e) => { e.stopPropagation(); prev(); };
+document.querySelector('.lightbox-next').onclick = (e) => { e.stopPropagation(); next(); };
+lightbox.onclick = e => { if(e.target === lightbox || e.target.classList.contains('lightbox-close')) closeLightbox(); };
+document.onkeydown = e => { 
+    if(lightbox.style.display === 'flex') { 
+        if(e.key === 'Escape') closeLightbox(); 
+        if(e.key === 'ArrowLeft') prev(); 
+        if(e.key === 'ArrowRight') next(); 
+    } 
+};
 
 // ═══════════════════════════════════════════════════════════════
 //  📡 SERVICE WORKER (ОФЛАЙН-РЕЖИМ)
 // ═══════════════════════════════════════════════════════════════
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-        console.log('Service Worker зарегистрирован:', reg);
-    }).catch(err => {
-        console.log('Ошибка регистрации Service Worker:', err);
-    });
-}
-
-// Показываем индикатор при офлайн-режиме
-window.addEventListener('load', () => {
-    const badge = document.getElementById('offlineBadge');
-    if (!navigator.onLine) {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
-    }
-    window.addEventListener('online', () => badge.style.display = 'none');
-    window.addEventListener('offline', () => {
-        badge.style.display = 'block';
-        setTimeout(() => badge.style.display = 'none', 3000);
-    });
-});
-
-// Старт
-render(PHOTOS);
-</script>
-
-<script>
-// Дополнительный скрипт для создания sw.js (если файла нет)
-if ('serviceWorker' in navigator) {
-    fetch('/sw.js').catch(() => {
-        const swCode = `const CACHE_NAME = 'amigo-photos-v1';
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        // Создаем Service Worker "на лету", чтобы не зависеть от внешнего файла sw.js
+        const swCode = `
+const CACHE_NAME = 'amigo-photos-v2';
 const urlsToCache = [
     '/',
-    '/index.html'
-];
+    '/index.html',
+    // Кэшируем все картинки из списка PHOTOS (динамически вставлены)
+    ${JSON.stringify(PHOTOS.map(p => `/images/${p.id}.jpg`))}
+].flat();
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
+            .then(cache => {
+                console.log('Кэширование ресурсов');
+                return cache.addAll(urlsToCache);
+            })
     );
 });
 
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
-            .then(response => response || fetch(event.request))
+            .then(response => {
+                // Возвращаем из кэша, если есть, иначе идем в сеть
+                return response || fetch(event.request);
+            })
     );
-});`;
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+            );
+        })
+    );
+});
+`;
         
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const url = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(url).then(reg => {
-            console.log('Service Worker создан автоматически');
-        });
-    });
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        navigator.serviceWorker.register(swUrl)
+            .then(reg => console.log('✅ Service Worker зарегистрирован (динамический)'))
+            .catch(err => console.log('❌ Ошибка регистрации SW:', err));
+    }
 }
+
+// Показываем индикатор при офлайн-режиме
+window.addEventListener('load', () => {
+    registerServiceWorker();
+    
+    const badge = document.getElementById('offlineBadge');
+    function updateOnlineStatus() {
+        if (!navigator.onLine) {
+            badge.style.display = 'block';
+            setTimeout(() => badge.style.display = 'none', 3000);
+        }
+    }
+    window.addEventListener('online', () => badge.style.display = 'none');
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus(); // Проверка при загрузке
+});
+
+// Старт рендеринга
+currentFilteredPhotos = PHOTOS;
+render(PHOTOS);
 </script>
 </body>
 </html>
