@@ -51,7 +51,6 @@
             .gallery-item:hover, .category-btn:hover, .cloud-content:hover { transform: none; }
         }
 
-        /* Прогресс-бар */
         .scroll-progress {
             position: fixed; top: 0; left: 0; width: 0%; height: 2px;
             background: var(--text-primary); z-index: 1000;
@@ -65,8 +64,8 @@
             z-index: 10000;
             display: flex; justify-content: center; align-items: center;
             pointer-events: none;
-            animation: welcomeFadeOut 1s ease-in-out forwards;
-            animation-delay: 3s;
+            animation: welcomeFadeOut 0.6s ease-in-out forwards;
+            animation-delay: 1.2s;
         }
         .welcome-overlay::before {
             content: ''; position: absolute; inset: 0;
@@ -81,17 +80,17 @@
         .welcome-frame::before {
             top: -10px; left: -10px;
             border-top: 1px solid var(--text-primary); border-left: 1px solid var(--text-primary);
-            animation: cornerReveal 0.6s ease-out forwards; animation-delay: 0.3s;
+            animation: cornerReveal 0.5s ease-out forwards; animation-delay: 0.15s;
         }
         .welcome-frame::after {
             bottom: -10px; right: -10px;
             border-bottom: 1px solid var(--text-primary); border-right: 1px solid var(--text-primary);
-            animation: cornerReveal 0.6s ease-out forwards; animation-delay: 0.3s;
+            animation: cornerReveal 0.5s ease-out forwards; animation-delay: 0.15s;
         }
         @keyframes cornerReveal { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
         .welcome-icon {
             font-size: clamp(60px, 15vw, 80px); margin-bottom: 24px; opacity: 0;
-            animation: welcomeIcon 1s ease-out forwards; animation-delay: 0.1s;
+            animation: welcomeIcon 0.7s ease-out forwards; animation-delay: 0.05s;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
         }
         @keyframes welcomeIcon {
@@ -103,30 +102,30 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(28px, 8vw, 48px); font-weight: 500;
             letter-spacing: 4px; margin-bottom: 16px; opacity: 0;
-            animation: welcomeText 0.8s ease-out forwards; animation-delay: 0.6s;
+            animation: welcomeText 0.5s ease-out forwards; animation-delay: 0.3s;
             line-height: 1.2;
         }
         .welcome-line {
             width: 0; height: 1px;
             background: linear-gradient(to right, transparent, var(--text-primary), transparent);
             margin: 24px auto;
-            animation: welcomeLine 0.8s ease-out forwards; animation-delay: 1.5s;
+            animation: welcomeLine 0.5s ease-out forwards; animation-delay: 0.6s;
         }
         @keyframes welcomeLine { 0% { width: 0; opacity: 0; } 100% { width: min(100px, 30vw); opacity: 0.6; } }
         .welcome-subtitle {
             font-size: clamp(13px, 4vw, 16px); font-weight: 300;
             letter-spacing: 8px; text-transform: uppercase;
             color: var(--text-secondary); opacity: 0;
-            animation: welcomeText 0.8s ease-out forwards; animation-delay: 1.8s;
+            animation: welcomeText 0.5s ease-out forwards; animation-delay: 0.7s;
         }
         .welcome-footer {
             margin-top: 32px; font-size: clamp(10px, 3vw, 12px);
             color: var(--text-secondary); opacity: 0; letter-spacing: 3px;
-            animation: welcomeText 0.8s ease-out forwards; animation-delay: 2.2s;
+            animation: welcomeText 0.5s ease-out forwards; animation-delay: 0.8s;
         }
         .welcome-dots {
             display: flex; justify-content: center; gap: 8px; margin-top: 28px;
-            opacity: 0; animation: welcomeText 0.8s ease-out forwards; animation-delay: 2.5s;
+            opacity: 0; animation: welcomeText 0.5s ease-out forwards; animation-delay: 0.9s;
         }
         .welcome-dot {
             width: 4px; height: 4px; border-radius: 50%;
@@ -163,7 +162,7 @@
             letter-spacing: clamp(4px, 2vw, 8px); text-transform: uppercase;
             color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             transition: all 0.3s; opacity: 0;
-            animation: fadeIn 0.8s ease forwards; animation-delay: 3.3s;
+            animation: fadeIn 0.5s ease forwards; animation-delay: 1.5s;
         }
         .header.scrolled .logo { color: var(--text-primary); text-shadow: none; }
         @keyframes fadeIn { to { opacity: 1; } }
@@ -173,15 +172,16 @@
         .slider-container { position: relative; height: 100%; width: 100%; }
         .slider-slide {
             position: absolute; inset: 0; opacity: 0;
-            transition: opacity 1.5s var(--transition-smooth); z-index: 1;
+            transition: opacity 1.2s var(--transition-smooth); z-index: 1;
         }
         .slider-slide.active { opacity: 1; z-index: 2; }
         .slider-slide img {
             width: 100%; height: 100%; object-fit: cover;
-            animation: slowZoom 8s ease-out forwards;
             transform: scale(1); will-change: transform;
         }
-        .slider-slide.active img { animation: slowZoom 8s ease-out forwards; }
+        .slider-slide.active img {
+            animation: slowZoom 8s ease-out forwards;
+        }
         @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.12); } }
         .slide-overlay {
             position: absolute; inset: 0;
@@ -189,7 +189,6 @@
             z-index: 3;
         }
 
-        /* Hero Content */
         .hero-content {
             position: absolute; inset: 0; z-index: 10;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -203,7 +202,7 @@
             margin-bottom: clamp(16px, 3vw, 24px);
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             opacity: 0; transform: translateY(20px);
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards; animation-delay: 3.5s;
+            animation: fadeInUp 0.7s var(--transition-smooth) forwards; animation-delay: 1.7s;
         }
         .hero-title {
             font-family: 'Playfair Display', serif;
@@ -212,14 +211,14 @@
             letter-spacing: -0.02em;
             text-shadow: 0 4px 40px rgba(0,0,0,0.3);
             max-width: 1100px; opacity: 0; transform: translateY(30px);
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards; animation-delay: 3.7s;
+            animation: fadeInUp 0.7s var(--transition-smooth) forwards; animation-delay: 1.85s;
         }
         .hero-description {
             font-size: clamp(14px, 3vw, 18px); font-weight: 300;
             line-height: 1.6; max-width: min(650px, 90vw); margin: 0 auto;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             opacity: 0; transform: translateY(20px);
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards; animation-delay: 3.9s;
+            animation: fadeInUp 0.7s var(--transition-smooth) forwards; animation-delay: 2s;
         }
         .hero-subtitle {
             font-size: clamp(12px, 3vw, 16px); font-weight: 300;
@@ -227,17 +226,16 @@
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
             margin-top: clamp(24px, 4vw, 32px);
             opacity: 0; transform: translateY(20px);
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards; animation-delay: 4.1s;
+            animation: fadeInUp 0.7s var(--transition-smooth) forwards; animation-delay: 2.15s;
         }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* Облачко */
         .hero-cloud {
             position: absolute; bottom: clamp(60px, 10vh, 80px); left: 50%;
             transform: translateX(-50%); z-index: 20;
             pointer-events: auto; cursor: pointer;
             opacity: 0;
-            animation: floatIn 0.8s var(--transition-smooth) forwards; animation-delay: 4.3s;
+            animation: floatIn 0.7s var(--transition-smooth) forwards; animation-delay: 2.3s;
         }
         @keyframes floatIn {
             from { opacity: 0; transform: translateX(-50%) translateY(30px); }
@@ -262,12 +260,11 @@
             transition: transform 0.3s;
         }
 
-        /* Индикаторы */
         .slider-indicators {
             position: absolute; bottom: clamp(140px, 20vh, 200px); left: 50%;
             transform: translateX(-50%); z-index: 15;
             display: flex; gap: clamp(12px, 3vw, 20px); opacity: 0;
-            animation: fadeIn 0.6s ease forwards; animation-delay: 4.5s;
+            animation: fadeIn 0.5s ease forwards; animation-delay: 2.5s;
         }
         .indicator {
             width: clamp(5px, 1.5vw, 6px); height: clamp(5px, 1.5vw, 6px);
@@ -281,7 +278,6 @@
             width: clamp(24px, 6vw, 28px); border-radius: 3px; background: #fff;
         }
 
-        /* ===== Main Content ===== */
         .main-content {
             padding: clamp(60px, 10vh, 100px) clamp(20px, 5vw, 48px) clamp(40px, 8vh, 60px);
             max-width: 1800px; margin: 0 auto;
@@ -299,7 +295,6 @@
         .animate-on-scroll.rotate-in { transform: rotate(-8deg) scale(0.9); }
         .animate-on-scroll.visible { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
 
-        /* Stats */
         .stats-section {
             display: grid; grid-template-columns: repeat(4, 1fr);
             gap: clamp(20px, 4vw, 40px); margin-bottom: clamp(60px, 10vh, 100px);
@@ -319,7 +314,6 @@
             letter-spacing: 3px; text-transform: uppercase; color: var(--text-secondary);
         }
 
-        /* Intro */
         .intro-section {
             text-align: center; max-width: min(850px, 90vw);
             margin: 0 auto clamp(60px, 10vh, 80px);
@@ -339,7 +333,6 @@
             color: var(--text-secondary);
         }
 
-        /* Categories */
         .categories-wrapper { margin-bottom: clamp(40px, 8vh, 60px); }
         .categories-header {
             display: flex; align-items: baseline; justify-content: space-between;
@@ -352,9 +345,7 @@
         .categories-count {
             font-size: clamp(11px, 2.5vw, 13px); color: var(--text-secondary);
         }
-        .categories-row {
-            display: flex; gap: clamp(8px, 2vw, 16px); flex-wrap: wrap;
-        }
+        .categories-row { display: flex; gap: clamp(8px, 2vw, 16px); flex-wrap: wrap; }
         .category-btn {
             padding: clamp(10px, 2.5vw, 14px) clamp(20px, 5vw, 36px);
             font-size: clamp(12px, 3vw, 15px); font-weight: 500;
@@ -380,7 +371,6 @@
             border: none; will-change: transform, opacity;
         }
 
-        /* Content Layout */
         .content-layout {
             display: grid;
             grid-template-columns: minmax(280px, 380px) 1fr;
@@ -434,7 +424,6 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: clamp(16px, 3vw, 24px);
-            /* Плавное появление при смене категории */
             transition: opacity 0.3s var(--transition-smooth);
         }
         .gallery-grid.fading { opacity: 0; }
@@ -446,22 +435,30 @@
         .gallery-item {
             position: relative; aspect-ratio: 4 / 5;
             overflow: hidden; cursor: pointer; border-radius: 8px;
-            background: #f0eeea; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            background: linear-gradient(135deg, #e8e5e0 0%, #d8d4cd 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
             transition: all 0.4s var(--transition-smooth);
-            -webkit-tap-highlight-color: transparent; will-change: transform;
+            -webkit-tap-highlight-color: transparent;
+            will-change: transform;
         }
         .gallery-item:active { transform: scale(0.98); }
+
+        /* Фото: плавное проявление при загрузке */
         .gallery-item img {
             width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.6s var(--transition-smooth);
-            filter: brightness(0.95); will-change: transform;
+            opacity: 0;
+            transition: opacity 0.5s var(--transition-smooth), transform 0.6s var(--transition-smooth);
+            will-change: transform, opacity;
         }
+        .gallery-item img.loaded { opacity: 1; }
+
         .item-overlay {
-            position: absolute; inset: 0;
+            position: absolute; inset: 0; z-index: 3;
             background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 40%, transparent 70%);
             opacity: 0; transition: opacity 0.3s;
             display: flex; align-items: flex-end;
             padding: clamp(16px, 4vw, 28px);
+            pointer-events: none;
         }
         .item-number {
             color: #fff; font-size: clamp(14px, 3.5vw, 18px);
@@ -471,7 +468,6 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        /* Hover только там, где есть мышь */
         @media (hover: hover) {
             .gallery-item:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
             .gallery-item:hover img { transform: scale(1.04); }
@@ -481,40 +477,7 @@
             .cloud-content:hover { transform: translateY(-3px); }
         }
 
-        /* Quote */
-        .quote-section {
-            margin-top: clamp(60px, 12vh, 80px);
-            padding: clamp(40px, 8vh, 70px) 0;
-            text-align: center;
-            border-top: 1px solid rgba(0,0,0,0.04);
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-            position: relative;
-        }
-        .quote-section::before {
-            content: '"'; position: absolute; top: -10px; left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(80px, 20vw, 120px);
-            color: var(--text-primary); opacity: 0.06; line-height: 1;
-        }
-        .quote-text {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(20px, 5vw, 32px); font-style: italic;
-            font-weight: 400; line-height: 1.5;
-            max-width: min(850px, 90vw); margin: 0 auto clamp(16px, 3vw, 24px);
-            color: var(--text-primary);
-        }
-        .quote-author {
-            font-size: clamp(12px, 3vw, 14px); font-weight: 500;
-            letter-spacing: 4px; text-transform: uppercase;
-            color: var(--text-primary); margin-bottom: 8px;
-        }
-        .quote-context {
-            font-size: clamp(11px, 2.5vw, 13px);
-            color: var(--text-secondary); opacity: 0.7;
-        }
-
-        /* ===== Lightbox ===== */
+        /* Lightbox */
         #lightbox {
             position: fixed; inset: 0;
             background: rgba(250, 249, 247, 0.98);
@@ -528,11 +491,6 @@
         #lightbox img {
             max-width: 90%; max-height: 85vh; object-fit: contain;
             border-radius: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-            animation: lbImageIn 0.35s var(--transition-smooth);
-        }
-        @keyframes lbImageIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
         }
         .lightbox-close {
             position: absolute; top: clamp(20px, 4vw, 36px); right: clamp(20px, 4vw, 44px);
@@ -583,7 +541,6 @@
             line-height: 1.6; font-style: italic; letter-spacing: 0.5px;
         }
 
-        /* Scroll to top */
         #scrollTop {
             position: fixed; bottom: clamp(20px, 4vh, 36px); right: clamp(20px, 4vw, 36px);
             background: var(--text-primary); color: var(--bg-primary);
@@ -598,7 +555,6 @@
         #scrollTop.visible { opacity: 1; visibility: visible; transform: translateY(0); }
         #scrollTop:active { transform: scale(0.9); }
 
-        /* Адаптив */
         @media (max-width: 768px) { .stats-section { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) {
             .stats-section { grid-template-columns: 1fr; gap: 24px; }
@@ -610,7 +566,6 @@
             .category-info { position: static; top: auto; }
         }
 
-        /* Для тех, у кого отключены анимации: заставка сразу скрыта */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -628,10 +583,8 @@
 </head>
 <body>
 
-<!-- Прогресс-бар -->
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- Приветственная заставка -->
 <div class="welcome-overlay">
     <div class="welcome-content">
         <div class="welcome-frame">
@@ -653,7 +606,6 @@
     <div class="logo">AMIGO</div>
 </header>
 
-<!-- Hero Slider -->
 <section class="hero-slider">
     <div class="slider-container" id="sliderContainer"></div>
 
@@ -677,9 +629,7 @@
     </div>
 </section>
 
-<!-- Main Content -->
 <div class="main-content" id="mainContent">
-    <!-- Stats Section -->
     <div class="stats-section">
         <div class="stat-item animate-on-scroll fly-left">
             <div class="stat-number" data-target="28">0</div>
@@ -761,7 +711,6 @@
     </p>
 </footer>
 
-<!-- Lightbox -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
     <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">✕</button>
     <img id="lightboxImg" src="" alt="">
@@ -846,57 +795,28 @@
 
         const pad = (n) => String(n).padStart(2, '0');
 
-        // Оптимизированный наблюдатель
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    if (!isReducedMotion) observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-        // Анимация цифр
-        const animateNumbers = () => {
-            document.querySelectorAll('.stat-number').forEach(num => {
-                const target = parseInt(num.dataset.target);
-                let current = 0;
-                const duration = isReducedMotion ? 0 : 1000;
-                const step = target / (duration / 16);
-                const timer = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        num.textContent = target;
-                        clearInterval(timer);
-                    } else {
-                        num.textContent = Math.floor(current);
-                    }
-                }, 16);
-            });
-        };
-
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateNumbers();
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.3 });
-
-        const statsSection = document.querySelector('.stats-section');
-        if (statsSection) statsObserver.observe(statsSection);
-
         // ===== Слайдер =====
         const initSlider = () => {
             SLIDER_PHOTOS.forEach((photoId, index) => {
                 const slide = document.createElement('div');
                 slide.className = `slider-slide ${index === 0 ? 'active' : ''}`;
-                // Первый слайд — eager, остальные lazy
-                const loadingMode = index === 0 ? 'eager' : 'lazy';
-                slide.innerHTML = `<img src="images/${photoId}.jpg" alt="Фото ${index + 1} из ${SLIDER_PHOTOS.length}" loading="${loadingMode}" decoding="async"><div class="slide-overlay"></div>`;
+
+                const img = document.createElement('img');
+                img.src = `images/${photoId}.jpg`;
+                img.alt = `Фото ${index + 1} из ${SLIDER_PHOTOS.length}`;
+                if (index === 0) {
+                    img.loading = 'eager';
+                    img.fetchPriority = 'high';
+                } else {
+                    img.loading = 'lazy';
+                }
+                img.decoding = 'async';
+
+                const overlay = document.createElement('div');
+                overlay.className = 'slide-overlay';
+
+                slide.appendChild(img);
+                slide.appendChild(overlay);
                 sliderContainer.appendChild(slide);
 
                 const indicator = document.createElement('div');
@@ -918,7 +838,7 @@
 
         const nextSlide = () => goToSlide((currentSlide + 1) % SLIDER_PHOTOS.length);
         const startSlideshow = () => {
-            clearInterval(slideInterval); // защита от накопления таймеров
+            clearInterval(slideInterval);
             slideInterval = setInterval(nextSlide, 5000);
         };
         const stopSlideshow = () => clearInterval(slideInterval);
@@ -940,6 +860,8 @@
                 img.alt = `Фотография ${photo.id}`;
                 img.loading = 'lazy';
                 img.decoding = 'async';
+                if (idx < 4) img.fetchPriority = 'high';
+                img.addEventListener('load', () => img.classList.add('loaded'));
 
                 const overlay = document.createElement('div');
                 overlay.className = 'item-overlay';
@@ -977,7 +899,6 @@
         const switchCategory = (category, clickedBtn) => {
             if (category === currentCategory) return;
 
-            // Улетающая кнопка
             const rect = clickedBtn.getBoundingClientRect();
             const flyingBtn = clickedBtn.cloneNode(true);
             flyingBtn.classList.add('flying-btn');
@@ -996,7 +917,6 @@
                 if (btn.dataset.category === category) btn.classList.add('active');
             });
 
-            // Плавная смена галереи
             if (!isReducedMotion) {
                 galleryGrid.classList.add('fading');
                 setTimeout(() => {
@@ -1018,7 +938,6 @@
             lightboxIndex = index;
             updateLightboxImage();
             lightbox.style.display = 'flex';
-            // Дать браузеру применить display:flex, затем включить opacity
             requestAnimationFrame(() => lightbox.classList.add('show'));
             document.body.style.overflow = 'hidden';
             stopSlideshow();
@@ -1071,6 +990,48 @@
             }
         };
 
+        // ===== Наблюдатель появления =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if (!isReducedMotion) observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        const animateNumbers = () => {
+            document.querySelectorAll('.stat-number').forEach(num => {
+                const target = parseInt(num.dataset.target);
+                let current = 0;
+                const duration = isReducedMotion ? 0 : 1000;
+                const step = target / (duration / 16);
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        num.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        num.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumbers();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) statsObserver.observe(statsSection);
+
         // ===== Инициализация =====
         const init = () => {
             initSlider();
@@ -1105,7 +1066,6 @@
                 if (e.key === 'ArrowRight') nextLightbox();
             });
 
-            // Свайпы в лайтбоксе
             let touchStartX = 0;
             lightbox.addEventListener('touchstart', (e) => {
                 touchStartX = e.touches[0].clientX;
