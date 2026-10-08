@@ -269,6 +269,7 @@
             border: 1px solid rgba(255,255,255,0.2);
             -webkit-tap-highlight-color: transparent;
         }
+        .indicator { appearance: none; padding: 0; border: 1px solid rgba(255,255,255,0.2); }
         .indicator.active {
             width: clamp(24px, 6vw, 28px); border-radius: 3px; background: #fff;
         }
@@ -427,6 +428,7 @@
         @media (min-width: 2000px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
 
         .gallery-item {
+            display: block; width: 100%; padding: 0; border: 0; color: inherit; text-align: left; font: inherit;
             position: relative; aspect-ratio: 4 / 5;
             overflow: hidden; cursor: pointer; border-radius: 8px;
             background: linear-gradient(135deg, #e8e5e0 0%, #d8d4cd 100%);
@@ -532,6 +534,8 @@
             line-height: 1.6; font-style: italic; letter-spacing: 0.5px;
         }
 
+        button:focus-visible, .gallery-item:focus-visible, .indicator:focus-visible { outline: 3px solid #b88b4a; outline-offset: 3px; }
+
         #scrollTop {
             position: fixed; bottom: clamp(20px, 4vh, 36px); right: clamp(20px, 4vw, 36px);
             background: var(--text-primary); color: var(--bg-primary);
@@ -557,13 +561,38 @@
             .category-info { position: static; top: auto; }
         }
 
+        @media (max-width: 600px) {
+            .main-content { padding: 44px 16px 36px; }
+            .hero-title { font-size: clamp(34px, 11vw, 52px); }
+            .hero-eyebrow, .hero-subtitle { letter-spacing: 3px; }
+            .hero-description { max-width: 34rem; }
+            .hero-cloud { bottom: max(38px, env(safe-area-inset-bottom)); }
+            .cloud-content { gap: 12px; padding: 13px 20px; }
+            .cloud-text { letter-spacing: 1.5px; }
+            .slider-indicators { bottom: max(112px, calc(env(safe-area-inset-bottom) + 88px)); }
+            .stats-section { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+            .categories-row { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding: 2px 2px 10px; scrollbar-width: none; }
+            .categories-row::-webkit-scrollbar { display: none; }
+            .category-btn { flex: 0 0 auto; padding: 11px 17px; font-size: 11px; letter-spacing: 1px; }
+            .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .gallery-item { border-radius: 6px; }
+            .item-overlay { opacity: 1; }
+            .item-number { opacity: 1; transform: none; font-size: 11px; }
+            #lightbox { padding: max(12px, env(safe-area-inset-top)) 12px max(90px, calc(env(safe-area-inset-bottom) + 82px)); }
+            #lightbox img { max-width: 100%; max-height: 78dvh; }
+            .lightbox-controls { bottom: max(16px, env(safe-area-inset-bottom)); }
+            .lightbox-close { top: max(14px, env(safe-area-inset-top)); right: 14px; }
+            #scrollTop { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); }
+        }
+        @media (max-width: 360px) { .gallery-grid { grid-template-columns: 1fr; } }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-delay: 0s !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important;
             }
+            .animate-on-scroll { opacity: 1 !important; transform: none !important; }
+            .category-icon { animation: none !important; }
             .welcome-overlay { display: none !important; }
             .logo { opacity: 1 !important; }
             .hero-eyebrow, .hero-title, .hero-description, .hero-subtitle { opacity: 1 !important; transform: none !important; }
@@ -610,7 +639,7 @@
         <p class="hero-subtitle">Архитектура · Природа · Детали</p>
     </div>
 
-    <div class="slider-indicators" id="sliderIndicators"></div>
+    <div class="slider-indicators" id="sliderIndicators" role="group" aria-label="Выбор слайда"></div>
 
     <div class="hero-cloud" id="heroCloud" role="button" tabindex="0" aria-label="Перейти к галерее">
         <div class="cloud-content">
@@ -702,7 +731,7 @@
     </p>
 </footer>
 
-<div id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии" tabindex="-1">
     <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">✕</button>
     <img id="lightboxImg" src="" alt="">
     <div class="lightbox-controls">
@@ -810,10 +839,11 @@
                 slide.appendChild(overlay);
                 sliderContainer.appendChild(slide);
 
-                const indicator = document.createElement('div');
+                const indicator = document.createElement('button');
+                indicator.type = 'button';
                 indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
-                indicator.setAttribute('role', 'button');
-                indicator.setAttribute('aria-label', `Слайд ${index + 1}`);
+                indicator.setAttribute('aria-label', `Показать слайд ${index + 1} из ${SLIDER_PHOTOS.length}`);
+                indicator.setAttribute('aria-pressed', String(index === 0));
                 indicator.addEventListener('click', () => goToSlide(index));
                 sliderIndicators.appendChild(indicator);
             });
@@ -823,26 +853,27 @@
 
         const goToSlide = (index) => {
             document.querySelectorAll('.slider-slide').forEach((s, i) => s.classList.toggle('active', i === index));
-            document.querySelectorAll('.indicator').forEach((ind, i) => ind.classList.toggle('active', i === index));
+            document.querySelectorAll('.indicator').forEach((ind, i) => {
+                ind.classList.toggle('active', i === index);
+                ind.setAttribute('aria-pressed', String(i === index));
+            });
             currentSlide = index;
         };
 
         const nextSlide = () => goToSlide((currentSlide + 1) % SLIDER_PHOTOS.length);
         const startSlideshow = () => {
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, 5000);
+            if (!slideInterval && !isReducedMotion) slideInterval = setInterval(nextSlide, 5000);
         };
-        const stopSlideshow = () => clearInterval(slideInterval);
+        const stopSlideshow = () => { clearInterval(slideInterval); slideInterval = null; };
 
         const renderGallery = (photoIds) => {
             const fragment = document.createDocumentFragment();
             const photos = photoIds.map(id => ({ id }));
 
             photos.forEach((photo, idx) => {
-                const item = document.createElement('div');
+                const item = document.createElement('button');
+                item.type = 'button';
                 item.className = 'gallery-item';
-                item.tabIndex = 0;
-                item.setAttribute('role', 'button');
                 item.setAttribute('aria-label', `Открыть фото ${idx + 1} из ${photos.length}`);
 
                 const img = document.createElement('img');
@@ -859,10 +890,7 @@
 
                 item.appendChild(img);
                 item.appendChild(overlay);
-                item.addEventListener('click', () => openLightbox(idx));
-                item.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(idx); }
-                });
+                item.addEventListener('click', () => openLightbox(idx, item));
 
                 fragment.appendChild(item);
             });
@@ -922,11 +950,14 @@
             currentCategory = category;
         };
 
-        const openLightbox = (index) => {
+        let lightboxReturnFocus = null;
+        const openLightbox = (index, trigger) => {
             if (!currentPhotos.length) return;
+            lightboxReturnFocus = trigger || document.activeElement;
             lightboxIndex = index;
             updateLightboxImage();
             lightbox.style.display = 'flex';
+            clearTimeout(lightboxCloseTimer);
             requestAnimationFrame(() => lightbox.classList.add('show'));
             document.body.style.overflow = 'hidden';
             stopSlideshow();
@@ -940,12 +971,13 @@
             lightboxCounter.textContent = `${pad(lightboxIndex + 1)} / ${pad(currentPhotos.length)}`;
         };
 
+        let lightboxCloseTimer;
         const closeLightbox = () => {
             lightbox.classList.remove('show');
-            setTimeout(() => {
-                lightbox.style.display = 'none';
-            }, 300);
+            clearTimeout(lightboxCloseTimer);
+            lightboxCloseTimer = setTimeout(() => { lightbox.style.display = 'none'; }, isReducedMotion ? 0 : 300);
             document.body.style.overflow = '';
+            if (lightboxReturnFocus && lightboxReturnFocus.isConnected) lightboxReturnFocus.focus();
             if (!isReducedMotion) startSlideshow();
         };
 
@@ -993,7 +1025,8 @@
             document.querySelectorAll('.stat-number').forEach(num => {
                 const target = parseInt(num.dataset.target);
                 let current = 0;
-                const duration = isReducedMotion ? 0 : 1000;
+                if (isReducedMotion) { num.textContent = target; return; }
+                const duration = 1000;
                 const step = target / (duration / 16);
                 const timer = setInterval(() => {
                     current += step;
@@ -1043,6 +1076,13 @@
 
             lightbox.addEventListener('click', (e) => {
                 if (e.target === lightbox) closeLightbox();
+            });
+            lightbox.addEventListener('keydown', (e) => {
+                if (e.key !== 'Tab') return;
+                const controls = [...lightbox.querySelectorAll('button:not([disabled])')];
+                const first = controls[0], last = controls[controls.length - 1];
+                if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
             });
 
             document.addEventListener('keydown', (e) => {
